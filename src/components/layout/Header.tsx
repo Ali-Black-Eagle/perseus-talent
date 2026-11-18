@@ -104,7 +104,7 @@ export function Header() {
           {/* Calculate Your Fee button */}
           <Link
             href={site.navCta.href}
-            className="ml-4 inline-flex h-11 items-center justify-center border border-[#C5A15B] px-5 rounded-[2px] font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-[#C5A15B] hover:bg-[#C5A15B] hover:text-[#1C052E] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C052E]"
+            className="ml-4 inline-flex h-11 items-center justify-center border border-[#C5A15B] px-5 rounded-[2px] font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-[#C5A15B] hover:bg-[#C5A15B] hover:text-[#1C052E] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C052E] whitespace-nowrap"
           >
             {site.navCta.label}
           </Link>

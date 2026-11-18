@@ -62,7 +62,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en-GB" className={`${cormorant.variable} ${manrope.variable}`}>
+    <html
+      lang="en-GB"
+      suppressHydrationWarning
+      className={`${cormorant.variable} ${manrope.variable}`}
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{

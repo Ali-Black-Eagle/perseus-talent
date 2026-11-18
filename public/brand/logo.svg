@@ -1,0 +1,13 @@
+<svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" rx="4" fill="#1C052E"/>
+  <rect x="0.5" y="0.5" width="59" height="59" rx="3.5" stroke="#C5A15B" stroke-opacity="0.4"/>
+  <line x1="16" y1="40" x2="30" y2="24" stroke="#C5A15B" stroke-width="1.2" stroke-opacity="0.8"/>
+  <line x1="30" y1="24" x2="44" y2="30" stroke="#C5A15B" stroke-width="1.2" stroke-opacity="0.8"/>
+  <line x1="30" y1="24" x2="30" y2="14" stroke="#C5A15B" stroke-width="1.2" stroke-opacity="0.8"/>
+  <circle cx="16" cy="40" r="2.5" fill="#C5A15B"/>
+  <circle cx="44" cy="30" r="2.5" fill="#C5A15B"/>
+  <circle cx="30" cy="14" r="2.5" fill="#C5A15B"/>
+  <path d="M30 18L32 22L36 24L32 26L30 30L28 26L24 24L28 22Z" fill="#C5A15B"/>
+  <text x="76" y="34" font-family="'Cormorant Garamond', Georgia, serif" font-size="28" font-weight="600" letter-spacing="0.14em" fill="#1C052E">PERSEUS</text>
+  <text x="76" y="48" font-family="'Manrope', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="0.32em" fill="#7A5A20">TALENT</text>
+</svg>
