@@ -7,9 +7,11 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { CategoryChips } from "@/components/insights/CategoryChips";
+import { Pagination } from "@/components/ui/Pagination";
 import { getInsights } from "@/lib/content";
 
 export const metadata = {
@@ -18,20 +20,29 @@ export const metadata = {
     "Read articles and perspectives from Perseus Talent on healthcare recruitment, employer guidance, interview preparation, and talent acquisition.",
 };
 
-const categories = [
-  "All",
-  "Healthcare Recruitment",
-  "Interview Preparation",
-  "Employer Guidance",
-  "Recruitment Industry",
-  "Candidate Advice",
-];
+const ARTICLES_PER_PAGE = 9;
 
-export default async function InsightsPage() {
+export default async function InsightsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ page?: string }>;
+}) {
   const articles = await getInsights();
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const pageParam = resolvedSearchParams.page;
+
   const featured = articles.find((a) => a.meta.featured) || articles[0];
   const regularArticles = articles.filter(
     (a) => a.meta.slug !== featured?.meta.slug
+  );
+
+  // Pagination for regular articles
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1);
+  const totalPages = Math.ceil(regularArticles.length / ARTICLES_PER_PAGE);
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const paginatedRegularArticles = regularArticles.slice(
+    startIndex,
+    startIndex + ARTICLES_PER_PAGE
   );
 
   return (
@@ -85,6 +96,9 @@ export default async function InsightsPage() {
       {/* 2. MAIN ARTICLES FEED */}
       <Section bg="white">
         <Container>
+          {/* Category Chips Bar (§G6 and §FE13) */}
+          <CategoryChips activeCategory="all" />
+
           {articles.length === 0 ? (
             <div className="p-12 text-center border border-dashed border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] max-w-xl mx-auto">
               <p className="font-serif text-2xl text-[#1C052E] mb-2">
@@ -100,8 +114,8 @@ export default async function InsightsPage() {
             </div>
           ) : (
             <div className="space-y-12">
-              {/* Featured Article Card */}
-              {featured && (
+              {/* Featured Article Card (only on page 1) */}
+              {featured && currentPage === 1 && (
                 <div className="border border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] p-8 md:p-12 shadow-sm transition-all hover:border-[#C5A15B]">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     <Badge variant="gold">{featured.meta.category}</Badge>
@@ -137,9 +151,9 @@ export default async function InsightsPage() {
               )}
 
               {/* Grid of Other Articles */}
-              {regularArticles.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-                  {regularArticles.map((art) => (
+              {paginatedRegularArticles.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                  {paginatedRegularArticles.map((art) => (
                     <Card
                       key={art.meta.slug}
                       hoverable={true}
@@ -179,6 +193,15 @@ export default async function InsightsPage() {
                     </Card>
                   ))}
                 </div>
+              )}
+
+              {/* Pagination when > 9 regular articles */}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  basePath="/insights"
+                />
               )}
             </div>
           )}
