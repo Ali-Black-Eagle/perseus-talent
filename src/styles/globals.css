@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@theme {
+  --color-purple-900: #1C052E;
+  --color-purple-800: #2A0B42;
+  --color-purple-700: #3B1A57;
+  --color-purple-600: #5A3A78;
+  --color-purple-100: #EFE8F4;
+  --color-purple-50: #F7F3FA;
+  --color-white: #FFFFFF;
+  --color-ivory: #FBF9F6;
+  --color-gold-400: #D4B577;
+  --color-gold-500: #C5A15B;
+  --color-gold-600: #A8853F;
+  --color-gold-text: #7A5A20;
+  --color-gold-100: #F6EFE1;
+  --color-ink: #1C052E;
+  --color-body: #3A3242;
+  --color-muted: #625A6B;
+  --color-line: #E6E0EB;
+  --color-line-dark: rgba(255, 255, 255, 0.14);
+  --color-field-border: #857B90;
+  --color-error: #B42318;
+  --color-error-bg: #FEF3F2;
+  --color-success: #1E7A4C;
+  --color-success-bg: #ECFDF3;
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-manrope), 'Manrope', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  /* Brand mandatory tokens */
+  --purple-900: #1C052E;
+  --white: #FFFFFF;
+  --gold-500: #C5A15B;
+
+  /* Supporting tints */
+  --purple-800: #2A0B42;
+  --purple-700: #3B1A57;
+  --purple-600: #5A3A78;
+  --purple-100: #EFE8F4;
+  --purple-50: #F7F3FA;
+  --ivory: #FBF9F6;
+  --gold-400: #D4B577;
+  --gold-600: #A8853F;
+  --gold-text: #7A5A20;
+  --gold-100: #F6EFE1;
+
+  /* Text tokens */
+  --ink: #1C052E;
+  --body: #3A3242;
+  --muted: #625A6B;
+  --on-dark: #FFFFFF;
+  --on-dark-muted: rgba(255, 255, 255, 0.78);
+  --on-dark-subtle: rgba(255, 255, 255, 0.6);
+
+  /* Lines & fields */
+  --line: #E6E0EB;
+  --line-dark: rgba(255, 255, 255, 0.14);
+  --field-border: #857B90;
+
+  /* Status */
+  --error: #B42318;
+  --error-bg: #FEF3F2;
+  --success: #1E7A4C;
+  --success-bg: #ECFDF3;
+
+  /* Typography variables */
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-manrope), 'Manrope', system-ui, -apple-system, sans-serif;
+
+  /* Shape & depth */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(28, 5, 46, 0.06);
+  --shadow-md: 0 10px 30px -12px rgba(28, 5, 46, 0.22);
+  --shadow-lg: 0 24px 60px -20px rgba(28, 5, 46, 0.35);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 600ms;
+
+  /* Layout */
+  --container: 1240px;
+  --container-narrow: 820px;
+  --measure: 68ch;
+  --gutter: 20px;
+  --header-h: 72px;
+  --z-base: 1;
+  --z-header: 50;
+  --z-menu: 60;
+  --z-modal: 70;
+  --z-skip: 100;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 48px;
+    --header-h: 88px;
+  }
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+body {
+  background: var(--white);
+  color: var(--body);
+  font: 400 1rem/1.7 var(--font-sans);
+}
+
+::selection {
+  background: var(--gold-500);
+  color: var(--purple-900);
+}
+
+/* Progressive enhancement for reveal transitions */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+
+.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Eyebrow line prefix */
+.eyebrow-line::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background-color: var(--gold-500);
+  vertical-align: middle;
+  margin-right: 12px;
+}
+
+/* List with gold 8-point stars */
+ul.star-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul.star-list > li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 8px;
+}
+
+ul.star-list > li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--gold-500);
+  font-size: 14px;
+  line-height: 1.7;
+}
