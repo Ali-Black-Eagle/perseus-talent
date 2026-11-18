@@ -1,21 +1,19 @@
 import React from "react";
 import Link from "next/link";
-import { Phone, Mail, Globe, Users, Briefcase, MessageSquare } from "lucide-react";
+import { Phone, Mail, Globe } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { GeneralEnquiryForm } from "@/components/forms/GeneralEnquiryForm";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { ContactTabs } from "@/components/contact/ContactTabs";
 import { site } from "@/config/site";
 
 export const metadata = {
-  title: "Contact Us — Perseus Talent",
+  title: "Contact Us",
   description:
-    "Get in touch with Perseus Talent. Telephone 07555004374 or email Perseustalent@gmail.com. We welcome conversations with employers and professionals.",
+    "Get in touch with Perseus Talent. Telephone 07555004374 or email Perseustalent@gmail.com. We welcome conversations with employers and professionals across the UK.",
 };
 
 export default function ContactPage() {
@@ -132,10 +130,10 @@ export default function ContactPage() {
         </Container>
       </Section>
 
-      {/* 3. THREE ENQUIRY PATHWAYS */}
+      {/* 3. THREE ENQUIRY PATHWAYS (FE14 TAB SET) */}
       <Section bg="ivory" className="border-b border-[#E6E0EB]">
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="text-center max-w-2xl mx-auto mb-12">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               How May We Help?
             </Eyebrow>
@@ -144,82 +142,9 @@ export default function ContactPage() {
             </Heading>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Pathway 1: Employer */}
-            <Card hoverable={true} className="p-8 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#1C052E] flex items-center justify-center mb-4">
-                  <Briefcase className="w-5 h-5 text-[#C5A15B]" />
-                </div>
-                <h3 className="font-serif font-semibold text-2xl text-[#1C052E] mb-2">
-                  Employers
-                </h3>
-                <p className="text-sm text-[#625A6B] leading-relaxed mb-6">
-                  Seeking to recruit healthcare talent? Register a specific
-                  vacancy or discuss an upcoming requirement.
-                </p>
-              </div>
-              <Button variant="purple" size="md" arrow={true} href="/employers#enquiry">
-                Employer Form
-              </Button>
-            </Card>
-
-            {/* Pathway 2: Candidate */}
-            <Card hoverable={true} className="p-8 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#1C052E] flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5 text-[#C5A15B]" />
-                </div>
-                <h3 className="font-serif font-semibold text-2xl text-[#1C052E] mb-2">
-                  Candidates
-                </h3>
-                <p className="text-sm text-[#625A6B] leading-relaxed mb-6">
-                  Looking for your next opportunity? Register your profile and
-                  submit your CV directly to our consultants.
-                </p>
-              </div>
-              <Button variant="purple" size="md" arrow={true} href="/candidates#register">
-                Register CV
-              </Button>
-            </Card>
-
-            {/* Pathway 3: General */}
-            <Card hoverable={true} className="p-8 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#1C052E] flex items-center justify-center mb-4">
-                  <MessageSquare className="w-5 h-5 text-[#C5A15B]" />
-                </div>
-                <h3 className="font-serif font-semibold text-2xl text-[#1C052E] mb-2">
-                  General Enquiries
-                </h3>
-                <p className="text-sm text-[#625A6B] leading-relaxed mb-6">
-                  Have an enquiry, partnership proposal, or general question for
-                  the Perseus Talent team?
-                </p>
-              </div>
-              <Button variant="outline-dark" size="md" href="#general">
-                Send Message
-              </Button>
-            </Card>
-          </div>
+          <ContactTabs />
         </Container>
       </Section>
-
-      {/* 4. GENERAL ENQUIRY FORM */}
-      <section id="general" className="py-16 md:py-24 bg-[#F7F3FA] scroll-mt-24">
-        <Container>
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <Eyebrow theme="light" withLine={true} className="mb-3">
-              Direct Message
-            </Eyebrow>
-            <Heading level="h2" color="ink">
-              Send a General Enquiry
-            </Heading>
-          </div>
-
-          <GeneralEnquiryForm />
-        </Container>
-      </section>
     </div>
   );
 }
