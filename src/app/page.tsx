@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
@@ -136,80 +137,104 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
             {/* Employers Card */}
-            <div className="bg-white border border-[#E6E0EB] rounded-[4px] p-8 md:p-12 flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
-              <div>
-                <Eyebrow theme="light" withLine={true} className="mb-3">
-                  For Employers
-                </Eyebrow>
-                <Heading level="h3" color="ink" className="mb-4">
-                  Talent that moves your business forward.
-                </Heading>
-                <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
-                  <p>Finding the right person can make all the difference.</p>
-                  <p>
-                    We work with organisations to understand their recruitment
-                    requirements and identify professionals whose experience,
-                    capabilities and ambitions align with their needs.
-                  </p>
-                  <p>
-                    From understanding the role to identifying suitable
-                    candidates, our approach is built around communication,
-                    attention to detail and finding the right fit.
-                  </p>
-                </div>
+            <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
+              <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
+                <Image
+                  src="/images/home/executive-consultation.svg"
+                  alt="Executive strategic recruitment consultation between healthcare hiring lead and Perseus Talent consultant"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 600px, 100vw"
+                />
               </div>
 
-              <div className="pt-6 border-t border-[#E6E0EB]">
-                <Button
-                  variant="purple"
-                  size="md"
-                  arrow={true}
-                  href="/employers"
-                  className="w-full sm:w-auto"
-                >
-                  Recruit With Perseus
-                </Button>
+              <div className="p-8 md:p-12 flex-1 flex flex-col justify-between">
+                <div>
+                  <Eyebrow theme="light" withLine={true} className="mb-3">
+                    For Employers
+                  </Eyebrow>
+                  <Heading level="h3" color="ink" className="mb-4">
+                    Talent that moves your business forward.
+                  </Heading>
+                  <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
+                    <p>Finding the right person can make all the difference.</p>
+                    <p>
+                      We work with organisations to understand their recruitment
+                      requirements and identify professionals whose experience,
+                      capabilities and ambitions align with their needs.
+                    </p>
+                    <p>
+                      From understanding the role to identifying suitable
+                      candidates, our approach is built around communication,
+                      attention to detail and finding the right fit.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-[#E6E0EB]">
+                  <Button
+                    variant="purple"
+                    size="md"
+                    arrow={true}
+                    href="/employers"
+                    className="w-full sm:w-auto"
+                  >
+                    Recruit With Perseus
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* Candidates Card */}
-            <div className="bg-white border border-[#E6E0EB] rounded-[4px] p-8 md:p-12 flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
-              <div>
-                <Eyebrow theme="light" withLine={true} className="mb-3">
-                  For Candidates
-                </Eyebrow>
-                <Heading level="h3" color="ink" className="mb-4">
-                  Your next opportunity starts here.
-                </Heading>
-                <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
-                  <p>Your career deserves more than a job search.</p>
-                  <p>
-                    We believe every professional has a unique combination of
-                    experience, ambition and potential.
-                  </p>
-                  <p>
-                    Our aim is to connect talented people with opportunities
-                    that support their professional development and future
-                    ambitions.
-                  </p>
-                  <p>
-                    Whether you are actively exploring new opportunities or
-                    considering your next career move, Perseus Talent is here to
-                    help you take the next step.
-                  </p>
-                </div>
+            <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
+              <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
+                <Image
+                  src="/images/home/healthcare-professional.svg"
+                  alt="Clinical healthcare professional in a modern healthcare environment"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 600px, 100vw"
+                />
               </div>
 
-              <div className="pt-6 border-t border-[#E6E0EB]">
-                <Button
-                  variant="purple"
-                  size="md"
-                  arrow={true}
-                  href="/opportunities"
-                  className="w-full sm:w-auto"
-                >
-                  Explore Opportunities
-                </Button>
+              <div className="p-8 md:p-12 flex-1 flex flex-col justify-between">
+                <div>
+                  <Eyebrow theme="light" withLine={true} className="mb-3">
+                    For Candidates
+                  </Eyebrow>
+                  <Heading level="h3" color="ink" className="mb-4">
+                    Your next opportunity starts here.
+                  </Heading>
+                  <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
+                    <p>Your career deserves more than a job search.</p>
+                    <p>
+                      We believe every professional has a unique combination of
+                      experience, ambition and potential.
+                    </p>
+                    <p>
+                      Our aim is to connect talented people with opportunities
+                      that support their professional development and future
+                      ambitions.
+                    </p>
+                    <p>
+                      Whether you are actively exploring new opportunities or
+                      considering your next career move, Perseus Talent is here to
+                      help you take the next step.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-[#E6E0EB]">
+                  <Button
+                    variant="purple"
+                    size="md"
+                    arrow={true}
+                    href="/opportunities"
+                    className="w-full sm:w-auto"
+                  >
+                    Explore Opportunities
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

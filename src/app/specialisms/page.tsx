@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
@@ -91,22 +92,24 @@ export default async function SpecialismsPage() {
             </Heading>
           </div>
 
-          {/* Featured Hero Card */}
-          <div className="bg-[#1C052E] text-white rounded-[4px] border border-[#C5A15B]/40 p-8 sm:p-12 md:p-16 relative overflow-hidden shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
+          {/* Featured Hero Card with 7/5 Split */}
+          <div className="bg-[#1C052E] text-white rounded-[4px] border border-[#C5A15B]/40 overflow-hidden relative shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
             <GeometricPattern opacity={0.03} />
 
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              <div className="lg:col-span-8">
-                <span className="inline-block px-3 py-1 bg-white/10 text-[#C5A15B] text-xs font-semibold uppercase tracking-wider rounded-[2px] mb-4">
-                  Core Specialism
-                </span>
-                <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium mb-6 leading-tight">
-                  Dedicated recruitment for clinical and healthcare organisations.
-                </h3>
-                <p className="font-sans text-base md:text-lg text-white/80 leading-relaxed mb-8 max-w-[50ch]">
-                  {primarySpecialism?.meta.summary ||
-                    "Connecting healthcare organisations with clinical and operational professionals whose skills and dedication deliver exceptional patient care."}
-                </p>
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-stretch">
+              <div className="lg:col-span-7 p-8 sm:p-12 md:p-16 flex flex-col justify-between">
+                <div>
+                  <span className="inline-block px-3 py-1 bg-white/10 text-[#C5A15B] text-xs font-semibold uppercase tracking-wider rounded-[2px] mb-4">
+                    Core Specialism
+                  </span>
+                  <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium mb-6 leading-tight">
+                    Dedicated recruitment for clinical and healthcare organisations.
+                  </h3>
+                  <p className="font-sans text-base md:text-lg text-white/80 leading-relaxed mb-8 max-w-[50ch]">
+                    {primarySpecialism?.meta.summary ||
+                      "Connecting healthcare organisations with clinical and operational professionals whose skills and dedication deliver exceptional patient care."}
+                  </p>
+                </div>
 
                 <div className="flex flex-wrap gap-4">
                   <Button
@@ -127,14 +130,14 @@ export default async function SpecialismsPage() {
                 </div>
               </div>
 
-              <div className="lg:col-span-4 p-6 bg-white/5 border border-white/10 rounded-[2px] text-center">
-                <span className="font-serif text-2xl font-semibold text-[#C5A15B] block mb-2">
-                  15% Flat Fee
-                </span>
-                <p className="text-xs text-white/70 leading-relaxed">
-                  Transparent recruitment terms applied to annual gross base
-                  salary. No tiered fees or surprises.
-                </p>
+              <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full bg-[#2A0B42]">
+                <Image
+                  src="/images/specialisms/clinical-care.svg"
+                  alt="Multidisciplinary healthcare clinical care team in modern hospital facility"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                />
               </div>
             </div>
           </div>

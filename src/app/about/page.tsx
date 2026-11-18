@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
@@ -111,7 +112,7 @@ export default function AboutPage() {
       <Section bg="white">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 space-y-6">
               <Eyebrow theme="light" withLine={true} className="mb-3">
                 Background
               </Eyebrow>
@@ -119,9 +120,19 @@ export default function AboutPage() {
                 Our story
               </Heading>
               <Ornament color="gold" className="justify-start my-6" />
+
+              <div className="relative aspect-[4/3] w-full rounded-[4px] overflow-hidden border border-[#C5A15B]/30 bg-[#1C052E]">
+                <Image
+                  src="/images/about/team-partnership.svg"
+                  alt="Perseus Talent relationship-led recruitment philosophy and navigation symbolism"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-6 text-[#3A3242] font-sans text-base md:text-lg leading-relaxed">
+            <div className="lg:col-span-7 space-y-6 text-[#3A3242] font-sans text-base md:text-lg leading-relaxed pt-2">
               <p>
                 In a recruitment industry often dominated by automated matching
                 and high-volume transactions, Perseus Talent was founded to
