@@ -132,7 +132,7 @@ export default async function SpecialismsPage() {
 
               <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full bg-[#2A0B42]">
                 <Image
-                  src="/images/specialisms/clinical-care.svg"
+                  src="/images/specialisms/clinical-care.jpg"
                   alt="Multidisciplinary healthcare clinical care team in modern hospital facility"
                   fill
                   className="object-cover"

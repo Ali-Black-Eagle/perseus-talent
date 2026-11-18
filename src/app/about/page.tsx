@@ -123,8 +123,8 @@ export default function AboutPage() {
 
               <div className="relative aspect-[4/3] w-full rounded-[4px] overflow-hidden border border-[#C5A15B]/30 bg-[#1C052E]">
                 <Image
-                  src="/images/about/team-partnership.svg"
-                  alt="Perseus Talent relationship-led recruitment philosophy and navigation symbolism"
+                  src="/images/about/team-partnership.jpg"
+                  alt="Perseus Talent leadership partners in consultation"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 500px, 100vw"

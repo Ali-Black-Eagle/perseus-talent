@@ -140,7 +140,7 @@ export default function HomePage() {
             <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
               <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
                 <Image
-                  src="/images/home/executive-consultation.svg"
+                  src="/images/home/executive-consultation.jpg"
                   alt="Executive strategic recruitment consultation between healthcare hiring lead and Perseus Talent consultant"
                   fill
                   className="object-cover"
@@ -189,7 +189,7 @@ export default function HomePage() {
             <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
               <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
                 <Image
-                  src="/images/home/healthcare-professional.svg"
+                  src="/images/home/healthcare-professional.jpg"
                   alt="Clinical healthcare professional in a modern healthcare environment"
                   fill
                   className="object-cover"
