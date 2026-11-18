@@ -1,15 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { MapPin, PoundSterling, Briefcase, Calendar } from "lucide-react";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { JobDirectory } from "@/components/opportunities/JobDirectory";
 import { getJobs } from "@/lib/content";
 
 export const metadata = {
@@ -69,111 +66,18 @@ export default async function OpportunitiesPage() {
         </Container>
       </section>
 
-      {/* 2. VACANCIES DIRECTORY */}
+      {/* 2. DIRECTORY & FILTERS */}
       <Section bg="white">
         <Container>
-          {jobs.length === 0 ? (
-            /* Styled Empty State with Constellation motif per §J */
-            <div className="relative overflow-hidden bg-[#FBF9F6] border border-[#E6E0EB] rounded-[4px] p-12 md:p-20 text-center max-w-2xl mx-auto shadow-sm">
-              <div className="w-16 h-16 rounded-full bg-[#1C052E] text-[#C5A15B] flex items-center justify-center font-serif text-2xl font-bold mx-auto mb-6">
-                ✦
+          <Suspense
+            fallback={
+              <div className="py-12 text-center text-sm text-[#625A6B]">
+                Loading opportunities…
               </div>
-
-              <Heading level="h2" color="ink" className="mb-4">
-                New opportunities are on the horizon.
-              </Heading>
-
-              <p className="font-sans text-base text-[#625A6B] leading-relaxed mb-8 max-w-[46ch] mx-auto">
-                We are currently partnering with healthcare clients on new
-                clinical briefs. Register your interest with Perseus Talent and
-                let us know what your next career move looks like.
-              </p>
-
-              <Button
-                variant="purple"
-                size="lg"
-                arrow={true}
-                href="/candidates#register"
-              >
-                Register Your Interest
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-6 max-w-4xl mx-auto">
-              <p
-                aria-live="polite"
-                className="text-xs uppercase tracking-wider text-[#7A5A20] font-semibold"
-              >
-                Showing {jobs.length} opportunit{jobs.length === 1 ? "y" : "ies"}
-              </p>
-
-              <div className="space-y-4">
-                {jobs.map((job) => (
-                  <Card
-                    key={job.meta.slug}
-                    hoverable={true}
-                    className="p-8 flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                        <Badge variant="purple">
-                          {job.meta.specialism.toUpperCase()}
-                        </Badge>
-                        <span className="text-xs text-[#625A6B] flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-[#C5A15B]" />
-                          {job.meta.datePosted}
-                        </span>
-                      </div>
-
-                      <h2 className="font-serif text-2xl font-semibold text-[#1C052E] mb-3">
-                        <Link
-                          href={`/opportunities/${job.meta.slug}`}
-                          className="hover:text-[#7A5A20] transition-colors"
-                        >
-                          {job.meta.title}
-                        </Link>
-                      </h2>
-
-                      <div className="flex flex-wrap items-center gap-6 text-sm text-[#625A6B] mb-4">
-                        <span className="flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-[#C5A15B]" />
-                          {job.meta.location}
-                        </span>
-                        {job.meta.salaryText && (
-                          <span className="flex items-center gap-1.5 font-medium text-[#1C052E]">
-                            <PoundSterling className="w-4 h-4 text-[#C5A15B]" />
-                            {job.meta.salaryText}
-                          </span>
-                        )}
-                        <span className="flex items-center gap-1.5">
-                          <Briefcase className="w-4 h-4 text-[#C5A15B]" />
-                          {job.meta.employmentType}
-                        </span>
-                      </div>
-
-                      <p className="font-sans text-sm text-[#625A6B] leading-relaxed line-clamp-2">
-                        {job.meta.requiredExperience}
-                      </p>
-                    </div>
-
-                    <div className="pt-6 mt-6 border-t border-[#E6E0EB] flex justify-between items-center">
-                      <span className="text-xs text-[#625A6B]">
-                        {job.meta.employerDisclosed && job.meta.employerName
-                          ? job.meta.employerName
-                          : "Confidential Healthcare Provider"}
-                      </span>
-                      <Link
-                        href={`/opportunities/${job.meta.slug}`}
-                        className="font-sans text-sm font-semibold text-[#1C052E] hover:text-[#7A5A20] inline-flex items-center gap-1"
-                      >
-                        View role →
-                      </Link>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
+            }
+          >
+            <JobDirectory initialJobs={jobs} />
+          </Suspense>
         </Container>
       </Section>
     </div>
