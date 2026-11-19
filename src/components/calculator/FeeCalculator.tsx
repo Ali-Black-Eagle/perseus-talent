@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useId } from "react";
+import React, { useState, useEffect, useId } from "react";
 import Link from "next/link";
 import { AlertCircle, Info, ArrowRight } from "lucide-react";
 import { calculateFee } from "@/lib/fee";
@@ -19,6 +19,14 @@ export function FeeCalculator({
   className = "",
 }: FeeCalculatorProps) {
   const [salaryInput, setSalaryInput] = useState(initialSalary);
+
+  useEffect(() => {
+    if (!initialSalary && typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const s = params.get("salary");
+      if (s) setSalaryInput(s);
+    }
+  }, [initialSalary]);
   const inputId = useId();
   const errorId = useId();
   const helperId = useId();

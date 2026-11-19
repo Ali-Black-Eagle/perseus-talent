@@ -56,6 +56,12 @@ export function EmployerEnquiryForm({
   useEffect(() => {
     if (initialSalary) {
       setFormData((prev) => ({ ...prev, salary: initialSalary }));
+    } else if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const s = params.get("salary");
+      if (s) {
+        setFormData((prev) => ({ ...prev, salary: s }));
+      }
     }
   }, [initialSalary]);
 

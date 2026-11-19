@@ -24,23 +24,7 @@ export const metadata = createPageMetadata({
   path: "/employers",
 });
 
-export default function EmployersPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ salary?: string }>;
-}) {
-  return (
-    <EmployersContent searchParams={searchParams} />
-  );
-}
-
-async function EmployersContent({
-  searchParams,
-}: {
-  searchParams?: Promise<{ salary?: string }>;
-}) {
-  const resolvedParams = searchParams ? await searchParams : undefined;
-  const initialSalary = resolvedParams?.salary || "";
+export default function EmployersPage() {
   const breadcrumbs = getBreadcrumbJsonLd([
     { name: "Home", url: "/" },
     { name: "For Employers", url: "/employers" },
@@ -303,7 +287,7 @@ async function EmployersContent({
             </p>
           </div>
 
-          <FeeCalculator initialSalary={initialSalary} variant="embedded" />
+          <FeeCalculator variant="embedded" />
         </Container>
       </section>
 
@@ -322,7 +306,7 @@ async function EmployersContent({
             </Heading>
           </div>
 
-          <EmployerEnquiryForm initialSalary={initialSalary} />
+          <EmployerEnquiryForm />
         </Container>
       </section>
 

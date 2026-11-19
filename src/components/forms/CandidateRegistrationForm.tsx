@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { AlertCircle, CheckCircle2, FileUp, FileText, X } from "lucide-react";
 import { candidateRegistrationSchema } from "@/lib/validation/candidate";
@@ -31,6 +31,17 @@ export function CandidateRegistrationForm({
   initialJobSlug = "",
   className = "",
 }: CandidateFormProps) {
+  const [jobSlug, setJobSlug] = useState(initialJobSlug);
+
+  useEffect(() => {
+    if (initialJobSlug) {
+      setJobSlug(initialJobSlug);
+    } else if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const j = params.get("job");
+      if (j) setJobSlug(j);
+    }
+  }, [initialJobSlug]);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -187,8 +198,8 @@ export function CandidateRegistrationForm({
       if (formData._hp) {
         formPayload.append("_hp", formData._hp);
       }
-      if (initialJobSlug) {
-        formPayload.append("applyingForJob", initialJobSlug);
+      if (jobSlug) {
+        formPayload.append("applyingForJob", jobSlug);
       }
 
       const res = await fetch("/api/enquiries/candidate", {

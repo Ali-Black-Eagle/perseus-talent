@@ -83,22 +83,7 @@ const candidateFaqs: AccordionItem[] = [
   },
 ];
 
-export default function CandidatesPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ job?: string }>;
-}) {
-  return <CandidatesContent searchParams={searchParams} />;
-}
-
-async function CandidatesContent({
-  searchParams,
-}: {
-  searchParams?: Promise<{ job?: string }>;
-}) {
-  const resolved = searchParams ? await searchParams : undefined;
-  const initialJobSlug = resolved?.job || "";
-
+export default function CandidatesPage() {
   const breadcrumbs = getBreadcrumbJsonLd([
     { name: "Home", url: "/" },
     { name: "For Candidates", url: "/candidates" },
@@ -373,7 +358,7 @@ async function CandidatesContent({
             </Heading>
           </div>
 
-          <CandidateRegistrationForm initialJobSlug={initialJobSlug} />
+          <CandidateRegistrationForm />
         </Container>
       </section>
 
