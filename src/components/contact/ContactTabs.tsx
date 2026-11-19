@@ -116,45 +116,34 @@ export function ContactTabs() {
               onKeyDown={(e) => handleKeyDown(e, idx)}
               className={`text-left p-8 rounded-[4px] border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? "bg-[#1C052E] text-white border-t-[3px] border-t-[#C5A15B] border-[#1C052E] shadow-lg ring-1 ring-[#C5A15B]/30"
-                  : "bg-[#FBF9F6] text-[#3A3242] border-[#E6E0EB] hover:border-[#C5A15B] hover:shadow-sm"
+                  ? "bg-purple-900 text-white border-t-[3px] border-t-gold-500 border-purple-900 shadow-md ring-1 ring-gold-500/30"
+                  : "bg-ivory text-body border-line hover:border-gold-500 hover:shadow-xs"
               }`}
             >
               <div>
                 <div
                   className={`w-12 h-12 rounded-[2px] flex items-center justify-center mb-4 ${
                     isSelected
-                      ? "bg-white/10 text-[#C5A15B]"
-                      : "bg-[#F4F0F7] text-[#1C052E]"
+                      ? "bg-white/10 text-gold-500"
+                      : "bg-purple-50 text-purple-900"
                   }`}
                 >
                   <IconComponent className="w-6 h-6" strokeWidth={1.5} />
                 </div>
                 <h3
                   className={`font-serif text-2xl font-semibold mb-2 ${
-                    isSelected ? "text-white" : "text-[#1C052E]"
+                    isSelected ? "text-white" : "text-purple-900"
                   }`}
                 >
                   {tab.title}
                 </h3>
                 <p
                   className={`text-sm leading-relaxed ${
-                    isSelected ? "text-white/80" : "text-[#625A6B]"
+                    isSelected ? "text-white/80" : "text-muted"
                   }`}
                 >
                   {tab.subtitle}
                 </p>
-              </div>
-
-              <div className="pt-6 mt-6 border-t border-current/15 flex items-center justify-between text-xs font-semibold uppercase tracking-wider">
-                <span
-                  className={isSelected ? "text-[#C5A15B]" : "text-[#7A5A20]"}
-                >
-                  {isSelected ? "Active Pathway" : "Select Pathway"}
-                </span>
-                <span className={isSelected ? "text-white" : "text-[#1C052E]"}>
-                  →
-                </span>
               </div>
             </button>
           );
@@ -172,14 +161,14 @@ export function ContactTabs() {
           className="space-y-8"
         >
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <span className="text-xs font-sans font-bold uppercase tracking-widest text-[#7A5A20] mb-2 block">
+            <span className="text-xs font-sans font-semibold uppercase tracking-widest text-gold-text mb-2 block">
               For Healthcare Organisations
             </span>
             <Heading level="h2" color="ink" className="mb-3">
               Employer Recruitment Enquiry
             </Heading>
-            <p className="font-sans text-base text-[#625A6B] leading-relaxed">
-              Tell us about your organization and hiring requirements. A
+            <p className="font-sans text-base text-muted leading-relaxed">
+              Tell us about your organisation and hiring requirements. A
               Perseus Talent consultant will review your brief promptly.
             </p>
           </div>
@@ -196,15 +185,15 @@ export function ContactTabs() {
           className="space-y-12"
         >
           {/* Candidate Registration Recommendation Card */}
-          <div className="bg-[#1C052E] text-white rounded-[4px] p-8 md:p-12 border border-[#C5A15B]/40 shadow-md text-center max-w-3xl mx-auto">
-            <span className="text-xs font-sans font-bold uppercase tracking-widest text-[#C5A15B] mb-2 block">
+          <div className="bg-purple-900 text-white rounded-[4px] p-8 md:p-12 border border-gold-500/40 shadow-md text-center max-w-3xl mx-auto">
+            <span className="text-xs font-sans font-semibold uppercase tracking-widest text-gold-500 mb-2 block">
               Candidate Pathway
             </span>
             <h2 className="font-serif text-3xl md:text-4xl font-medium text-white mb-4">
               Register Your Profile & Upload CV
             </h2>
             <p className="text-base text-white/80 leading-relaxed max-w-xl mx-auto mb-8 font-sans">
-              Our full candidate registration portal allows you to securely
+              Our candidate registration form allows you to securely
               upload your CV, specify clinical disciplines, and define your
               ideal career move.
             </p>
@@ -219,12 +208,12 @@ export function ContactTabs() {
           </div>
 
           {/* Secondary: General Form for candidate questions */}
-          <div className="max-w-3xl mx-auto pt-8 border-t border-[#E6E0EB]">
+          <div className="max-w-3xl mx-auto pt-8 border-t border-line">
             <div className="text-center mb-8">
-              <h3 className="font-serif text-2xl font-medium text-[#1C052E] mb-2">
+              <h3 className="font-serif text-2xl font-medium text-purple-900 mb-2">
                 Have a quick question before registering?
               </h3>
-              <p className="text-sm text-[#625A6B]">
+              <p className="text-sm text-muted">
                 Send our candidate advisory team a direct message below and
                 we&apos;ll be glad to help.
               </p>
@@ -242,13 +231,13 @@ export function ContactTabs() {
           className="space-y-8"
         >
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <span className="text-xs font-sans font-bold uppercase tracking-widest text-[#7A5A20] mb-2 block">
+            <span className="text-xs font-sans font-semibold uppercase tracking-widest text-gold-text mb-2 block">
               Direct Messaging
             </span>
             <Heading level="h2" color="ink" className="mb-3">
               Send a General Enquiry
             </Heading>
-            <p className="font-sans text-base text-[#625A6B] leading-relaxed">
+            <p className="font-sans text-base text-muted leading-relaxed">
               Have an enquiry, partnership proposal, or general question for the
               Perseus Talent team? Send us a direct message below.
             </p>

@@ -32,17 +32,17 @@ export function CtaBand({
   const isPurple = bg === "purple";
 
   const bgClasses = {
-    purple: "bg-[#1C052E] text-white",
-    "purple-50": "bg-[#F7F3FA] text-[#3A3242]",
-    white: "bg-white text-[#3A3242]",
-    ivory: "bg-[#FBF9F6] text-[#3A3242]",
+    purple: "bg-purple-900 text-white",
+    "purple-50": "bg-purple-50 text-body",
+    white: "bg-white text-body",
+    ivory: "bg-ivory text-body",
   };
 
   return (
-    <section className={`py-16 md:py-24 ${bgClasses[bg]} ${className}`}>
+    <section className={`py-16 md:py-24 lg:py-32 ${bgClasses[bg]} ${className}`}>
       <Container narrow={true} className="text-center">
         {/* Ornament above heading */}
-        <Ornament color={isPurple ? "gold" : "gold"} className="mb-6" />
+        <Ornament color="gold" className="mb-6" />
 
         <Heading
           level="h2"
@@ -55,14 +55,15 @@ export function CtaBand({
         {copy && (
           <p
             className={`font-sans text-base md:text-lg mb-8 max-w-[46ch] mx-auto leading-relaxed ${
-              isPurple ? "text-white/80" : "text-[#625A6B]"
+              isPurple ? "text-white/80" : "text-muted"
             }`}
           >
             {copy}
           </p>
         )}
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* 12px gap between buttons per FE3 / Item 18 */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button
             variant={primaryButton.variant || (isPurple ? "gold" : "purple")}
             size="lg"

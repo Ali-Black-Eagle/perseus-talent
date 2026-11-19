@@ -33,7 +33,7 @@ export function Accordion({
   };
 
   return (
-    <div className={`divide-y divide-[#E6E0EB] border-t border-b border-[#E6E0EB] ${className}`}>
+    <div className={`divide-y divide-line border-t border-b border-line ${className}`}>
       {items.map((item) => {
         const isOpen = openIds.includes(item.id);
         const buttonId = `accordion-btn-${item.id}`;
@@ -48,15 +48,15 @@ export function Accordion({
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => toggle(item.id)}
-                className="w-full flex items-center justify-between py-4 text-left font-serif text-xl md:text-2xl font-medium text-[#1C052E] hover:text-[#7A5A20] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A15B] rounded-[2px]"
+                className="w-full flex items-center justify-between py-4 text-left font-serif text-xl md:text-2xl font-medium text-purple-900 hover:text-gold-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-[2px]"
               >
                 <span>{item.question}</span>
-                <span className="ml-4 shrink-0 p-1 rounded-full bg-[#F7F3FA] text-[#C5A15B]">
+                <span className="ml-4 shrink-0 text-gold-600">
                   <Plus
                     className={`w-5 h-5 transition-transform duration-250 ${
-                      isOpen ? "rotate-45 text-[#1C052E]" : ""
+                      isOpen ? "rotate-45" : ""
                     }`}
-                    strokeWidth={1.75}
+                    strokeWidth={2}
                     aria-hidden="true"
                   />
                 </span>
@@ -71,7 +71,7 @@ export function Accordion({
                 isOpen ? "grid-rows-[1fr] opacity-100 pb-5" : "grid-rows-[0fr] opacity-0"
               }`}
             >
-              <div className="overflow-hidden font-sans text-sm md:text-base text-[#625A6B] leading-relaxed">
+              <div className="overflow-hidden font-sans text-base text-muted leading-relaxed">
                 {item.answer}
               </div>
             </div>

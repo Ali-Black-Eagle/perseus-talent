@@ -1,4 +1,5 @@
 import React from "react";
+import { EightPointStar } from "@/components/brand/EightPointStar";
 
 interface OrnamentProps {
   className?: string;
@@ -16,19 +17,7 @@ export function Ornament({ className = "", color = "gold" }: OrnamentProps) {
       aria-hidden="true"
     >
       <span className={`h-[1px] w-12 md:w-16 ${lineColor}`} />
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 12 12"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="shrink-0"
-      >
-        <path
-          d="M6 0L7.2 4L11.2 4.8L8 7.2L9.2 11.2L6 8.8L2.8 11.2L4 7.2L0.8 4.8L4.8 4L6 0Z"
-          fill={starColor}
-        />
-      </svg>
+      <EightPointStar size={10} color={starColor} />
       <span className={`h-[1px] w-12 md:w-16 ${lineColor}`} />
     </div>
   );

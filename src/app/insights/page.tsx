@@ -1,27 +1,25 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Calendar } from "lucide-react";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { Calendar, Clock } from "lucide-react";
 import { CategoryChips } from "@/components/insights/CategoryChips";
+import { InsightCard, getInsightImage } from "@/components/insights/InsightCard";
+import { formatDate } from "@/lib/format";
 import { Pagination } from "@/components/ui/Pagination";
+import { CtaBand } from "@/components/sections/CtaBand";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
+import { pageSeo } from "@/config/page-seo";
 import { getInsights } from "@/lib/content";
 
-export const metadata = createPageMetadata({
-  title: "Insights — Perspectives on Healthcare Recruitment & Careers",
-  description:
-    "Read articles and perspectives from Perseus Talent on healthcare recruitment, employer guidance, interview preparation, and talent acquisition.",
-  path: "/insights",
-});
+export const metadata = createPageMetadata(pageSeo.insights);
 
 const ARTICLES_PER_PAGE = 9;
 
@@ -56,50 +54,15 @@ export default async function InsightsPage({
     <div className="flex flex-col">
       <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
-        </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                Insights
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[760px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Industry Knowledge
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              Perspectives on people, careers and recruitment.
-            </Heading>
-
-            <p className="text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[50ch]">
-              Practical advice, market guidance, and strategic commentary for
-              healthcare leaders and ambitious professionals.
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Insights" },
+        ]}
+        eyebrow="Industry Knowledge"
+        title="Perspectives on people, careers and recruitment."
+        lead="Practical advice, market guidance, and strategic commentary for healthcare leaders and ambitious professionals."
+      />
 
       {/* 2. MAIN ARTICLES FEED */}
       <Section bg="white">
@@ -108,97 +71,89 @@ export default async function InsightsPage({
           <CategoryChips activeCategory="all" />
 
           {articles.length === 0 ? (
-            <div className="p-12 text-center border border-dashed border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] max-w-xl mx-auto">
-              <p className="font-serif text-2xl text-[#1C052E] mb-2">
+            <div className="p-12 text-center border border-dashed border-line rounded-[4px] bg-ivory max-w-xl mx-auto">
+              <p className="font-serif text-2xl text-purple-900 mb-2">
                 Insights are coming soon.
               </p>
-              <p className="text-sm text-[#625A6B] mb-6">
+              <p className="text-sm text-muted mb-6">
                 In the meantime, get in touch with our team to start a
                 conversation about your recruitment requirements.
               </p>
               <Button variant="purple" size="md" href="/contact">
-                Contact Team
+                Contact Our Team
               </Button>
             </div>
           ) : (
             <div className="space-y-12">
-              {/* Featured Article Card (only on page 1) */}
+              {/* Featured Article Card (7/5 split with 16:10 image per Item 17) */}
               {featured && currentPage === 1 && (
-                <div className="border border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] p-8 md:p-12 shadow-sm transition-all hover:border-[#C5A15B]">
-                  <div className="flex flex-wrap items-center gap-3 mb-4">
-                    <Badge variant="gold">{featured.meta.category}</Badge>
-                    {featured.meta.status === "draft" && (
-                      <Badge variant="draft">Draft — Not Published</Badge>
-                    )}
-                    <span className="text-xs text-[#625A6B] flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-[#C5A15B]" />
-                      {featured.meta.date}
-                    </span>
-                  </div>
-
-                  <h2 className="font-serif text-3xl md:text-4xl font-medium text-[#1C052E] mb-4">
-                    <Link
-                      href={`/insights/${featured.meta.slug}`}
-                      className="hover:text-[#7A5A20] transition-colors"
-                    >
-                      {featured.meta.title}
-                    </Link>
-                  </h2>
-
-                  <p className="font-sans text-base md:text-lg text-[#625A6B] leading-relaxed mb-6 max-w-3xl">
-                    {featured.meta.excerpt}
-                  </p>
-
-                  <Link
-                    href={`/insights/${featured.meta.slug}`}
-                    className="font-sans text-sm font-semibold text-[#1C052E] hover:text-[#7A5A20] inline-flex items-center gap-1.5"
-                  >
-                    Read article →
-                  </Link>
-                </div>
-              )}
-
-              {/* Grid of Other Articles */}
-              {paginatedRegularArticles.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
-                  {paginatedRegularArticles.map((art) => (
-                    <Card
-                      key={art.meta.slug}
-                      hoverable={true}
-                      className="p-8 flex flex-col justify-between"
-                    >
+                <article
+                  data-reveal
+                  className="group relative border border-line rounded-[4px] bg-ivory overflow-hidden shadow-sm transition-[transform,box-shadow,border-color] duration-250 ease-out hover:border-gold-500 hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]"
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    {/* Columns 1–7: Content */}
+                    <div className="lg:col-span-7 p-8 md:p-12 xl:p-14 flex flex-col justify-between">
                       <div>
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <Badge variant="purple">{art.meta.category}</Badge>
-                          {art.meta.status === "draft" && (
-                            <Badge variant="draft">Draft</Badge>
+                        <div className="flex flex-wrap items-center gap-3 mb-4">
+                          <span className="text-xs uppercase tracking-[0.16em] font-semibold text-gold-text">
+                            {featured.meta.category}
+                          </span>
+                          {featured.meta.status === "draft" && (
+                            <Badge variant="draft">Draft — Not Published</Badge>
                           )}
                         </div>
 
-                        <h3 className="font-serif text-2xl font-medium text-[#1C052E] mb-3">
+                        <h2 className="font-serif text-3xl md:text-4xl font-medium text-purple-900 mb-4 leading-tight">
                           <Link
-                            href={`/insights/${art.meta.slug}`}
-                            className="hover:text-[#7A5A20] transition-colors"
+                            href={`/insights/${featured.meta.slug}`}
+                            className="hover:text-gold-text transition-colors after:absolute after:inset-0"
                           >
-                            {art.meta.title}
+                            {featured.meta.title}
                           </Link>
-                        </h3>
+                        </h2>
 
-                        <p className="font-sans text-sm text-[#625A6B] leading-relaxed mb-6 line-clamp-3">
-                          {art.meta.excerpt}
+                        <p className="font-sans text-base md:text-lg text-muted leading-relaxed mb-6 max-w-2xl">
+                          {featured.meta.excerpt}
                         </p>
                       </div>
 
-                      <div className="pt-4 border-t border-[#E6E0EB] flex items-center justify-between text-xs text-[#625A6B]">
-                        <span>{art.meta.date}</span>
-                        <Link
-                          href={`/insights/${art.meta.slug}`}
-                          className="font-semibold text-[#1C052E] hover:text-[#7A5A20]"
-                        >
-                          Read full article →
-                        </Link>
+                      <div className="pt-4 border-t border-line/60 flex items-center gap-6 text-xs text-muted">
+                        <time dateTime={featured.meta.date}>{formatDate(featured.meta.date)}</time>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-gold-600" aria-hidden="true" />
+                          <span>
+                            {Math.max(
+                              1,
+                              Math.ceil(
+                                (featured.content?.trim().split(/\s+/).length || 500) / 200
+                              )
+                            )}{" "}
+                            min read
+                          </span>
+                        </span>
                       </div>
-                    </Card>
+                    </div>
+
+                    {/* Columns 8–12: 16:10 Image with 1.03 hover zoom */}
+                    <div className="lg:col-span-5 relative min-h-[260px] lg:min-h-full aspect-[16/10] lg:aspect-auto overflow-hidden bg-purple-900">
+                      <Image
+                        src={getInsightImage(featured.meta).src}
+                        alt={getInsightImage(featured.meta).alt}
+                        fill
+                        className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+                        sizes="(min-width: 1024px) 500px, 100vw"
+                      />
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              {/* Grid of Other Articles using InsightCard (3:2 image, 2-line title, 3-line excerpt, stretched link) */}
+              {paginatedRegularArticles.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-2">
+                  {paginatedRegularArticles.map((art) => (
+                    <InsightCard key={art.meta.slug} article={art} />
                   ))}
                 </div>
               )}
@@ -215,6 +170,21 @@ export default async function InsightsPage({
           )}
         </Container>
       </Section>
+
+      {/* 3. CTA BAND (Item 17) */}
+      <CtaBand
+        bg="purple-50"
+        heading="Looking for specialised healthcare recruitment?"
+        copy="Whether you represent a healthcare organisation or are seeking your next career milestone, our team is here to support you."
+        primaryButton={{
+          label: "Discuss Your Recruitment Needs",
+          href: "/employers#enquiry",
+        }}
+        secondaryButton={{
+          label: "Contact Our Team",
+          href: "/contact",
+        }}
+      />
     </div>
   );
 }

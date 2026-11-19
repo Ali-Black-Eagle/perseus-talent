@@ -1,23 +1,23 @@
 # Perseus Talent — Visual Assets & Photography Credits
 
-This document tracks all photography and visual assets deployed across the Perseus Talent website, adhering strictly to the brand identity and photography guidelines in `PERSEUS_TALENT_WEBSITE_PLAN.md` (Part D7) and `REMAINING_WORK_PLAN - Copy.md` (Item 1).
+This document tracks all photography and visual assets deployed across the Perseus Talent website, adhering strictly to the brand identity and photography guidelines in `PERSEUS_TALENT_WEBSITE_PLAN.md` (Part D7) and `FRONTEND_DESIGN_FIX_PLAN.md` (P0 Item 2).
 
-In accordance with the brand guidelines, all illustrations and cartoon drawings have been removed. The website uses authentic, editorial documentary photography featuring healthcare professionals in real settings, executive consultations, and leadership environments with natural light, warm desaturated colour grading, deep plum undertones, and soft gold ambient highlights.
+In accordance with brand guidelines and trademark protection rules:
+- All previous AI-generated placeholders and any images bearing unauthorised NHS logos or reversed text have been replaced.
+- All deployed imagery is authentic, licence-free documentary photography using photography licensed for reuse; CC BY 2.0 images are attributed on the public Image Credits page (/image-credits).
+- All assets are served in modern WebP format at ≤1600px width (between 36 KB and 195 KB) with descriptive, accurate alt text.
 
 ---
 
 ## 1. Deployed Editorial Photography
 
-| Asset Path | Location & Usage | Aspect Ratio | Subject & Description | Licence / Origin | Status |
+| Asset Path | Location & Usage | Subject & Description | Photographer / Source | Licence | Source URL |
 |---|---|---|---|---|---|
-| `public/images/home/executive-consultation.jpg` | Homepage Dual Audience (For Employers) | 4:3 | Executive recruitment consultation between a senior healthcare recruitment consultant and an NHS hospital trust executive in a modern, light-filled boardroom overlooking green parkland. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/home/healthcare-professional.jpg` | Homepage Dual Audience (For Candidates) | 4:3 | Senior British clinical director / NHS healthcare leader in tailored executive dress, standing in a contemporary hospital pavilion with glass balustrades and natural daylight. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/specialisms/clinical-care.jpg` | Specialisms Directory & Healthcare Detail Page | 4:3 | Dedicated UK healthcare clinical specialist in navy scrubs with stethoscope and lanyard, standing in a modern, calm consultation suite bathed in morning daylight. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/about/team-partnership.jpg` | About Us Page (Our Story Split) | 4:3 | Senior executive recruitment partners collaborating in an elegant London consulting office with Georgian sash windows, reviewing candidate dossiers under warm afternoon light. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/employers/leadership.jpg` | For Employers & Feature Panels | 16:9 | Senior British healthcare trust chief executive / medical director in tailored executive attire in a modern hospital executive pavilion overlooking London parkland. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/candidates/career-consultation.jpg` | For Candidates & Career Panels | 4:3 | One-to-one confidential career consultation between an advisor and a clinical candidate seated in leather armchairs in a quiet, light-filled London consulting suite. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/insights/interview-preparation.jpg` | Insights Hub & Interview Preparation Article | 3:2 | Healthcare leader in a calm, oak-panelled architectural waiting study, calmly reviewing an executive dossier before an NHS trust panel interview. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
-| `public/images/insights/job-brief.jpg` | Insights Hub & Job Brief Writing Article | 3:2 | Specialist recruitment consultant reviewing and drafting a clinical vacancy brief on a solid oak desk in a sunlit London architectural studio. | Editorial Licence / High-Resolution Documentary Asset | Deployed (Subject to owner pre-launch approval) |
+| `public/images/home/healthcare-professional.webp` | Homepage (For Candidates panel) | Healthcare professional holding a stethoscope | Bermix Studio | Creative Commons CC BY 2.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Young_female_doctor_showing_stethoscope_closeup.jpg) |
+| `public/images/specialisms/clinical-care.webp` | Specialisms page, For Employers page | Clinician examining chest x-rays in a medical office | Bermix Studio | Creative Commons CC BY 2.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Female_doctor_examines_chest_x-rays_in_a_medical_office.jpg) |
+| `public/images/about/team-partnership.webp` | About page, Homepage (For Employers panel), For Employers page, Insights | Empty modern meeting room with a table and chairs | Rawpixel Ltd. | CC0 1.0 Universal Public Domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Conference_Meeting_Seminar_Modern_Contemporary_Concept_(32881037371).jpg) |
+| `public/images/insights/interview-preparation.webp` | Insights (interview preparation article), For Employers page | Desk with notes, a notebook and a coffee | Pixel.la / Startup Stock Photos | CC0 1.0 Universal Public Domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Coffee-desk-notes-workspace_(24243718641).jpg) |
+| `public/images/insights/job-brief.webp` | Insights (job brief article), For Employers page | Person writing in a notebook at a desk with a laptop | Shixart1985 | Creative Commons CC BY 2.0 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Person_writing_in_a_notebook_while_sitting_at_a_desk.jpg) |
 
 ---
 
@@ -25,10 +25,14 @@ In accordance with the brand guidelines, all illustrations and cartoon drawings 
 
 | Asset Path | Location & Usage | Description | Licence / Status |
 |---|---|---|---|
-| `public/brand/logo.svg` | Header & Footer Wordmark | "PERSEUS TALENT" with Cormorant Garamond serif typography | Custom proprietary brand identity |
-| `public/brand/monogram.svg` | Brand Mark & Monogram | Geometric 8-point star and Perseus constellation star fragment | Custom proprietary brand identity |
-| `src/app/icon.svg` | Browser Favicon & Touch Icon | Pale gold monogram on Royal Purple `#1C052E` | Custom proprietary brand identity |
-| `src/app/opengraph-image.tsx` | Social Sharing (Open Graph) | Dynamic 1200×630px social card with constellation graphic | Custom dynamic component |
+| `brand-source/perseus-logo-original.jpg` | Master artwork (not served) | Owner-supplied Perseus Talent logo, JPEG 1280×853 | Owner-supplied, proprietary brand identity |
+| `public/brand/logo-full.svg` (+ `logo-full.png`) | Light-background sections (home intro, About "Our story"), social card | Auto-traced vector of the owner-supplied full logo (transparent background) | Owner-supplied, proprietary brand identity |
+| `public/brand/logo-emblem.svg` (+ `logo-emblem-512.png`) | Header, footer, 404 lockup; structured-data logo | Medallion with the Perseus head, cropped from the traced logo | Owner-supplied, proprietary brand identity |
+| `src/components/brand/wordmarkPaths.ts` | Header, footer, 404 wordmark | "PERSEUS TALENT" outlines made from Cinzel (Google Fonts) | Cinzel: SIL Open Font License 1.1 |
+| `src/app/icon.svg`, `src/app/apple-icon.png` | Browser favicon & touch icon | Emblem on Royal Purple `#1C052E` rounded square | Owner-supplied, proprietary brand identity |
+| `src/app/opengraph-image.tsx` | Social Sharing (Open Graph) | Dynamic 1200×630px social card: full logo on ivory with brand statement | Custom dynamic component |
+
+Regenerate all logo files with `npm run brand:logo`.
 
 ---
 
@@ -42,11 +46,12 @@ When replacing or adding photography prior to public release:
    - Posed, artificial corporate handshakes.
    - Clinical close-ups of syringes, injections, needles, or acute surgical procedures.
    - Stiff stock photography with unnatural white studio backdrops or forced smiles.
+   - Fabricated or reversed text, or trademarked NHS logos.
 3. **Lighting & Color Grading:**
    - Natural window daylight, authentic documentary realism.
    - Warm, slightly desaturated colour grading (saturation ~85%).
    - Deep plum undertones in the shadows and soft gold ambient highlights, harmonising with the `#1C052E` and `#C5A15B` brand palette.
 4. **Implementation Standard:**
    - Next.js `<Image />` component with responsive `sizes` attribute and explicit aspect ratio.
-   - Modern formats (WebP/AVIF auto-negotiation).
+   - Modern formats (WebP).
    - Descriptive `alt` text conveying context and professional tone.

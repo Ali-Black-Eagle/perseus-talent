@@ -7,12 +7,11 @@ import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Ornament } from "@/components/ui/Ornament";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { CtaBand } from "@/components/sections/CtaBand";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
+import { ArticleBody } from "@/components/insights/ArticleBody";
+import { buildSpecialismDescription, createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 import { getSpecialismBySlug, getSpecialisms } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -30,7 +29,7 @@ export async function generateMetadata({
   if (!item) return { title: "Specialism Not Found" };
   return createPageMetadata({
     title: `${item.meta.title} Recruitment`,
-    description: item.meta.summary,
+    description: buildSpecialismDescription(item.meta.title, item.meta.summary),
     path: `/specialisms/${slug}`,
   });
 }
@@ -47,7 +46,8 @@ export default async function SpecialismDetailPage({
     notFound();
   }
 
-  const { meta } = specialism;
+  const { meta, content } = specialism;
+  const isHealthcare = slug === "healthcare";
   const breadcrumbs = getBreadcrumbJsonLd([
     { name: "Home", url: "/" },
     { name: "Our Specialisms", url: "/specialisms" },
@@ -58,85 +58,43 @@ export default async function SpecialismDetailPage({
     <div className="flex flex-col">
       <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Our Specialisms", href: "/specialisms" },
+          { label: meta.title },
+        ]}
+        eyebrow="Sector Specialism"
+        title={`${meta.title} Recruitment Services`}
+        lead={meta.summary}
+      >
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <Button
+            variant="gold"
+            size="lg"
+            arrow={true}
+            href="/employers#enquiry"
+            className="w-full sm:w-auto text-center"
+          >
+            Discuss Your Recruitment Needs
+          </Button>
+          <Button
+            variant="outline-light"
+            size="lg"
+            href="/candidates#register"
+            className="w-full sm:w-auto text-center"
+          >
+            Register as a Professional
+          </Button>
         </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li>
-                <Link
-                  href="/specialisms"
-                  className="hover:text-white transition-colors"
-                >
-                  Our Specialisms
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                {meta.title}
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[780px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Sector Specialism
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              {meta.title} Recruitment Services
-            </Heading>
-
-            <p className="text-base md:text-lg text-white/80 font-sans leading-relaxed mb-8 max-w-[52ch]">
-              {meta.summary}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <Button
-                variant="gold"
-                size="lg"
-                arrow={true}
-                href="/employers#enquiry"
-                className="w-full sm:w-auto text-center"
-              >
-                Discuss Recruitment Requirements
-              </Button>
-              <Button
-                variant="outline-light"
-                size="lg"
-                href="/candidates#register"
-                className="w-full sm:w-auto text-center"
-              >
-                Register as a Professional
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
+      </PageHero>
 
       {/* 2. SECTOR APPROACH & DETAILS */}
       <Section bg="white">
         <Container narrow={true}>
-          <div className="prose prose-lg max-w-none space-y-6 text-[#3A3242]">
+          {!isHealthcare && <ArticleBody content={content} />}
+          {isHealthcare && (
+          <div className="space-y-6 text-body">
             <Heading level="h2" color="ink" className="mb-6">
               A Relationship-Led Approach to Healthcare
             </Heading>
@@ -161,17 +119,69 @@ export default async function SpecialismDetailPage({
               Clinical and Operational Disciplines
             </Heading>
 
-            <p className="text-sm md:text-base text-[#625A6B] leading-relaxed mb-6">
+            <p className="text-sm md:text-base text-muted leading-relaxed mb-6">
               Our relationship-led model focuses on key professional positions
               where candidate alignment and long-term retention are vital.
             </p>
 
-            {/* Placeholder for specific disciplines to be confirmed */}
-            <Placeholder
-              label="Specific healthcare disciplines & roles to be confirmed"
-              description="Specific healthcare disciplines, clinical specialties, and medical bands recruited for are to be confirmed by Perseus Talent. No invented clinical lists or unverified sector claims are published."
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+              <div className="p-5 rounded-[2px] bg-purple-50/60 border border-line">
+                <h4 className="font-serif font-semibold text-lg text-purple-900 mb-1.5">
+                  Clinical Nursing & Care Delivery
+                </h4>
+                <p className="text-sm text-muted leading-relaxed">
+                  Qualified registered nurses, clinical nurse specialists, ward sisters, charge nurses, and senior care practitioners across general, acute, and community healthcare environments.
+                </p>
+              </div>
+              <div className="p-5 rounded-[2px] bg-purple-50/60 border border-line">
+                <h4 className="font-serif font-semibold text-lg text-purple-900 mb-1.5">
+                  Clinical Leadership & Management
+                </h4>
+                <p className="text-sm text-muted leading-relaxed">
+                  Head of clinical services, matrons, registered managers, clinical directors, and operations managers leading patient care pathways and multidisciplinary healthcare teams.
+                </p>
+              </div>
+              <div className="p-5 rounded-[2px] bg-purple-50/60 border border-line">
+                <h4 className="font-serif font-semibold text-lg text-purple-900 mb-1.5">
+                  Allied Health Professionals
+                </h4>
+                <p className="text-sm text-muted leading-relaxed">
+                  Specialist therapists, radiographers, occupational health advisors, and healthcare practitioners registered with relevant UK regulatory bodies.
+                </p>
+              </div>
+              <div className="p-5 rounded-[2px] bg-purple-50/60 border border-line">
+                <h4 className="font-serif font-semibold text-lg text-purple-900 mb-1.5">
+                  Governance & Compliance
+                </h4>
+                <p className="text-sm text-muted leading-relaxed">
+                  Quality assurance leads, clinical governance managers, and audit specialists ensuring stringent adherence to UK healthcare standards and regulatory frameworks.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted leading-relaxed italic">
+              Note: Perseus Talent works on bespoke permanent and fixed-term appointments across independent healthcare providers throughout the United Kingdom.
+            </p>
+
+            <p className="text-base text-body leading-relaxed">
+              Looking for your next role? Browse our{" "}
+              <Link
+                href="/opportunities"
+                className="font-semibold text-purple-900 underline decoration-gold-500 underline-offset-4 hover:decoration-2"
+              >
+                current opportunities
+              </Link>
+              . Hiring? Work out your cost with the{" "}
+              <Link
+                href="/fee-calculator"
+                className="font-semibold text-purple-900 underline decoration-gold-500 underline-offset-4 hover:decoration-2"
+              >
+                fee calculator
+              </Link>
+              .
+            </p>
           </div>
+          )}
         </Container>
       </Section>
 
@@ -181,7 +191,7 @@ export default async function SpecialismDetailPage({
         heading="Discuss your healthcare hiring requirements."
         copy="Contact our healthcare recruitment consultants to discuss your staffing needs or upcoming clinical appointments."
         primaryButton={{
-          label: "Discuss Your Recruitment Requirements",
+          label: "Discuss Your Recruitment Needs",
           href: "/employers#enquiry",
           variant: "purple",
         }}

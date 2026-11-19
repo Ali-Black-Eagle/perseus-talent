@@ -9,18 +9,14 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Ornament } from "@/components/ui/Ornament";
 import { CtaBand } from "@/components/sections/CtaBand";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
+import { PageHero } from "@/components/layout/PageHero";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
+import { pageSeo } from "@/config/page-seo";
 import { getSpecialisms } from "@/lib/content";
 
-export const metadata = createPageMetadata({
-  title: "Our Specialisms — Healthcare & Professional Recruitment",
-  description:
-    "Explore Perseus Talent's recruitment specialisms. Healthcare is our primary area of focus, connecting organisations with dedicated professionals.",
-  path: "/specialisms",
-});
+export const metadata = createPageMetadata(pageSeo.specialisms);
 
 export default async function SpecialismsPage() {
   const specialisms = await getSpecialisms();
@@ -34,59 +30,29 @@ export default async function SpecialismsPage() {
     <div className="flex flex-col">
       <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
-        </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                Our Specialisms
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[800px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Sector Expertise
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              Specialist knowledge. Meaningful connections.
-            </Heading>
-
-            <div className="space-y-4 text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[54ch]">
-              <p>Understanding a sector is essential to understanding its people.</p>
-              <p>
-                Perseus Talent focuses on connecting organisations with
-                professionals whose skills, experience and ambitions align with
-                their recruitment needs.
-              </p>
-              <p className="text-white font-medium">
-                Healthcare is our primary area of focus, with a structure
-                designed to accommodate further professional sectors as the
-                business develops.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Our Specialisms" },
+        ]}
+        eyebrow="Sector Expertise"
+        title="Specialist knowledge. Meaningful connections."
+        lead={
+          <>
+            <p>Understanding a sector is essential to understanding its people.</p>
+            <p>
+              Perseus Talent focuses on connecting organisations with
+              professionals whose skills, experience and ambitions align with
+              their recruitment needs.
+            </p>
+            <p className="text-white font-medium">
+              Healthcare is our primary area of focus, with a structure
+              designed to accommodate further professional sectors as the
+              business develops.
+            </p>
+          </>
+        }
+      />
 
       {/* 2. FEATURED HEALTHCARE PANEL */}
       <Section bg="white">
@@ -101,15 +67,12 @@ export default async function SpecialismsPage() {
           </div>
 
           {/* Featured Hero Card with 7/5 Split */}
-          <div className="bg-[#1C052E] text-white rounded-[4px] border border-[#C5A15B]/40 overflow-hidden relative shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
+          <div className="bg-purple-900 text-white rounded-[4px] border border-gold-500/40 overflow-hidden relative shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
             <GeometricPattern opacity={0.03} />
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-stretch">
               <div className="lg:col-span-7 p-8 sm:p-12 md:p-16 flex flex-col justify-between">
                 <div>
-                  <span className="inline-block px-3 py-1 bg-white/10 text-[#C5A15B] text-xs font-semibold uppercase tracking-wider rounded-[2px] mb-4">
-                    Core Specialism
-                  </span>
                   <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium mb-6 leading-tight">
                     Dedicated recruitment for clinical and healthcare organisations.
                   </h3>
@@ -138,10 +101,10 @@ export default async function SpecialismsPage() {
                 </div>
               </div>
 
-              <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full bg-[#2A0B42]">
+              <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full bg-purple-800">
                 <Image
-                  src="/images/specialisms/clinical-care.jpg"
-                  alt="Multidisciplinary healthcare clinical care team in modern hospital facility"
+                  src="/images/specialisms/clinical-care.webp"
+                  alt="A clinician examining chest x-rays in a medical office"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 500px, 100vw"
@@ -152,25 +115,27 @@ export default async function SpecialismsPage() {
         </Container>
       </Section>
 
-      {/* 3. FUTURE EXPANSION NOTE */}
-      <Section bg="ivory" className="border-t border-b border-[#E6E0EB]">
-        <Container narrow={true} className="text-center">
-          <Eyebrow theme="light" withLine={true} className="mb-3">
-            Sector Expansion
-          </Eyebrow>
-          <Heading level="h2" color="ink" className="mb-4">
-            A growing portfolio of professional disciplines.
-          </Heading>
-          <p className="text-base text-[#625A6B] leading-relaxed mb-8 max-w-[50ch] mx-auto">
-            While healthcare remains our primary dedication, our relationship-led
-            methodology is structured to accommodate adjacent executive and
-            professional appointments as our client network expands.
-          </p>
-          <Button variant="outline-dark" size="md" href="/contact">
-            Enquire About Other Sectors
-          </Button>
-        </Container>
-      </Section>
+      {/* 3. FUTURE EXPANSION NOTE (Render only if more than one active specialism) */}
+      {specialisms.length > 1 && (
+        <Section bg="ivory" className="border-t border-b border-line">
+          <Container narrow={true} className="text-center">
+            <Eyebrow theme="light" withLine={true} className="mb-3">
+              Sector Expansion
+            </Eyebrow>
+            <Heading level="h2" color="ink" className="mb-4">
+              A growing portfolio of professional disciplines.
+            </Heading>
+            <p className="text-base text-muted leading-relaxed mb-8 max-w-[50ch] mx-auto">
+              While healthcare remains our primary dedication, our relationship-led
+              methodology is structured to accommodate adjacent executive and
+              professional appointments.
+            </p>
+            <Button variant="outline-dark" size="md" href="/contact">
+              Enquire About Other Sectors
+            </Button>
+          </Container>
+        </Section>
+      )}
 
       {/* 4. CTA */}
       <CtaBand
@@ -178,7 +143,7 @@ export default async function SpecialismsPage() {
         heading="Discuss your organisation's talent requirements."
         copy="Contact our specialist recruitment consultants to review your current requirements or future talent pipeline."
         primaryButton={{
-          label: "Discuss Your Recruitment Requirements",
+          label: "Discuss Your Recruitment Needs",
           href: "/employers#enquiry",
           variant: "purple",
         }}

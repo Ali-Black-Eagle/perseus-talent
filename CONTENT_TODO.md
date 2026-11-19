@@ -5,7 +5,7 @@ This document tracks all real-world business details, legal confirmations, and a
 ---
 
 ## 1. Brand & Visual Assets
-- [ ] **Professional Logo:** Current build uses an interim SVG wordmark (Cormorant Garamond + Manrope) and constellation monogram. Replace if a custom brand logo is commissioned.
+- [x] **Logo:** Owner-supplied logo is integrated (auto-traced SVG in `public/brand/`, regenerate with `npm run brand:logo`). Optional: supply the original vector (SVG/AI/PDF) to replace the traced version.
 - [ ] **Brand Photography:** Review and approve or replace the placeholder/royalty-free professional healthcare photography selected for launch.
 
 ## 2. Corporate & Legal Information

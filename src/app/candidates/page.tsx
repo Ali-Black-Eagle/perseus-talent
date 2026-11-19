@@ -11,31 +11,27 @@ import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { Accordion, AccordionItem } from "@/components/ui/Accordion";
 import { CandidateRegistrationForm } from "@/components/forms/CandidateRegistrationForm";
 import { CtaBand } from "@/components/sections/CtaBand";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { EightPointStar } from "@/components/brand/EightPointStar";
+import { PageHero } from "@/components/layout/PageHero";
 import { site } from "@/config/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata, getBreadcrumbJsonLd, getFaqPageJsonLd } from "@/lib/seo";
+import { pageSeo } from "@/config/page-seo";
 
-export const metadata = createPageMetadata({
-  title: "For Candidates — Career Opportunities in Healthcare",
-  description:
-    "Register your professional profile with Perseus Talent. We connect talented professionals with meaningful healthcare opportunities across the UK.",
-  path: "/candidates",
-});
+export const metadata = createPageMetadata(pageSeo.candidates);
 
 const candidateFaqs: AccordionItem[] = [
   {
     id: "fee",
     question: "Do I have to pay to register?",
     answer:
-      "No. We do not charge candidates for helping them find work. In accordance with UK employment agency regulations, our recruitment fees are paid entirely by hiring organisations upon successful placement.",
+      "No. We do not charge candidates for helping them find work.",
   },
   {
     id: "process",
     question: "What happens after I register?",
     answer:
-      "We review your details and CV against our current and upcoming healthcare briefs. Where we have or anticipate a role aligned with your experience and aspirations, a member of our team will be in touch. Registering does not guarantee an interview or placement.",
+      "We review your details and CV against the roles we are recruiting for. Where we have a role aligned with your experience and aspirations, a member of our team will be in touch. Registering does not guarantee an interview or placement.",
   },
   {
     id: "cv-sharing",
@@ -47,7 +43,7 @@ const candidateFaqs: AccordionItem[] = [
     id: "file-types",
     question: "Which file types can I upload?",
     answer:
-      "We accept PDF, DOC, and DOCX documents up to a maximum file size of 4MB.",
+      "We accept PDF, DOC, and DOCX documents up to a maximum file size of 3MB.",
   },
   {
     id: "passive",
@@ -66,14 +62,14 @@ const candidateFaqs: AccordionItem[] = [
         your data at any time by contacting our privacy officer at{" "}
         <a
           href={`mailto:${site.email}`}
-          className="text-[#1C052E] font-medium underline underline-offset-2 hover:text-[#7A5A20]"
+          className="text-purple-900 font-medium underline underline-offset-2 hover:text-gold-text"
         >
           {site.email}
         </a>
         . For full details, please consult our{" "}
         <Link
           href="/privacy-policy"
-          className="text-[#1C052E] font-medium underline underline-offset-2 hover:text-[#7A5A20]"
+          className="text-purple-900 font-medium underline underline-offset-2 hover:text-gold-text"
         >
           Privacy Policy
         </Link>
@@ -86,19 +82,19 @@ const candidateFaqs: AccordionItem[] = [
 export default function CandidatesPage() {
   const breadcrumbs = getBreadcrumbJsonLd([
     { name: "Home", url: "/" },
-    { name: "For Candidates", url: "/candidates" },
+    { name: "Candidates", url: "/candidates" },
   ]);
 
   const faqJsonLd = getFaqPageJsonLd([
     {
       question: "Do I have to pay to register?",
       answer:
-        "No. We do not charge candidates for helping them find work. In accordance with UK employment agency regulations, our recruitment fees are paid entirely by hiring organisations upon successful placement.",
+        "No. We do not charge candidates for helping them find work.",
     },
     {
       question: "What happens after I register?",
       answer:
-        "We review your details and CV against our current and upcoming healthcare briefs. Where we have or anticipate a role aligned with your experience and aspirations, a member of our team will be in touch. Registering does not guarantee an interview or placement.",
+        "We review your details and CV against the roles we are recruiting for. Where we have a role aligned with your experience and aspirations, a member of our team will be in touch. Registering does not guarantee an interview or placement.",
     },
     {
       question: "Will you share my CV without asking me?",
@@ -108,7 +104,7 @@ export default function CandidatesPage() {
     {
       question: "Which file types can I upload?",
       answer:
-        "We accept PDF, DOC, and DOCX files up to 4MB in size. We verify the file format when uploading to maintain system integrity.",
+        "We accept PDF, DOC, and DOCX files up to 3MB in size. We verify the file format when uploading to maintain system integrity.",
     },
     {
       question: "What healthcare roles do you recruit for?",
@@ -126,144 +122,123 @@ export default function CandidatesPage() {
     <div className="flex flex-col">
       <JsonLd data={[breadcrumbs, faqJsonLd]} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Candidates" },
+        ]}
+        eyebrow="Professional Representation"
+        title="Your next opportunity starts here."
+        lead={
+          <>
+            <p>Your professional journey is unique.</p>
+            <p>
+              At Perseus Talent, we aim to connect ambitious professionals with
+              organisations offering meaningful career opportunities.
+            </p>
+            <p>
+              We take the time to understand your experience, career ambitions
+              and what matters to you in your next move.
+            </p>
+            <p className="text-white font-medium">
+              Whether you are actively looking or simply exploring what comes
+              next, we welcome the opportunity to connect.
+            </p>
+          </>
+        }
+      >
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <Button
+            variant="gold"
+            size="lg"
+            arrow={true}
+            href="#register"
+            className="w-full sm:w-auto text-center"
+          >
+            Register Your Interest
+          </Button>
+          <Button
+            variant="outline-light"
+            size="lg"
+            href="/opportunities"
+            className="w-full sm:w-auto text-center"
+          >
+            Explore Opportunities
+          </Button>
         </div>
+      </PageHero>
 
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                For Candidates
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[800px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Professional Representation
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              Your next opportunity starts here.
-            </Heading>
-
-            <div className="space-y-4 text-base md:text-lg text-white/80 font-sans leading-relaxed mb-8 max-w-[54ch]">
-              <p>Your professional journey is unique.</p>
-              <p>
-                At Perseus Talent, we aim to connect ambitious professionals with
-                organisations offering meaningful career opportunities.
-              </p>
-              <p>
-                We take the time to understand your experience, career ambitions
-                and what matters to you in your next move.
-              </p>
-              <p className="text-white font-medium">
-                Whether you are actively looking or simply exploring what comes
-                next, we welcome the opportunity to connect.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <Button
-                variant="gold"
-                size="lg"
-                arrow={true}
-                href="#register"
-                className="w-full sm:w-auto text-center"
-              >
-                Register Your Interest
-              </Button>
-              <Button
-                variant="outline-light"
-                size="lg"
-                href="/opportunities"
-                className="w-full sm:w-auto text-center"
-              >
-                Explore Opportunities
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 2. WHY CONNECT WITH PERSEUS TALENT */}
+      {/* 2. WHY CONNECT WITH PERSEUS TALENT (Asymmetric Split per Item 12) */}
       <Section bg="white">
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <Eyebrow theme="light" withLine={true} className="mb-3">
-              Candidate Values
-            </Eyebrow>
-            <Heading level="h2" color="ink">
-              Why connect with Perseus Talent?
-            </Heading>
+          <div data-reveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16">
+            <div className="lg:col-span-6">
+              <Eyebrow theme="light" withLine={true} className="mb-3">
+                Candidate Values
+              </Eyebrow>
+              <Heading level="h2" color="ink">
+                Why connect with Perseus Talent?
+              </Heading>
+            </div>
+            <div className="lg:col-span-6">
+              <p className="font-sans text-base md:text-lg text-muted leading-relaxed">
+                We believe career progression deserves personal representation,
+                uncompromising confidentiality and honest consultation at every stage.
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div data-reveal-stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card hoverable={true} className="p-8">
-              <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#C5A15B] flex items-center justify-center font-serif text-xl font-bold mb-4">
-                ✦
+              <div className="w-10 h-10 rounded-[2px] bg-purple-50 text-gold-text flex items-center justify-center mb-4">
+                <EightPointStar size={18} />
               </div>
-              <h3 className="font-serif font-semibold text-xl text-[#1C052E] mb-3">
+              <h3 className="font-serif font-semibold text-xl text-purple-900 mb-3">
                 Relationship-led
               </h3>
-              <p className="text-sm text-[#625A6B] leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 A personal, considered consultation. We invest time in
-                understanding who you are, beyond a résumé.
+                understanding who you are, beyond a CV.
               </p>
             </Card>
 
             <Card hoverable={true} className="p-8">
-              <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#C5A15B] flex items-center justify-center font-serif text-xl font-bold mb-4">
-                ✦
+              <div className="w-10 h-10 rounded-[2px] bg-purple-50 text-gold-text flex items-center justify-center mb-4">
+                <EightPointStar size={18} />
               </div>
-              <h3 className="font-serif font-semibold text-xl text-[#1C052E] mb-3">
+              <h3 className="font-serif font-semibold text-xl text-purple-900 mb-3">
                 Focused on ambition
               </h3>
-              <p className="text-sm text-[#625A6B] leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 We evaluate opportunities against your long-term progression,
                 work-life balance, and professional goals.
               </p>
             </Card>
 
             <Card hoverable={true} className="p-8">
-              <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#C5A15B] flex items-center justify-center font-serif text-xl font-bold mb-4">
-                ✦
+              <div className="w-10 h-10 rounded-[2px] bg-purple-50 text-gold-text flex items-center justify-center mb-4">
+                <EightPointStar size={18} />
               </div>
-              <h3 className="font-serif font-semibold text-xl text-[#1C052E] mb-3">
+              <h3 className="font-serif font-semibold text-xl text-purple-900 mb-3">
                 Honest communication
               </h3>
-              <p className="text-sm text-[#625A6B] leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 Transparent feedback, realistic briefings, and prompt updates at
                 every stage of the recruitment process.
               </p>
             </Card>
 
             <Card hoverable={true} className="p-8">
-              <div className="w-10 h-10 rounded-[2px] bg-[#F7F3FA] text-[#C5A15B] flex items-center justify-center font-serif text-xl font-bold mb-4">
-                ✦
+              <div className="w-10 h-10 rounded-[2px] bg-purple-50 text-gold-text flex items-center justify-center mb-4">
+                <EightPointStar size={18} />
               </div>
-              <h3 className="font-serif font-semibold text-xl text-[#1C052E] mb-3">
-                Strict confidentiality
+              <h3 className="font-serif font-semibold text-xl text-purple-900 mb-3">
+                Confidentiality
               </h3>
-              <p className="text-sm text-[#625A6B] leading-relaxed">
-                Your profile is never submitted to an employer without your
-                prior knowledge and explicit consent.
+              <p className="text-sm text-muted leading-relaxed">
+                We will always discuss a specific role and organisation with you
+                before your CV or personal details are submitted to any
+                prospective employer, ensuring complete transparency and mutual agreement.
               </p>
             </Card>
           </div>
@@ -271,9 +246,9 @@ export default function CandidatesPage() {
       </Section>
 
       {/* 3. OUR CANDIDATE APPROACH */}
-      <Section bg="ivory" className="border-t border-b border-[#E6E0EB]">
+      <Section bg="ivory" className="border-t border-b border-line">
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-16">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               The Candidate Journey
             </Eyebrow>
@@ -316,23 +291,23 @@ export default function CandidatesPage() {
       {/* 4. CAREER OPPORTUNITIES TEASER */}
       <Section bg="white">
         <Container>
-          <div className="max-w-2xl mx-auto text-center mb-8">
+          <div data-reveal className="max-w-2xl mx-auto text-center mb-8">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               Current Vacancies
             </Eyebrow>
             <Heading level="h2" color="ink">
               Career opportunities
             </Heading>
-            <p className="text-[#625A6B] text-base mt-2">
+            <p className="text-muted text-base mt-2">
               Browse our latest specialist opportunities across UK healthcare.
             </p>
           </div>
 
-          <div className="p-10 border border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] text-center max-w-xl mx-auto">
-            <p className="font-serif text-2xl text-[#1C052E] mb-2">
+          <div className="p-10 border border-line rounded-[4px] bg-ivory text-center max-w-xl mx-auto">
+            <p className="font-serif text-2xl text-purple-900 mb-2">
               New opportunities are on the horizon.
             </p>
-            <p className="text-sm text-[#625A6B] mb-6">
+            <p className="text-sm text-muted mb-6">
               Register your interest below or view our opportunities directory to
               explore upcoming roles as they open.
             </p>
@@ -346,10 +321,10 @@ export default function CandidatesPage() {
       {/* 5. CANDIDATE REGISTRATION + CV FORM */}
       <section
         id="register"
-        className="py-16 md:py-28 bg-[#F7F3FA] scroll-mt-24 border-t border-b border-[#E6E0EB]"
+        className="py-16 md:py-28 bg-purple-50 scroll-mt-24 border-t border-b border-line"
       >
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-12">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-12">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               Registration & CV Submission
             </Eyebrow>
@@ -365,7 +340,7 @@ export default function CandidatesPage() {
       {/* 6. CANDIDATE FAQS */}
       <Section bg="white">
         <Container narrow={true}>
-          <div className="text-center max-w-2xl mx-auto mb-14">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-14">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               Candidate Questions
             </Eyebrow>

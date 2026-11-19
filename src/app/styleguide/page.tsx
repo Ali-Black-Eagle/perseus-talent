@@ -24,7 +24,7 @@ export default function StyleguidePage() {
     <div className="py-12 bg-white">
       <Container>
         {/* Styleguide Header */}
-        <div className="pb-8 mb-12 border-b border-[#E6E0EB]">
+        <div className="pb-8 mb-12 border-b border-line">
           <div className="flex items-center gap-3 mb-2">
             <Badge variant="gold">Internal Development Only</Badge>
             <Badge variant="draft">404 in Production</Badge>
@@ -32,7 +32,7 @@ export default function StyleguidePage() {
           <Heading level="h1" color="ink">
             Perseus Talent — Design System Style Guide
           </Heading>
-          <p className="text-[#625A6B] text-base mt-2">
+          <p className="text-muted text-base mt-2">
             Verification of brand tokens, typography scale, UI components, states,
             and interactive modules.
           </p>
@@ -48,40 +48,40 @@ export default function StyleguidePage() {
           </Heading>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="p-4 rounded-[4px] bg-[#1C052E] text-white border border-[#1C052E]">
-              <div className="text-xs font-mono font-semibold">--purple-900</div>
+            <div className="p-4 rounded-[4px] bg-purple-900 text-white border border-purple-900">
+              <div className="text-xs font-sans font-semibold">--purple-900</div>
               <div className="text-sm font-bold mt-1">#1C052E</div>
               <div className="text-[11px] opacity-75 mt-2">Primary surface & ink</div>
             </div>
 
-            <div className="p-4 rounded-[4px] bg-[#C5A15B] text-[#1C052E] border border-[#C5A15B]">
-              <div className="text-xs font-mono font-semibold">--gold-500</div>
+            <div className="p-4 rounded-[4px] bg-gold-500 text-purple-900 border border-gold-500">
+              <div className="text-xs font-sans font-semibold">--gold-500</div>
               <div className="text-sm font-bold mt-1">#C5A15B</div>
               <div className="text-[11px] opacity-80 mt-2">Accent / CTAs</div>
             </div>
 
-            <div className="p-4 rounded-[4px] bg-white text-[#1C052E] border border-[#E6E0EB]">
-              <div className="text-xs font-mono font-semibold">--white</div>
+            <div className="p-4 rounded-[4px] bg-white text-purple-900 border border-line">
+              <div className="text-xs font-sans font-semibold">--white</div>
               <div className="text-sm font-bold mt-1">#FFFFFF</div>
-              <div className="text-[11px] text-[#625A6B] mt-2">Reading surface</div>
+              <div className="text-[11px] text-muted mt-2">Reading surface</div>
             </div>
 
-            <div className="p-4 rounded-[4px] bg-[#2A0B42] text-white">
-              <div className="text-xs font-mono font-semibold">--purple-800</div>
+            <div className="p-4 rounded-[4px] bg-purple-800 text-white">
+              <div className="text-xs font-sans font-semibold">--purple-800</div>
               <div className="text-sm font-bold mt-1">#2A0B42</div>
               <div className="text-[11px] opacity-75 mt-2">Raised dark</div>
             </div>
 
-            <div className="p-4 rounded-[4px] bg-[#FBF9F6] text-[#1C052E] border border-[#E6E0EB]">
-              <div className="text-xs font-mono font-semibold">--ivory</div>
+            <div className="p-4 rounded-[4px] bg-ivory text-purple-900 border border-line">
+              <div className="text-xs font-sans font-semibold">--ivory</div>
               <div className="text-sm font-bold mt-1">#FBF9F6</div>
-              <div className="text-[11px] text-[#625A6B] mt-2">Secondary surface</div>
+              <div className="text-[11px] text-muted mt-2">Secondary surface</div>
             </div>
 
-            <div className="p-4 rounded-[4px] bg-[#F7F3FA] text-[#1C052E] border border-[#E6E0EB]">
-              <div className="text-xs font-mono font-semibold">--purple-50</div>
+            <div className="p-4 rounded-[4px] bg-purple-50 text-purple-900 border border-line">
+              <div className="text-xs font-sans font-semibold">--purple-50</div>
               <div className="text-sm font-bold mt-1">#F7F3FA</div>
-              <div className="text-[11px] text-[#625A6B] mt-2">Form container bg</div>
+              <div className="text-[11px] text-muted mt-2">Form container bg</div>
             </div>
           </div>
         </section>
@@ -92,15 +92,21 @@ export default function StyleguidePage() {
             02 — Brand Identity
           </Eyebrow>
           <Heading level="h3" color="ink" className="mb-6">
-            Logo & Monogram Variations
+            Logo Variations
           </Heading>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-8 bg-[#1C052E] rounded-[4px] flex items-center justify-center">
-              <Logo variant="full" color="light" linkToHome={false} />
+            <div className="p-8 bg-purple-900 rounded-[4px] flex items-center justify-center">
+              <Logo variant="lockup" size="footer" linkToHome={false} />
             </div>
-            <div className="p-8 bg-[#FBF9F6] border border-[#E6E0EB] rounded-[4px] flex items-center justify-center">
-              <Logo variant="full" color="dark" linkToHome={false} />
+            <div className="p-8 bg-purple-900 rounded-[4px] flex items-center justify-center">
+              <Logo variant="lockup" size="header" linkToHome={false} />
+            </div>
+            <div className="p-8 bg-ivory border border-line rounded-[4px] flex items-center justify-center">
+              <Logo variant="full" size={320} linkToHome={false} />
+            </div>
+            <div className="p-8 bg-purple-900 rounded-[4px] flex items-center justify-center">
+              <Logo variant="emblem" size={96} linkToHome={false} />
             </div>
           </div>
         </section>
@@ -114,47 +120,47 @@ export default function StyleguidePage() {
             Editorial Fluid Type Hierarchy
           </Heading>
 
-          <div className="space-y-6 border border-[#E6E0EB] p-8 rounded-[4px]">
+          <div className="space-y-6 border border-line p-8 rounded-[4px]">
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">Display (Serif 500)</span>
+              <span className="text-xs font-sans text-muted">Display (Serif 500)</span>
               <Heading level="display" color="ink">
                 A better future in healthcare.
               </Heading>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">H1 (Serif 500)</span>
+              <span className="text-xs font-sans text-muted">H1 (Serif 500)</span>
               <Heading level="h1" color="ink">
                 Find the people who move your business forward.
               </Heading>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">H2 (Serif 500)</span>
+              <span className="text-xs font-sans text-muted">H2 (Serif 500)</span>
               <Heading level="h2" color="ink">
                 A more considered approach to recruitment.
               </Heading>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">H3 (Serif 600)</span>
+              <span className="text-xs font-sans text-muted">H3 (Serif 600)</span>
               <Heading level="h3" color="ink">
                 Understanding your recruitment requirements
               </Heading>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">H4 (Sans 600)</span>
+              <span className="text-xs font-sans text-muted">H4 (Sans 600)</span>
               <Heading level="h4" color="ink">
                 Candidate screening and verification
               </Heading>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">Lead Paragraph</span>
-              <p className="text-lg md:text-[21px] font-sans text-[#3A3242] leading-[1.6]">
+              <span className="text-xs font-sans text-muted">Lead Paragraph</span>
+              <p className="text-lg md:text-[21px] font-sans text-body leading-[1.6]">
                 At Perseus Talent, we believe exceptional recruitment goes beyond filling vacancies.
                 It is about understanding people, recognising potential and building connections that create lasting value.
               </p>
             </div>
             <div>
-              <span className="text-xs font-mono text-[#625A6B]">Body Paragraph</span>
-              <p className="text-base md:text-[17px] font-sans text-[#3A3242] leading-[1.7]">
+              <span className="text-xs font-sans text-muted">Body Paragraph</span>
+              <p className="text-base md:text-[17px] font-sans text-body leading-[1.7]">
                 We bring organisations and talented professionals together through a considered, relationship-led approach to recruitment.
               </p>
             </div>
@@ -172,8 +178,8 @@ export default function StyleguidePage() {
 
           <div className="space-y-6">
             {/* Dark background preview */}
-            <div className="p-8 bg-[#1C052E] rounded-[4px] space-y-4">
-              <span className="text-xs font-mono text-white/60 block mb-2">On Dark Surfaces</span>
+            <div className="p-8 bg-purple-900 rounded-[4px] space-y-4">
+              <span className="text-xs font-sans text-white/60 block mb-2">On Dark Surfaces</span>
               <div className="flex flex-wrap items-center gap-4">
                 <Button variant="gold" size="lg" arrow={true}>
                   Primary Gold (lg)
@@ -191,8 +197,8 @@ export default function StyleguidePage() {
             </div>
 
             {/* Light background preview */}
-            <div className="p-8 bg-[#FBF9F6] border border-[#E6E0EB] rounded-[4px] space-y-4">
-              <span className="text-xs font-mono text-[#625A6B] block mb-2">On Light Surfaces</span>
+            <div className="p-8 bg-ivory border border-line rounded-[4px] space-y-4">
+              <span className="text-xs font-sans text-muted block mb-2">On Light Surfaces</span>
               <div className="flex flex-wrap items-center gap-4">
                 <Button variant="purple" size="lg" arrow={true}>
                   Primary Purple (lg)
@@ -221,8 +227,8 @@ export default function StyleguidePage() {
           </Heading>
 
           <div className="space-y-6">
-            <div className="p-6 border border-[#E6E0EB] rounded-[4px] text-center">
-              <span className="text-xs font-mono text-[#625A6B] block mb-2">Ornament Divider</span>
+            <div className="p-6 border border-line rounded-[4px] text-center">
+              <span className="text-xs font-sans text-muted block mb-2">Ornament Divider</span>
               <Ornament color="gold" />
             </div>
 

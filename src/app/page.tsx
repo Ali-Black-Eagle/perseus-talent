@@ -9,90 +9,110 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Ornament } from "@/components/ui/Ornament";
+import { Logo } from "@/components/brand/Logo";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { EightPointStar } from "@/components/brand/EightPointStar";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { CtaBand } from "@/components/sections/CtaBand";
+
+import { createPageMetadata } from "@/lib/seo";
+import { pageSeo } from "@/config/page-seo";
+
+export const metadata = createPageMetadata(pageSeo.home);
 
 export default function HomePage() {
   return (
     <div className="flex flex-col">
-      {/* 1. HOMEPAGE HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white min-h-[min(92vh,880px)] flex items-center pt-20 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
+      {/* 1. HOMEPAGE HERO (FE6) */}
+      <section className="relative overflow-hidden bg-purple-900 text-white flex items-center pt-16 pb-16 lg:pt-24 lg:pb-24 lg:min-h-[min(92vh,880px)]">
         {/* Subtle geometric pattern overlay */}
         <GeometricPattern opacity={0.04} />
 
-        {/* Constellation graphic: positioned right on desktop, top-right behind text on mobile */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[340px] md:w-[460px] lg:w-[560px] h-[340px] md:h-[460px] lg:h-[560px] pointer-events-none opacity-25 lg:opacity-60 translate-x-12 lg:translate-x-0">
-          <ConstellationGraphic opacity={0.9} />
+        {/* Mobile constellation: top-right behind text at 280px and 25% opacity */}
+        <div className="lg:hidden absolute -top-8 -right-8 w-[280px] h-[280px] pointer-events-none opacity-25">
+          <ConstellationGraphic opacity={1} />
         </div>
 
-        <Container className="relative z-10">
-          <div className="max-w-[760px]">
-            {/* Eyebrow */}
-            <div className="mb-4">
-              <Eyebrow theme="dark" withLine={true}>
-                UK Healthcare Recruitment Consultancy
-              </Eyebrow>
+        <Container className="relative z-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 items-center">
+            {/* Columns 1–7: Hero text and actions */}
+            <div className="lg:col-span-7">
+              {/* Eyebrow */}
+              <div className="mb-4">
+                <Eyebrow theme="dark" withLine={true}>
+                  UK Healthcare Recruitment Consultancy
+                </Eyebrow>
+              </div>
+
+              {/* Main Headline */}
+              <Heading
+                level="display"
+                color="white"
+                className="mb-6 max-w-[18ch]"
+              >
+                {"The right people. The right opportunities. "}
+                <span className="italic text-gold-400">A better future.</span>
+              </Heading>
+
+              {/* Supporting Copy */}
+              <p className="font-sans text-lg md:text-xl text-white/80 leading-relaxed mb-8 md:mb-10 max-w-[44ch]">
+                Connecting exceptional talent with organisations shaping the
+                future of healthcare.
+              </p>
+
+              {/* CTAs with 12px gap */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-12">
+                <Button
+                  variant="gold"
+                  size="lg"
+                  arrow={true}
+                  href="/employers"
+                  className="w-full sm:w-auto text-center"
+                >
+                  Find Talent
+                </Button>
+                <Button
+                  variant="outline-light"
+                  size="lg"
+                  href="/opportunities"
+                  className="w-full sm:w-auto text-center"
+                >
+                  Explore Opportunities
+                </Button>
+              </div>
+
+              {/* Factual Brand Pillars (no extra top border, 8-point stars) */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/70">
+                <span>Relationship-led recruitment</span>
+                <EightPointStar size={10} className="text-gold-500 shrink-0" aria-hidden="true" />
+                <span>Transparent 15% flat fee</span>
+                <EightPointStar size={10} className="text-gold-500 shrink-0" aria-hidden="true" />
+                <span>Healthcare focus</span>
+              </div>
             </div>
 
-            {/* Main Headline */}
-            <Heading
-              level="display"
-              color="white"
-              className="mb-6 tracking-tight"
-            >
-              The right people. The right opportunities.{" "}
-              <span className="italic text-[#D4B577]">A better future.</span>
-            </Heading>
-
-            {/* Supporting Copy */}
-            <p className="font-sans text-lg md:text-xl text-white/80 leading-relaxed mb-8 md:mb-10 max-w-[44ch]">
-              Connecting exceptional talent with organisations shaping the
-              future of healthcare.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-14">
-              <Button
-                variant="gold"
-                size="lg"
-                arrow={true}
-                href="/employers"
-                className="w-full sm:w-auto text-center"
-              >
-                Find Talent
-              </Button>
-              <Button
-                variant="outline-light"
-                size="lg"
-                href="/opportunities"
-                className="w-full sm:w-auto text-center"
-              >
-                Explore Opportunities
-              </Button>
-            </div>
-
-            {/* Factual Brand Pillars */}
-            <div className="pt-6 border-t border-white/10 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/70">
-              <span>Relationship-led recruitment</span>
-              <span className="text-[#C5A15B]" aria-hidden="true">
-                ✦
-              </span>
-              <span>Transparent 15% flat fee</span>
-              <span className="text-[#C5A15B]" aria-hidden="true">
-                ✦
-              </span>
-              <span>Healthcare focus</span>
+            {/* Columns 8–12: Constellation on desktop (about 520px) */}
+            <div className="hidden lg:flex lg:col-span-5 justify-end items-center">
+              <div className="w-[520px] h-[520px] pointer-events-none opacity-60">
+                <ConstellationGraphic opacity={1} />
+              </div>
             </div>
           </div>
         </Container>
+
+        {/* Bottom hairline at container width, gold, 30% opacity */}
+        <div className="absolute bottom-0 inset-x-0 pointer-events-none">
+          <Container>
+            <div className="border-b border-gold-500/30 w-full" />
+          </Container>
+        </div>
       </section>
 
       {/* 2. INTRODUCTION SECTION */}
       <Section bg="white">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+          <div data-reveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
             <div className="lg:col-span-5">
               <Eyebrow theme="light" withLine={true} className="mb-3">
                 Our Foundation
@@ -101,9 +121,12 @@ export default function HomePage() {
                 People are at the heart of every great organisation.
               </Heading>
               <Ornament color="gold" className="justify-start my-6" />
+              <div className="mt-8">
+                <Logo variant="full" size={280} linkToHome={false} />
+              </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-6 text-[#3A3242] font-sans text-base md:text-lg leading-relaxed">
+            <div className="lg:col-span-7 space-y-6 text-body font-sans text-base md:text-lg leading-relaxed">
               <p>
                 At Perseus Talent, we believe exceptional recruitment goes beyond
                 filling vacancies. It is about understanding people, recognising
@@ -113,7 +136,7 @@ export default function HomePage() {
                 We bring organisations and talented professionals together through
                 a considered, relationship-led approach to recruitment.
               </p>
-              <p className="text-[#1C052E] font-medium">
+              <p className="text-purple-900 font-medium">
                 Our focus is simple: understanding what organisations need,
                 recognising what professionals can offer and creating
                 connections that move careers and businesses forward.
@@ -124,9 +147,9 @@ export default function HomePage() {
       </Section>
 
       {/* 3. DUAL AUDIENCE SPLIT */}
-      <Section bg="ivory" className="border-t border-b border-[#E6E0EB]">
+      <Section bg="ivory" className="border-t border-b border-line">
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-14">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-14">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               Serving Both Sides of Talent
             </Eyebrow>
@@ -137,11 +160,11 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
             {/* Employers Card */}
-            <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
-              <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
+            <div data-reveal className="bg-white border border-line rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-gold-500 hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
+              <div className="relative aspect-[4/3] w-full bg-purple-900">
                 <Image
-                  src="/images/home/executive-consultation.jpg"
-                  alt="Executive strategic recruitment consultation between healthcare hiring lead and Perseus Talent consultant"
+                  src="/images/about/team-partnership.webp"
+                  alt="An empty, modern meeting room with a table and chairs"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 600px, 100vw"
@@ -153,10 +176,10 @@ export default function HomePage() {
                   <Eyebrow theme="light" withLine={true} className="mb-3">
                     For Employers
                   </Eyebrow>
-                  <Heading level="h3" color="ink" className="mb-4">
+                  <h2 className="font-serif font-medium text-3xl md:text-[38px] text-purple-900 mb-4 leading-[1.1]">
                     Talent that moves your business forward.
-                  </Heading>
-                  <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
+                  </h2>
+                  <div className="space-y-4 text-base text-muted leading-relaxed mb-8">
                     <p>Finding the right person can make all the difference.</p>
                     <p>
                       We work with organisations to understand their recruitment
@@ -171,7 +194,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-[#E6E0EB]">
+                <div className="pt-6 border-t border-line">
                   <Button
                     variant="purple"
                     size="md"
@@ -186,11 +209,11 @@ export default function HomePage() {
             </div>
 
             {/* Candidates Card */}
-            <div className="bg-white border border-[#E6E0EB] rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#C5A15B] hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
-              <div className="relative aspect-[4/3] w-full bg-[#1C052E]">
+            <div data-reveal className="bg-white border border-line rounded-[4px] overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-gold-500 hover:shadow-[0_10px_30px_-12px_rgba(28,5,46,0.18)]">
+              <div className="relative aspect-[4/3] w-full bg-purple-900">
                 <Image
-                  src="/images/home/healthcare-professional.jpg"
-                  alt="Clinical healthcare professional in a modern healthcare environment"
+                  src="/images/home/healthcare-professional.webp"
+                  alt="A healthcare professional holding a stethoscope"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 600px, 100vw"
@@ -202,10 +225,10 @@ export default function HomePage() {
                   <Eyebrow theme="light" withLine={true} className="mb-3">
                     For Candidates
                   </Eyebrow>
-                  <Heading level="h3" color="ink" className="mb-4">
+                  <h2 className="font-serif font-medium text-3xl md:text-[38px] text-purple-900 mb-4 leading-[1.1]">
                     Your next opportunity starts here.
-                  </Heading>
-                  <div className="space-y-4 text-sm md:text-base text-[#625A6B] leading-relaxed mb-8">
+                  </h2>
+                  <div className="space-y-4 text-base text-muted leading-relaxed mb-8">
                     <p>Your career deserves more than a job search.</p>
                     <p>
                       We believe every professional has a unique combination of
@@ -224,9 +247,9 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-[#E6E0EB]">
+                <div className="pt-6 border-t border-line">
                   <Button
-                    variant="purple"
+                    variant="outline-dark"
                     size="md"
                     arrow={true}
                     href="/opportunities"
@@ -244,7 +267,7 @@ export default function HomePage() {
       {/* 4. OUR APPROACH */}
       <Section bg="white">
         <Container>
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-16">
             <Eyebrow theme="light" withLine={true} className="mb-3">
               Our Methodology
             </Eyebrow>
@@ -257,12 +280,12 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* 5. PRICING PROMOTION (Purple Band) */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white py-20 md:py-28 border-t border-b border-[#C5A15B]/30">
+      {/* 5. PRICING PROMOTION (Purple Band per FE7 / FE8 / Item 15) */}
+      <section className="relative overflow-hidden bg-purple-900 text-white py-16 md:py-24 lg:py-32 border-t border-b border-gold-500/30">
         <GeometricPattern opacity={0.04} />
 
         <Container className="relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          <div data-reveal className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left 7 Columns */}
             <div className="lg:col-span-7">
               <Eyebrow theme="dark" withLine={true} className="mb-4">
@@ -304,15 +327,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right 5 Columns (Typographic Feature) */}
-            <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center p-8 lg:p-12 rounded-[4px] bg-white/5 border border-white/10 text-center select-none">
-              <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#C5A15B] font-semibold mb-2">
-                Standard Recruitment Fee
-              </span>
-              <div className="font-serif font-medium text-[88px] sm:text-[112px] lg:text-[140px] text-[#C5A15B] leading-[0.9] tracking-tight mb-4">
+            {/* Right 5 Columns (Typographic Feature: 112->180px, no box, no extra eyebrow) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center text-center select-none">
+              <div className="font-serif font-medium text-[length:var(--text-stat-feature)] text-gold-500 leading-[0.9] tracking-[-0.02em] mb-4">
                 15%
               </div>
-              <p className="font-sans text-xs sm:text-sm text-white/80 max-w-[28ch] leading-relaxed">
+              <p className="font-sans text-sm md:text-base text-white/80 max-w-[28ch] leading-relaxed">
                 of the successful candidate&apos;s annual gross base salary
               </p>
             </div>

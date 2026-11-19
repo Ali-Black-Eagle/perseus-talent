@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useId } from "react";
-import Link from "next/link";
-import { AlertCircle, Info, ArrowRight } from "lucide-react";
+import { AlertCircle, Info } from "lucide-react";
 import { calculateFee } from "@/lib/fee";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Button } from "@/components/ui/Button";
 
 interface FeeCalculatorProps {
   initialSalary?: string;
@@ -19,6 +19,7 @@ export function FeeCalculator({
   className = "",
 }: FeeCalculatorProps) {
   const [salaryInput, setSalaryInput] = useState(initialSalary);
+  const [showVat, setShowVat] = useState(false);
 
   useEffect(() => {
     if (!initialSalary && typeof window !== "undefined") {
@@ -27,16 +28,24 @@ export function FeeCalculator({
       if (s) setSalaryInput(s);
     }
   }, [initialSalary]);
+
   const inputId = useId();
   const errorId = useId();
   const helperId = useId();
 
-  const result = calculateFee(salaryInput);
+  const result = calculateFee(salaryInput, showVat);
+
+  const presets = [
+    { label: "£35k", value: "35,000", num: 35000 },
+    { label: "£50k", value: "50,000", num: 50000 },
+    { label: "£75k", value: "75,000", num: 75000 },
+    { label: "£100k", value: "100,000", num: 100000 },
+  ];
 
   return (
     <div className={`w-full max-w-[1040px] mx-auto ${className}`}>
       {/* Calculator Card */}
-      <div className="relative overflow-hidden bg-[#1C052E] border border-[#C5A15B]/40 rounded-[4px] p-6 sm:p-8 md:p-12 xl:p-14 shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
+      <div className="relative overflow-hidden bg-purple-900 border border-gold-500/40 rounded-[4px] p-6 sm:p-8 md:p-12 xl:p-14 shadow-[0_24px_60px_-20px_rgba(28,5,46,0.35)]">
         <GeometricPattern opacity={0.03} />
 
         <div className="relative z-10">
@@ -59,7 +68,7 @@ export function FeeCalculator({
 
               {/* Input field with fixed £ prefix */}
               <div className="relative flex items-center">
-                <span className="absolute left-5 text-[#1C052E] font-serif text-2xl font-semibold pointer-events-none select-none">
+                <span className="absolute left-5 text-purple-900 font-serif text-2xl font-semibold pointer-events-none select-none">
                   £
                 </span>
                 <input
@@ -72,11 +81,11 @@ export function FeeCalculator({
                   placeholder="e.g. 40,000"
                   aria-describedby={`${helperId} ${!result.ok && result.error ? errorId : ""}`}
                   aria-invalid={!result.ok && result.error ? "true" : "false"}
-                  className={`w-full h-16 pl-12 pr-5 bg-white text-[#1C052E] font-sans text-xl md:text-2xl font-semibold rounded-[2px] border ${
+                  className={`w-full h-16 pl-12 pr-5 bg-white text-purple-900 font-sans text-xl md:text-2xl font-semibold rounded-[2px] border ${
                     !result.ok && result.error
-                      ? "border-[#B42318] ring-2 ring-[#B42318]/50"
-                      : "border-[#857B90] hover:border-[#5A3A78] focus:border-[#1C052E] focus:ring-4 focus:ring-[#C5A15B]/50"
-                  } outline-none transition-all placeholder:text-[#625A6B]/50`}
+                      ? "border-error ring-2 ring-error/50"
+                      : "border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-4 focus:ring-gold-500/50"
+                  } outline-none transition-all placeholder:text-muted/50`}
                 />
               </div>
 
@@ -89,14 +98,48 @@ export function FeeCalculator({
                 and benefits.
               </p>
 
+              {/* Quick Preset Chips */}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="text-xs text-white/60 font-sans mr-1">Presets:</span>
+                {presets.map((preset) => {
+                  const isActive =
+                    result.ok && Math.round(result.salaryPence / 100) === preset.num;
+                  return (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => setSalaryInput(preset.value)}
+                      className={`px-2.5 py-1 text-xs font-sans rounded-[2px] border transition-colors ${
+                        isActive
+                          ? "bg-gold-500 text-purple-900 border-gold-500 font-semibold"
+                          : "bg-white/5 border-white/20 text-white/80 hover:bg-white/10 hover:border-gold-500/50"
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* VAT interactive toggle */}
+              <label className="mt-4 inline-flex items-center gap-2.5 cursor-pointer select-none text-xs md:text-sm text-white/85 hover:text-white transition-colors">
+                <input
+                  type="checkbox"
+                  checked={showVat}
+                  onChange={(e) => setShowVat(e.target.checked)}
+                  className="w-4 h-4 rounded-[2px] border-field-border text-purple-900 focus:ring-gold-500 accent-gold-500"
+                />
+                <span>Show illustrative UK VAT (20%)</span>
+              </label>
+
               {/* Error announcement */}
               {!result.ok && result.error && (
                 <div
                   id={errorId}
                   role="alert"
-                  className="mt-3 flex items-start gap-2 text-xs md:text-sm text-[#FFB4A9]"
+                  className="mt-3 flex items-start gap-2 text-xs md:text-sm text-error-bg text-red-200"
                 >
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-error" />
                   <span>{result.error}</span>
                 </div>
               )}
@@ -109,17 +152,17 @@ export function FeeCalculator({
                 aria-atomic="true"
                 className="space-y-6"
               >
-                {/* Secondary breakdown rows */}
+                {/* Secondary breakdown rows in <dl> */}
                 <dl className="divide-y divide-white/10 text-sm">
                   <div className="flex items-center justify-between py-2.5">
                     <dt className="text-white/70">Annual salary</dt>
-                    <dd className="font-mono font-medium text-white tabular-nums">
+                    <dd className="font-sans font-medium text-white tabular-nums transition-opacity duration-150">
                       {result.ok ? result.salaryFormatted : "—"}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between py-2.5">
                     <dt className="text-white/70">Recruitment percentage</dt>
-                    <dd className="font-mono font-medium text-white tabular-nums">
+                    <dd className="font-sans font-medium text-white tabular-nums transition-opacity duration-150">
                       {result.ok ? result.rateDisplay : "15%"}
                     </dd>
                   </div>
@@ -127,10 +170,12 @@ export function FeeCalculator({
 
                 {/* Primary Fee Highlight Box */}
                 <div className="bg-white/5 border border-white/10 rounded-[2px] p-6 text-center">
-                  <span className="block text-xs uppercase tracking-[0.16em] text-[#C5A15B] font-semibold mb-2">
-                    Estimated recruitment fee (excluding VAT)
+                  <span className="block text-xs uppercase tracking-[0.16em] text-gold-500 font-semibold mb-2">
+                    {result.ok && result.vatEnabled
+                      ? "Estimated recruitment fee (base 15% fee)"
+                      : "Estimated recruitment fee (excluding VAT)"}
                   </span>
-                  <div className="font-serif font-semibold text-4xl sm:text-5xl lg:text-6xl text-[#C5A15B] tracking-tight tabular-nums min-h-[56px] flex items-center justify-center">
+                  <div className="font-serif font-semibold text-[length:var(--text-fee-figure)] text-gold-500 tracking-tight tabular-nums min-h-[72px] flex items-center justify-center transition-opacity duration-150">
                     {result.ok ? result.feeFormatted : "—"}
                   </div>
                   {!result.ok && !result.error && (
@@ -147,31 +192,33 @@ export function FeeCalculator({
                       <dt className="text-white/70 flex items-center gap-1.5">
                         <span>VAT (20%, illustrative)</span>
                       </dt>
-                      <dd className="font-mono text-white/80 tabular-nums">
+                      <dd className="font-sans text-white/80 tabular-nums transition-opacity duration-150">
                         {result.vatFormatted}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between py-2 font-medium">
                       <dt className="text-white">Total including illustrative VAT</dt>
-                      <dd className="font-mono text-white tabular-nums">
+                      <dd className="font-sans text-white tabular-nums transition-opacity duration-150">
                         {result.totalFormatted}
                       </dd>
                     </div>
                   </dl>
                 )}
 
-                {/* CTA Link to Employer Enquiry with salary prefill */}
+                {/* CTA Button using shared Button component */}
                 {result.ok && (
-                  <div className="pt-2 animate-in fade-in duration-200">
-                    <Link
+                  <div className="pt-2">
+                    <Button
+                      variant="gold"
+                      size="lg"
+                      arrow={true}
                       href={`/employers?salary=${Math.round(
                         result.salaryPence / 100
                       )}#enquiry`}
-                      className="group flex h-14 w-full items-center justify-center gap-2 bg-[#C5A15B] text-[#1C052E] font-sans text-sm md:text-[15px] font-semibold uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#D4B577] active:bg-[#A8853F] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                      className="w-full text-center"
                     >
-                      <span>Discuss Your Recruitment Needs</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
+                      Discuss Your Recruitment Needs
+                    </Button>
                   </div>
                 )}
               </div>
@@ -183,10 +230,10 @@ export function FeeCalculator({
       {/* Mandatory Disclaimer */}
       <div
         className={`mt-5 flex items-start gap-3 text-xs md:text-[13px] ${
-          variant === "embedded" ? "text-white/80" : "text-[#625A6B]"
+          variant === "embedded" ? "text-white/80" : "text-muted"
         } leading-relaxed px-2`}
       >
-        <Info className="w-4 h-4 shrink-0 text-[#C5A15B] mt-0.5" />
+        <Info className="w-4 h-4 shrink-0 text-gold-500 mt-0.5" />
         <p>
           All calculations are indicative and based on a flat 15% recruitment fee
           applied to annual gross base salary. VAT is additional where applicable.

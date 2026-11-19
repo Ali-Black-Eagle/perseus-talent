@@ -7,12 +7,20 @@ import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Badge } from "@/components/ui/Badge";
 import { Ornament } from "@/components/ui/Ornament";
+import { ArticleBody } from "@/components/insights/ArticleBody";
 import { CtaBand } from "@/components/sections/CtaBand";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { PageHero } from "@/components/layout/PageHero";
+import { formatDate } from "@/lib/format";
 import { Calendar, User, Clock } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { createPageMetadata, getBreadcrumbJsonLd, getArticleJsonLd } from "@/lib/seo";
+import Image from "next/image";
+import {
+  buildArticleDescription,
+  createPageMetadata,
+  getBreadcrumbJsonLd,
+  getArticleJsonLd,
+} from "@/lib/seo";
+import { getInsightImage, InsightCard } from "@/components/insights/InsightCard";
 import { getInsightBySlug, getInsights } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -30,9 +38,41 @@ export async function generateMetadata({
   if (!article) return { title: "Article Not Found" };
   return createPageMetadata({
     title: article.meta.title,
-    description: article.meta.excerpt,
+    description: buildArticleDescription(article),
     path: `/insights/${slug}`,
+    ogType: "article",
+    // Articles use their own image when they have one; otherwise the branded default is used.
+    image: article.meta.image,
+    imageAlt: article.meta.image ? article.meta.imageAlt || article.meta.title : undefined,
+    publishedTime: String(article.meta.date),
+    modifiedTime: String(article.meta.updated || article.meta.date),
+    noIndex: article.meta.status !== "published",
   });
+}
+
+function getNextStep(category: string): { lead: string; label: string; href: string } {
+  switch (category) {
+    case "Candidate Advice":
+    case "Career Development":
+    case "Interview Preparation":
+      return {
+        lead: "Looking for your next healthcare role? Visit our",
+        label: "Candidates page",
+        href: "/candidates",
+      };
+    case "Recruitment Industry":
+      return {
+        lead: "Want to see how a flat-rate model works for your organisation? Try the",
+        label: "Fee Calculator",
+        href: "/fee-calculator",
+      };
+    default:
+      return {
+        lead: "Hiring in healthcare? See how we work with",
+        label: "Employers",
+        href: "/employers",
+      };
+  }
 }
 
 export default async function InsightDetailPage({
@@ -54,105 +94,86 @@ export default async function InsightDetailPage({
     { name: meta.title, url: `/insights/${slug}` },
   ]);
   const articleJsonLd = getArticleJsonLd(article);
+  const heroImage = meta.image ? getInsightImage(meta) : null;
+
+  // Related articles: same category first, then the most recent others.
+  const allArticles = (await getInsights()).filter((a) => a.meta.slug !== slug);
+  const related = [
+    ...allArticles.filter((a) => a.meta.category === meta.category),
+    ...allArticles.filter((a) => a.meta.category !== meta.category),
+  ].slice(0, 3);
+  const nextStep = getNextStep(meta.category);
 
   return (
     <div className="flex flex-col">
       <JsonLd data={[breadcrumbs, articleJsonLd]} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
-        </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li>
-                <Link
-                  href="/insights"
-                  className="hover:text-white transition-colors"
-                >
-                  Insights
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium truncate max-w-[240px] sm:max-w-none" aria-current="page">
-                {meta.title}
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[820px]">
-            <div className="flex items-center gap-3 mb-4">
-              <Badge variant="gold">{meta.category}</Badge>
-              {meta.status === "draft" && (
-                <Badge variant="draft">Draft — Not Published</Badge>
-              )}
-            </div>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[24ch]"
-            >
-              {meta.title}
-            </Heading>
-
-            <div className="flex flex-wrap items-center gap-6 text-xs md:text-sm text-white/70">
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#C5A15B]" />
-                {meta.date}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#C5A15B]" />
-                {meta.author}
-              </span>
-            </div>
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Insights", href: "/insights" },
+          { label: meta.title },
+        ]}
+        eyebrow={meta.category}
+        title={meta.title}
+      >
+        {meta.status === "draft" && (
+          <div className="mb-4">
+            <Badge variant="draft">Draft — Not Published</Badge>
           </div>
-        </Container>
-      </section>
+        )}
+        <div className="flex flex-wrap items-center gap-6 text-xs md:text-sm text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-gold-500" />
+            <time dateTime={meta.date}>{formatDate(meta.date)}</time>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <User className="w-3.5 h-3.5 text-gold-500" />
+            {meta.author}
+          </span>
+        </div>
+      </PageHero>
 
       {/* 2. ARTICLE PROSE */}
       <Section bg="white">
         <Container narrow={true}>
           {meta.status === "draft" && (
-            <div className="mb-10 p-4 bg-[#FEF3F2] border border-[#B42318] rounded-[2px] text-xs text-[#B42318]">
+            <div className="mb-10 p-4 bg-error-bg border border-error rounded-[2px] text-xs text-error">
               <strong>DRAFT PREVIEW:</strong> This article is currently in draft
               status for development inspection and has not been publicly
               published.
             </div>
           )}
 
-          <div className="font-serif italic text-xl md:text-2xl text-[#1C052E] leading-relaxed mb-10 pb-8 border-b border-[#E6E0EB]">
+          <div className="font-serif italic text-xl md:text-2xl text-purple-900 leading-relaxed mb-10 pb-8 border-b border-line">
             {meta.excerpt}
           </div>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-[#3A3242] leading-relaxed whitespace-pre-line">
-            {content}
-          </div>
+          {heroImage && (
+            <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[2px] bg-purple-900 mb-10">
+              <Image
+                src={heroImage.src}
+                alt={heroImage.alt}
+                fill
+                priority
+                className="object-cover"
+                sizes="(min-width: 1024px) 760px, 100vw"
+              />
+            </div>
+          )}
+
+          <ArticleBody content={content} />
 
           <Ornament color="gold" className="my-12" />
 
           {/* Share row */}
-          <div className="flex items-center justify-between pt-6 border-t border-[#E6E0EB] text-sm">
-            <span className="text-[#625A6B]">
+          <div className="flex items-center justify-between pt-6 border-t border-line text-sm">
+            <span className="text-muted">
               Published by Perseus Talent Consultancy
             </span>
             <Link
               href="/insights"
-              className="font-sans font-semibold text-[#1C052E] hover:text-[#7A5A20]"
+              className="font-sans font-semibold text-purple-900 hover:text-gold-text"
             >
               ← Back to all insights
             </Link>
@@ -160,7 +181,33 @@ export default async function InsightDetailPage({
         </Container>
       </Section>
 
-      {/* 3. CTA */}
+      {/* 3. RELATED ARTICLES AND NEXT STEP */}
+      <Section bg="ivory" className="border-t border-line">
+        <Container>
+          <Heading level="h2" color="ink" className="mb-8">
+            Keep reading
+          </Heading>
+          {related.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              {related.map((a) => (
+                <InsightCard key={a.meta.slug} article={a} />
+              ))}
+            </div>
+          )}
+          <p className="text-base text-body leading-relaxed">
+            {nextStep.lead}{" "}
+            <Link
+              href={nextStep.href}
+              className="font-semibold text-purple-900 underline decoration-gold-500 underline-offset-4 hover:decoration-2"
+            >
+              {nextStep.label}
+            </Link>
+            .
+          </p>
+        </Container>
+      </Section>
+
+      {/* 4. CTA */}
       <CtaBand
         bg="purple-50"
         heading="Discuss your organisation's talent requirements."

@@ -1,17 +1,8 @@
 import { getInsights, type InsightItem } from "@/lib/content";
+import { INSIGHT_CATEGORIES } from "@/config/insight-categories";
 
-export const INSIGHT_CATEGORIES = [
-  "Healthcare Recruitment",
-  "Recruitment Industry",
-  "Employer Guidance",
-  "Candidate Advice",
-  "Career Development",
-  "Interview Preparation",
-  "Talent Acquisition",
-  "Professional Insights",
-] as const;
-
-export type InsightCategory = (typeof INSIGHT_CATEGORIES)[number];
+export { INSIGHT_CATEGORIES };
+export type { InsightCategory } from "@/config/insight-categories";
 
 export function slugifyCategory(category: string): string {
   return category

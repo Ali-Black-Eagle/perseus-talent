@@ -1,0 +1,33 @@
+# Netlify build settings for Perseus Talent.
+# The Next.js runtime (@netlify/plugin-nextjs) is detected and installed automatically by Netlify,
+# so it does not need to be listed here.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Node 22 is a long-term-support release that Netlify supports.
+  NODE_VERSION = "22"
+
+# --- Host-level redirects (SEO) ---
+# One address for the whole site: https://perseustalent.co.uk (no www, always HTTPS).
+# Netlify applies these rules before the site, so search engines only ever see one version of each page.
+# (Trailing-slash duplicates are handled by Next.js: /about/ redirects to /about.)
+[[redirects]]
+  from = "https://www.perseustalent.co.uk/*"
+  to = "https://perseustalent.co.uk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.perseustalent.co.uk/*"
+  to = "https://perseustalent.co.uk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://perseustalent.co.uk/*"
+  to = "https://perseustalent.co.uk/:splat"
+  status = 301
+  force = true

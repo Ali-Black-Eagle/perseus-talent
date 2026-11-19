@@ -9,12 +9,14 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Calendar, Clock, ChevronRight } from "lucide-react";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { EightPointStar } from "@/components/brand/EightPointStar";
+import { PageHero } from "@/components/layout/PageHero";
 import { CategoryChips } from "@/components/insights/CategoryChips";
+import { InsightCard } from "@/components/insights/InsightCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { CtaBand } from "@/components/sections/CtaBand";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
+import { buildCategoryMetadata, createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 import {
   INSIGHT_CATEGORIES,
   slugifyCategory,
@@ -39,8 +41,7 @@ export async function generateMetadata({
   const categoryName = getCategoryFromSlug(category) || category;
 
   return createPageMetadata({
-    title: `${categoryName} — Insights & Perspectives`,
-    description: `Read practical guidance, industry analysis and career advice in ${categoryName} from Perseus Talent.`,
+    ...buildCategoryMetadata(categoryName),
     path: `/insights/category/${category}`,
   });
 }
@@ -81,61 +82,16 @@ export default async function InsightCategoryPage({
     <div className="flex flex-col">
       <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
-        </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li>
-                <Link
-                  href="/insights"
-                  className="hover:text-white transition-colors"
-                >
-                  Insights
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                {categoryName}
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[760px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Category
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              {categoryName}
-            </Heading>
-
-            <p className="text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[50ch]">
-              Articles, market perspectives and practical guidance categorised
-              under {categoryName}.
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Insights", href: "/insights" },
+          { label: categoryName },
+        ]}
+        eyebrow="Category"
+        title={categoryName}
+        lead={`Articles, market perspectives and practical guidance categorised under ${categoryName}.`}
+      />
 
       {/* 2. CATEGORY ARTICLES */}
       <Section bg="white">
@@ -145,14 +101,14 @@ export default async function InsightCategoryPage({
 
           {articles.length === 0 ? (
             /* Empty State for category with no articles */
-            <div className="p-12 md:p-16 text-center border border-[#E6E0EB] rounded-[4px] bg-[#FBF9F6] max-w-xl mx-auto shadow-xs">
-              <div className="w-12 h-12 rounded-full bg-[#F4F0F7] text-[#7A5A20] flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                ✦
+            <div className="p-12 md:p-16 text-center border border-line rounded-[4px] bg-ivory max-w-xl mx-auto shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-purple-50 text-gold-text flex items-center justify-center mx-auto mb-4">
+                <EightPointStar size={20} className="text-gold-text" />
               </div>
-              <h2 className="font-serif text-2xl font-semibold text-[#1C052E] mb-2">
+              <h2 className="font-serif text-2xl font-semibold text-purple-900 mb-2">
                 No articles published in this category yet.
               </h2>
-              <p className="text-sm md:text-base text-[#625A6B] leading-relaxed mb-6">
+              <p className="text-sm md:text-base text-muted leading-relaxed mb-6">
                 Our editorial team regularly produces guidance for healthcare
                 employers and clinical professionals. Explore other categories or
                 browse all published insights.
@@ -165,50 +121,14 @@ export default async function InsightCategoryPage({
             <div className="space-y-10">
               <p
                 aria-live="polite"
-                className="text-xs uppercase tracking-wider text-[#7A5A20] font-semibold"
+                className="text-xs uppercase tracking-wider text-gold-text font-semibold"
               >
                 Showing {articles.length} article{articles.length === 1 ? "" : "s"} in {categoryName}
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {paginatedArticles.map((art) => (
-                  <Card
-                    key={art.meta.slug}
-                    hoverable={true}
-                    className="p-6 md:p-8 flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <Badge variant="purple">{art.meta.category}</Badge>
-                        {art.meta.status === "draft" && (
-                          <Badge variant="draft">Draft</Badge>
-                        )}
-                      </div>
-
-                      <h2 className="font-serif text-xl md:text-2xl font-medium text-[#1C052E] mb-3">
-                        <Link
-                          href={`/insights/${art.meta.slug}`}
-                          className="hover:text-[#7A5A20] transition-colors"
-                        >
-                          {art.meta.title}
-                        </Link>
-                      </h2>
-
-                      <p className="font-sans text-sm text-[#625A6B] leading-relaxed mb-6 line-clamp-3">
-                        {art.meta.excerpt}
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-[#E6E0EB] flex items-center justify-between text-xs text-[#625A6B]">
-                      <span>{art.meta.date}</span>
-                      <Link
-                        href={`/insights/${art.meta.slug}`}
-                        className="font-semibold text-[#1C052E] hover:text-[#7A5A20] inline-flex items-center gap-1"
-                      >
-                        Read article →
-                      </Link>
-                    </div>
-                  </Card>
+                  <InsightCard key={art.meta.slug} article={art} headingLevel="h2" />
                 ))}
               </div>
 
@@ -224,6 +144,21 @@ export default async function InsightCategoryPage({
           )}
         </Container>
       </Section>
+
+      {/* 3. CTA BAND */}
+      <CtaBand
+        bg="purple-50"
+        heading="Looking for specialised healthcare recruitment?"
+        copy="Whether you represent a healthcare organisation or are seeking your next career milestone, our team is here to support you."
+        primaryButton={{
+          label: "Discuss Your Recruitment Needs",
+          href: "/employers#enquiry",
+        }}
+        secondaryButton={{
+          label: "Contact Our Team",
+          href: "/contact",
+        }}
+      />
     </div>
   );
 }

@@ -15,15 +15,15 @@ export function CategoryChips({ activeCategory }: CategoryChipsProps) {
       <div
         role="region"
         aria-label="Filter by article category"
-        className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-sm no-scrollbar"
+        className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 text-sm no-scrollbar scroll-smooth"
       >
         {/* "All" chip */}
         <Link
           href="/insights"
           className={`h-9 px-4.5 rounded-full inline-flex items-center justify-center font-medium transition-all shrink-0 border ${
             isAllActive
-              ? "bg-[#1C052E] text-white border-[#1C052E] shadow-xs"
-              : "bg-white text-[#3A3242] border-[#E6E0EB] hover:border-[#C5A15B] hover:text-[#1C052E]"
+              ? "bg-purple-900 text-white border-purple-900 shadow-xs"
+              : "bg-white text-body border-line hover:border-gold-500 hover:text-purple-900"
           }`}
           aria-current={isAllActive ? "page" : undefined}
         >
@@ -43,8 +43,8 @@ export function CategoryChips({ activeCategory }: CategoryChipsProps) {
               href={`/insights/category/${slug}`}
               className={`h-9 px-4.5 rounded-full inline-flex items-center justify-center font-medium transition-all shrink-0 border ${
                 isActive
-                  ? "bg-[#1C052E] text-white border-[#1C052E] shadow-xs"
-                  : "bg-white text-[#3A3242] border-[#E6E0EB] hover:border-[#C5A15B] hover:text-[#1C052E]"
+                  ? "bg-purple-900 text-white border-purple-900 shadow-xs"
+                  : "bg-white text-body border-line hover:border-gold-500 hover:text-purple-900"
               }`}
               aria-current={isActive ? "page" : undefined}
             >

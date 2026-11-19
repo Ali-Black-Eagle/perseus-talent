@@ -61,13 +61,13 @@ export const site: SiteConfig = {
     salaryMax: 10_000_000,
   },
   forms: {
-    cvMaxBytes: 4 * 1024 * 1024, // 4MB
+    cvMaxBytes: 3 * 1024 * 1024, // 3MB (Netlify functions accept ~6MB requests incl. encoding overhead)
     cvTypes: ["pdf", "doc", "docx"],
   },
   nav: [
     { label: "Home", href: "/" },
-    { label: "For Employers", href: "/employers" },
-    { label: "For Candidates", href: "/candidates" },
+    { label: "Employers", href: "/employers" },
+    { label: "Candidates", href: "/candidates" },
     { label: "Our Specialisms", href: "/specialisms" },
     { label: "About Us", href: "/about" },
     { label: "Insights", href: "/insights" },
@@ -88,5 +88,6 @@ export const site: SiteConfig = {
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Cookie Policy", href: "/cookie-policy" },
     { label: "Terms and Conditions", href: "/terms" },
+    { label: "Image Credits", href: "/image-credits" },
   ],
 };
