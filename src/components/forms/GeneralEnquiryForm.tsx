@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, Check, ChevronDown } from "lucide-react";
 import { generalEnquirySchema } from "@/lib/validation/general";
 import { Button } from "@/components/ui/Button";
 import { FormErrorSummary } from "@/components/forms/FormErrorSummary";
-import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+import { TurnstileWidget, isTurnstileActive } from "@/components/forms/TurnstileWidget";
 
 const FIELD_LABELS: Record<string, string> = {
   fullName: "Full name",
@@ -40,11 +40,19 @@ export function GeneralEnquiryForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [startedAt] = useState<number>(() => Date.now());
   const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
   const [deliveryType, setDeliveryType] = useState<"local" | "email">("local");
   const [serverError, setServerError] = useState<string | null>(null);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (submissionStatus === "success") {
+      successHeadingRef.current?.focus();
+    }
+  }, [submissionStatus]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -74,6 +82,13 @@ export function GeneralEnquiryForm({
       return;
     }
 
+    if (isTurnstileActive && !turnstileToken) {
+      setServerError(
+        "Please complete the human verification check shown above the submit button, then try again."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -99,6 +114,9 @@ export function GeneralEnquiryForm({
       setDeliveryType(data.delivery || "local");
       setSubmissionStatus("success");
     } catch (err: any) {
+      // Turnstile tokens are single-use: request a fresh challenge for the next attempt.
+      setTurnstileToken("");
+      setTurnstileReset((n) => n + 1);
       setServerError(err.message || "An unexpected error occurred.");
       setSubmissionStatus("error");
     } finally {
@@ -110,30 +128,34 @@ export function GeneralEnquiryForm({
     return (
       <div
         role="status"
-        className={`bg-white border border-[#E6E0EB] rounded-[4px] p-8 md:p-12 text-center max-w-[820px] mx-auto shadow-[0_10px_30px_-12px_rgba(28,5,46,0.12)] ${className}`}
+        className={`bg-white border border-line rounded-[4px] p-8 md:p-12 text-center max-w-[820px] mx-auto shadow-[0_10px_30px_-12px_rgba(28,5,46,0.12)] ${className}`}
       >
-        <div className="w-14 h-14 rounded-full bg-[#F6EFE1] border border-[#C5A15B] flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="w-8 h-8 text-[#7A5A20]" />
+        <div className="w-14 h-14 rounded-full bg-gold-500 text-white flex items-center justify-center mx-auto mb-6 shadow-sm">
+          <Check className="w-7 h-7 stroke-[2.5]" aria-hidden="true" />
         </div>
 
-        <h3 className="font-serif text-3xl font-medium text-[#1C052E] mb-3">
-          Thank you — your message has been received
+        <h3
+          ref={successHeadingRef}
+          tabIndex={-1}
+          className="font-serif text-3xl font-medium text-purple-900 mb-3 outline-none"
+        >
+          Thank you
         </h3>
 
         {deliveryType === "local" ? (
-          <div className="bg-[#F7F3FA] border border-[#C5A15B]/40 rounded-[2px] p-4 my-6 text-left max-w-lg mx-auto">
-            <p className="text-xs uppercase tracking-wider font-semibold text-[#7A5A20] mb-1">
+          <div className="bg-purple-50 border border-gold-500/40 rounded-[2px] p-4 my-6 text-left max-w-lg mx-auto">
+            <p className="text-xs uppercase tracking-wider font-semibold text-gold-text mb-1">
               Development Mode Confirmation
             </p>
-            <p className="text-sm text-[#3A3242]">
+            <p className="text-sm text-body">
               This submission was securely saved on this computer in{" "}
-              <code className="bg-white px-1.5 py-0.5 rounded font-mono text-xs">
+              <code className="bg-white px-1.5 py-0.5 rounded font-sans text-xs">
                 .local-submissions/
               </code>{" "}
               and has <strong>not</strong> been emailed. View saved submissions at{" "}
               <Link
                 href="/dev/submissions"
-                className="text-[#1C052E] font-semibold underline underline-offset-2 hover:text-[#7A5A20]"
+                className="text-purple-900 font-semibold underline underline-offset-2 hover:text-gold-text"
               >
                 /dev/submissions
               </Link>
@@ -141,14 +163,14 @@ export function GeneralEnquiryForm({
             </p>
           </div>
         ) : (
-          <p className="font-sans text-base text-[#625A6B] max-w-md mx-auto mb-8">
-            Thank you — your enquiry has been sent. A member of our team will
-            be in touch shortly.
+          <p className="font-sans text-base text-muted max-w-md mx-auto mb-8">
+            Your enquiry has been received. A member of our team will respond to
+            your message promptly.
           </p>
         )}
 
         <Button
-          variant="purple"
+          variant="outline-dark"
           size="md"
           onClick={() => {
             setFormData({
@@ -163,7 +185,7 @@ export function GeneralEnquiryForm({
             setSubmissionStatus("idle");
           }}
         >
-          Send another message
+          Send another enquiry
         </Button>
       </div>
     );
@@ -171,23 +193,40 @@ export function GeneralEnquiryForm({
 
   return (
     <div
-      className={`bg-white border border-[#E6E0EB] rounded-[4px] p-6 sm:p-8 md:p-12 max-w-[820px] mx-auto shadow-[0_10px_30px_-12px_rgba(28,5,46,0.1)] ${className}`}
+      className={`bg-white border border-line rounded-[4px] p-6 sm:p-8 md:p-12 max-w-[820px] mx-auto shadow-[0_10px_30px_-12px_rgba(28,5,46,0.1)] ${className}`}
     >
       <div className="mb-8">
-        <h3 className="font-serif text-2xl md:text-3xl font-medium text-[#1C052E] mb-2">
+        <h3 className="font-serif text-2xl md:text-3xl font-medium text-purple-900 mb-2">
           Send a General Message
         </h3>
-        <p className="font-sans text-sm text-[#625A6B]">
+        <p className="font-sans text-sm text-muted">
           Have a question or want to learn more about Perseus Talent? Fields
-          marked <span className="text-[#1C052E] font-medium">(required)</span>{" "}
+          marked <span className="text-purple-900 font-medium">(required)</span>{" "}
           must be completed.
         </p>
       </div>
 
+      <noscript>
+        <div className="mb-6 p-4 rounded-[2px] bg-purple-50 border border-gold-500 text-sm text-purple-900">
+          <p className="font-semibold mb-1">JavaScript is disabled in your browser</p>
+          <p>
+            To send a message online, please enable JavaScript or contact us directly by email at{" "}
+            <a href="mailto:Perseustalent@gmail.com" className="font-semibold underline underline-offset-2 hover:text-gold-text">
+              Perseustalent@gmail.com
+            </a>{" "}
+            or telephone on{" "}
+            <a href="tel:07555004374" className="font-semibold underline underline-offset-2 hover:text-gold-text">
+              07555004374
+            </a>
+            .
+          </p>
+        </div>
+      </noscript>
+
       {serverError && (
         <div
           role="alert"
-          className="mb-8 p-4 rounded-[2px] bg-[#FEF3F2] border border-[#B42318] text-[#B42318] text-sm flex items-start gap-3"
+          className="mb-8 p-4 rounded-[2px] bg-error-bg border border-error text-error text-sm flex items-start gap-3"
         >
           <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
@@ -216,9 +255,9 @@ export function GeneralEnquiryForm({
           <div>
             <label
               htmlFor="gen-name"
-              className="block font-sans text-sm font-semibold text-[#1C052E] mb-2"
+              className="block font-sans text-sm font-semibold text-purple-900 mb-2"
             >
-              Full name <span className="font-normal text-[#625A6B]">(required)</span>
+              Full name <span className="font-normal text-muted">(required)</span>
             </label>
             <input
               id="gen-name"
@@ -228,15 +267,15 @@ export function GeneralEnquiryForm({
               value={formData.fullName}
               onChange={handleChange}
               aria-invalid={!!errors.fullName}
-              className={`w-full h-13 px-4 bg-white text-[#1C052E] text-base rounded-[2px] border ${
+              className={`w-full h-13 px-4 bg-white text-purple-900 text-base rounded-[2px] border ${
                 errors.fullName
-                  ? "border-[#B42318] bg-[#FEF3F2]"
-                  : "border-[#857B90] focus:border-[#1C052E] focus:ring-2 focus:ring-[#C5A15B]/50"
-              } outline-none transition-all`}
+                  ? "border-error bg-error-bg focus:border-error focus:ring-3 focus:ring-error/30"
+                  : "border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-3 focus:ring-gold-500/55"
+              } outline-none transition-colors`}
             />
             {errors.fullName && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318]">
-                <AlertCircle className="w-3.5 h-3.5" />
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errors.fullName}</span>
               </p>
             )}
@@ -246,10 +285,10 @@ export function GeneralEnquiryForm({
           <div>
             <label
               htmlFor="gen-email"
-              className="block font-sans text-sm font-semibold text-[#1C052E] mb-2"
+              className="block font-sans text-sm font-semibold text-purple-900 mb-2"
             >
               Email address{" "}
-              <span className="font-normal text-[#625A6B]">(required)</span>
+              <span className="font-normal text-muted">(required)</span>
             </label>
             <input
               id="gen-email"
@@ -259,15 +298,15 @@ export function GeneralEnquiryForm({
               value={formData.email}
               onChange={handleChange}
               aria-invalid={!!errors.email}
-              className={`w-full h-13 px-4 bg-white text-[#1C052E] text-base rounded-[2px] border ${
+              className={`w-full h-13 px-4 bg-white text-purple-900 text-base rounded-[2px] border ${
                 errors.email
-                  ? "border-[#B42318] bg-[#FEF3F2]"
-                  : "border-[#857B90] focus:border-[#1C052E] focus:ring-2 focus:ring-[#C5A15B]/50"
-              } outline-none transition-all`}
+                  ? "border-error bg-error-bg focus:border-error focus:ring-3 focus:ring-error/30"
+                  : "border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-3 focus:ring-gold-500/55"
+              } outline-none transition-colors`}
             />
             {errors.email && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318]">
-                <AlertCircle className="w-3.5 h-3.5" />
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errors.email}</span>
               </p>
             )}
@@ -277,10 +316,10 @@ export function GeneralEnquiryForm({
           <div>
             <label
               htmlFor="gen-tel"
-              className="block font-sans text-sm font-semibold text-[#1C052E] mb-2"
+              className="block font-sans text-sm font-semibold text-purple-900 mb-2"
             >
               Telephone number{" "}
-              <span className="font-normal text-[#625A6B]">(optional)</span>
+              <span className="font-normal text-muted">(optional)</span>
             </label>
             <input
               id="gen-tel"
@@ -289,7 +328,7 @@ export function GeneralEnquiryForm({
               autoComplete="tel"
               value={formData.telephone}
               onChange={handleChange}
-              className="w-full h-13 px-4 bg-white text-[#1C052E] text-base rounded-[2px] border border-[#857B90] focus:border-[#1C052E] focus:ring-2 focus:ring-[#C5A15B]/50 outline-none transition-all"
+              className="w-full h-13 px-4 bg-white text-purple-900 text-base rounded-[2px] border border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-3 focus:ring-gold-500/55 outline-none transition-colors"
             />
           </div>
 
@@ -297,23 +336,26 @@ export function GeneralEnquiryForm({
           <div>
             <label
               htmlFor="gen-type"
-              className="block font-sans text-sm font-semibold text-[#1C052E] mb-2"
+              className="block font-sans text-sm font-semibold text-purple-900 mb-2"
             >
               Enquiry type{" "}
-              <span className="font-normal text-[#625A6B]">(required)</span>
+              <span className="font-normal text-muted">(required)</span>
             </label>
-            <select
-              id="gen-type"
-              name="enquiryType"
-              value={formData.enquiryType}
-              onChange={handleChange}
-              className="w-full h-13 px-4 bg-white text-[#1C052E] text-base rounded-[2px] border border-[#857B90] focus:border-[#1C052E] focus:ring-2 focus:ring-[#C5A15B]/50 outline-none transition-all"
-            >
-              <option value="employer">Employer recruitment enquiry</option>
-              <option value="candidate">Candidate enquiry</option>
-              <option value="general">General enquiry</option>
-              <option value="other">Other</option>
-            </select>
+            <div className="relative">
+              <select
+                id="gen-type"
+                name="enquiryType"
+                value={formData.enquiryType}
+                onChange={handleChange}
+                className="w-full h-13 pl-4 pr-10 appearance-none bg-white text-purple-900 text-base rounded-[2px] border border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-3 focus:ring-gold-500/55 outline-none transition-colors"
+              >
+                <option value="employer">Employer recruitment enquiry</option>
+                <option value="candidate">Candidate enquiry</option>
+                <option value="general">General enquiry</option>
+                <option value="other">Other</option>
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+            </div>
           </div>
         </div>
 
@@ -322,12 +364,12 @@ export function GeneralEnquiryForm({
           <div className="flex justify-between items-center mb-2">
             <label
               htmlFor="gen-message"
-              className="block font-sans text-sm font-semibold text-[#1C052E]"
+              className="block font-sans text-sm font-semibold text-purple-900"
             >
               Your message{" "}
-              <span className="font-normal text-[#625A6B]">(required)</span>
+              <span className="font-normal text-muted">(required)</span>
             </label>
-            <span className="text-xs text-[#625A6B]">
+            <span className="text-xs text-muted">
               {formData.message.length} / 3000
             </span>
           </div>
@@ -340,15 +382,15 @@ export function GeneralEnquiryForm({
             onChange={handleChange}
             placeholder="How can we assist you today?"
             aria-invalid={!!errors.message}
-            className={`w-full p-4 bg-white text-[#1C052E] text-base rounded-[2px] border ${
+            className={`w-full p-4 bg-white text-purple-900 text-base rounded-[2px] border ${
               errors.message
-                ? "border-[#B42318] bg-[#FEF3F2]"
-                : "border-[#857B90] focus:border-[#1C052E] focus:ring-2 focus:ring-[#C5A15B]/50"
-            } outline-none transition-all resize-y min-h-[140px]`}
+                ? "border-error bg-error-bg focus:border-error focus:ring-3 focus:ring-error/30"
+                : "border-field-border hover:border-purple-600 focus:border-purple-900 focus:ring-3 focus:ring-gold-500/55"
+            } outline-none transition-colors resize-y min-h-[140px]`}
           />
           {errors.message && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318]">
-              <AlertCircle className="w-3.5 h-3.5" />
+            <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errors.message}</span>
             </p>
           )}
@@ -366,32 +408,31 @@ export function GeneralEnquiryForm({
               aria-invalid={!!errors.privacyConsent}
               aria-describedby={errors.privacyConsent ? "privacyConsent-error" : undefined}
               className={`mt-1 h-5 w-5 rounded-[2px] border ${
-                errors.privacyConsent ? "border-[#B42318] ring-1 ring-[#B42318]" : "border-[#857B90]"
-              } text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]`}
+                errors.privacyConsent ? "border-error ring-1 ring-error" : "border-field-border"
+              } text-purple-900 focus:ring-gold-500 accent-purple-900`}
             />
-            <span className="text-xs md:text-sm text-[#3A3242] leading-relaxed">
-              I have read the{" "}
+            <span className="text-xs md:text-sm text-body leading-relaxed">
+              {"I have read the "}
               <Link
                 href="/privacy-policy"
                 target="_blank"
-                className="text-[#1C052E] font-medium underline decoration-[#C5A15B] underline-offset-2 hover:text-[#7A5A20]"
+                className="text-purple-900 font-medium underline decoration-gold-500 underline-offset-2 hover:text-gold-text"
               >
                 Privacy Policy
-              </Link>{" "}
-              and agree to Perseus Talent contacting me about this message.
-              (required)
+              </Link>
+              {" and agree to Perseus Talent contacting me about this message. (required)"}
             </span>
           </label>
           {errors.privacyConsent && (
-            <p id="privacyConsent-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
-              <AlertCircle className="w-3.5 h-3.5" />
+            <p id="privacyConsent-error" className="mt-1.5 flex items-center gap-1.5 text-sm text-error pl-8">
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errors.privacyConsent}</span>
             </p>
           )}
         </div>
 
         {/* Optional Cloudflare Turnstile */}
-        <TurnstileWidget onToken={setTurnstileToken} />
+        <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} />
 
         {/* Submit */}
         <div className="pt-4">

@@ -35,18 +35,18 @@ export function FormErrorSummary({
       role="alert"
       aria-labelledby={`${id}-heading`}
       tabIndex={-1}
-      className="p-6 mb-8 rounded-[2px] bg-[#FEF3F2] border-2 border-[#B42318] focus:outline-none focus:ring-4 focus:ring-[#B42318]/20 transition-all"
+      className="p-6 mb-8 rounded-[2px] bg-error-bg border-2 border-error focus:outline-none focus:ring-4 focus:ring-error/20 transition-all"
     >
       <div className="flex items-start gap-3">
-        <AlertCircle className="w-5 h-5 text-[#B42318] shrink-0 mt-0.5" />
+        <AlertCircle className="w-5 h-5 text-error shrink-0 mt-0.5" />
         <div className="space-y-3">
           <h3
             id={`${id}-heading`}
-            className="font-serif text-lg font-bold text-[#B42318]"
+            className="font-serif text-lg font-semibold text-error"
           >
             Please correct the following errors before submitting:
           </h3>
-          <ul className="space-y-1.5 list-disc list-inside text-sm text-[#912018]">
+          <ul className="space-y-1.5 list-disc list-inside text-sm text-error">
             {errorKeys.map((key) => {
               const label = fieldLabels[key] || key;
               const message = errors[key];
@@ -69,7 +69,7 @@ export function FormErrorSummary({
                         });
                       }
                     }}
-                    className="font-semibold underline hover:text-[#7A1D13] focus:outline-none focus:ring-1 focus:ring-[#B42318]"
+                    className="font-semibold underline hover:text-error focus:outline-none focus:ring-1 focus:ring-error"
                   >
                     {label}: {message}
                   </a>

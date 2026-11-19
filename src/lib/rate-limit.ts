@@ -1,6 +1,13 @@
 /**
  * In-memory sliding-window rate limiter for enquiry submissions.
  * Limit: 5 submissions per 10 minutes per IP.
+ *
+ * IMPORTANT (serverless hosting such as Netlify): the counters live in this function instance's
+ * memory only. Instances are started and stopped on demand and several may run side by side, so
+ * the limit is NOT shared or persistent there. It still stops a burst hitting a single warm
+ * instance and costs nothing, so it is kept as a harmless extra layer. The real spam defences
+ * on the live site are the honeypot field, the minimum time-to-submit check and Cloudflare
+ * Turnstile (TURNSTILE_ENABLED=true).
  */
 
 interface RateLimitRecord {
@@ -33,7 +40,7 @@ export interface RateLimitResult {
 
 export function checkRateLimit(
   ip: string,
-  maxRequests: number = 5,
+  maxRequests: number = ip === "127.0.0.1" || ip === "::1" ? 50 : 5,
   windowMs: number = 10 * 60 * 1000 // 10 minutes
 ): RateLimitResult {
   const now = Date.now();

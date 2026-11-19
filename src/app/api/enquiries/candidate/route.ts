@@ -4,6 +4,9 @@ import { validateCvFile } from "@/lib/file-check";
 import { deliverSubmission } from "@/lib/delivery";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+import { getJobBySlug } from "@/lib/content";
+
+const JOB_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export async function POST(req: NextRequest) {
   const ip =
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
         {
           ok: false,
           error:
-            "Please upload your CV document (PDF, DOC, or DOCX, maximum 4MB).",
+            "Please upload your CV document (PDF, DOC, or DOCX, maximum 3MB).",
         },
         { status: 400 }
       );
@@ -123,7 +126,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const data = validation.data;
+    // Optional: which job the candidate is applying for (from /candidates?job=<slug>).
+    // Invalid slugs are ignored; unknown slugs are kept as text so an application is never lost.
+    const jobRaw = formData.get("applyingForJob");
+    const jobSlug = typeof jobRaw === "string" ? jobRaw.trim().toLowerCase() : "";
+    const jobFields: { applyingForJob?: string; applyingForJobTitle?: string } = {};
+    if (jobSlug && jobSlug.length <= 100 && JOB_SLUG_PATTERN.test(jobSlug)) {
+      jobFields.applyingForJob = jobSlug;
+      try {
+        const job = await getJobBySlug(jobSlug);
+        if (job) jobFields.applyingForJobTitle = job.meta.title;
+      } catch {
+        // Job lookup is best-effort only.
+      }
+    }
+
+    const data = { ...validation.data, ...jobFields };
 
     // 8. Deliver submission with attached CV
     const result = await deliverSubmission({

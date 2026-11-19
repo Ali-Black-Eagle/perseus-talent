@@ -22,7 +22,7 @@ export function validateCvFile(
   if (fileBuffer.length > maxBytes) {
     return {
       valid: false,
-      error: `File size exceeds the 4MB limit (${(
+      error: `File size exceeds the 3MB limit (${(
         fileBuffer.length /
         (1024 * 1024)
       ).toFixed(1)}MB). Please upload a smaller file.`,

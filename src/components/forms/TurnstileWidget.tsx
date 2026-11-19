@@ -2,8 +2,18 @@
 
 import React, { useEffect, useRef } from "react";
 
+/**
+ * True when the Turnstile challenge is switched on (TURNSTILE_ENABLED=true, mirrored to the browser
+ * by next.config.ts) and a public site key is configured.
+ */
+export const isTurnstileActive =
+  process.env.NEXT_PUBLIC_TURNSTILE_ENABLED === "true" &&
+  Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+
 interface TurnstileWidgetProps {
   onToken: (token: string) => void;
+  /** Increment to request a fresh challenge (tokens are single-use, so reset after a failed submit). */
+  resetKey?: number;
   className?: string;
 }
 
@@ -25,7 +35,7 @@ declare global {
   }
 }
 
-export function TurnstileWidget({ onToken, className = "" }: TurnstileWidgetProps) {
+export function TurnstileWidget({ onToken, resetKey = 0, className = "" }: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
@@ -76,9 +86,20 @@ export function TurnstileWidget({ onToken, className = "" }: TurnstileWidgetProp
         } catch {
           // ignore
         }
+        widgetIdRef.current = null;
       }
     };
   }, [isEnabled, siteKey, onToken]);
+
+  useEffect(() => {
+    if (resetKey > 0 && widgetIdRef.current && window.turnstile) {
+      try {
+        window.turnstile.reset(widgetIdRef.current);
+      } catch {
+        // ignore
+      }
+    }
+  }, [resetKey]);
 
   if (!isEnabled) {
     return null;
