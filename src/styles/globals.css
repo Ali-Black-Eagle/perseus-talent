@@ -456,3 +456,111 @@ ul.star-list > li::before {
 .article-prose a:hover {
   color: #7A5A20;
 }
+
+/* ------------------------------------------------------------------
+   Home hero stars (AnimatedConstellation + HeroStarField)
+   Base styles are the FINISHED picture (lines drawn, stars opaque). Start states live inside the keyframes with
+   fill-mode "both", so the global reduced-motion rule (animation: none) leaves the complete still image.
+   Only transform, opacity and stroke-dashoffset are animated.
+------------------------------------------------------------------- */
+.hs-svg .hs-line,
+.hs-svg .hs-guide,
+.hs-svg .hs-appear,
+.hs-svg .hs-twinkle,
+.hs-svg .hs-halo,
+.hs-svg .hs-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hs-svg .hs-halo {
+  opacity: 0.35;
+}
+
+@keyframes hsDraw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes hsFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hsAppear {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes hsTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes hsTwinkleKey {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.15); }
+}
+@keyframes hsHalo {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.35); }
+}
+@keyframes hsBlink {
+  0%, 84% { opacity: 1; }
+  89%, 95% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+@keyframes hsFieldTwinkle {
+  0%, 100% { opacity: var(--hs-hi); }
+  50% { opacity: var(--hs-lo); }
+}
+@keyframes hsShoot {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(25deg); }
+  1% { opacity: 0.9; }
+  4.5% { opacity: 0.9; }
+  5.6%, 100% { opacity: 0; transform: translate3d(300px, 140px, 0) rotate(25deg); }
+}
+
+.hs-svg .hs-line {
+  animation: hsDraw 700ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.hs-svg .hs-guide {
+  animation: hsFadeIn 700ms ease-out both;
+}
+.hs-svg .hs-appear {
+  animation: hsAppear 400ms ease-out both;
+}
+.hs-svg .hs-twinkle {
+  animation: hsTwinkle var(--hs-dur, 5s) ease-in-out var(--hs-delay, 0s) infinite;
+}
+.hs-svg .hs-twinkle-key {
+  animation-name: hsTwinkleKey;
+}
+.hs-svg .hs-halo {
+  animation: hsHalo var(--hs-halo-dur, 4.5s) ease-in-out var(--hs-halo-delay, 0s) infinite;
+}
+.hs-svg .hs-blink {
+  animation: hsBlink 10s ease-in-out 5s infinite;
+}
+
+.hs-fstar {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: var(--hs-hi);
+  animation: hsFieldTwinkle var(--hs-dur, 6s) ease-in-out var(--hs-delay, 0s) infinite;
+}
+
+.hs-shoot {
+  position: absolute;
+  left: 58%;
+  top: 4%;
+  width: 120px;
+  height: 1px;
+  opacity: 0; /* resting state is invisible, also under reduced motion */
+  background: linear-gradient(to right, transparent, rgba(212, 181, 119, 0.35) 40%, #d4b577);
+  transform-origin: left center;
+  transform: rotate(25deg);
+  animation: hsShoot 16s linear 6s infinite;
+}
+
+/* Pause everything while the hero is scrolled out of view */
+.hero-paused :is(.hs-svg, .hs-field) *,
+.hero-paused .hs-shoot {
+  animation-play-state: paused !important;
+}

@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Ornament } from "@/components/ui/Ornament";
 import { Logo } from "@/components/brand/Logo";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
+import { AnimatedConstellation } from "@/components/brand/AnimatedConstellation";
+import { HeroStarField } from "@/components/brand/HeroStarField";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { EightPointStar } from "@/components/brand/EightPointStar";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
@@ -29,9 +30,15 @@ export default function HomePage() {
         {/* Subtle geometric pattern overlay */}
         <GeometricPattern opacity={0.04} />
 
+        {/* Background star field + shooting star across the whole hero (decorative, behind the text) */}
+        <HeroStarField />
+
         {/* Mobile constellation: top-right behind text at 280px and 25% opacity */}
-        <div className="lg:hidden absolute -top-8 -right-8 w-[280px] h-[280px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={1} />
+        <div
+          data-hero-parallax
+          className="lg:hidden absolute -top-8 -right-8 w-[280px] h-[280px] pointer-events-none opacity-25"
+        >
+          <AnimatedConstellation opacity={1} />
         </div>
 
         <Container className="relative z-10 w-full">
@@ -94,8 +101,11 @@ export default function HomePage() {
 
             {/* Columns 8–12: Constellation on desktop (about 520px) */}
             <div className="hidden lg:flex lg:col-span-5 justify-end items-center">
-              <div className="w-[520px] h-[520px] pointer-events-none opacity-60">
-                <ConstellationGraphic opacity={1} />
+              <div
+                data-hero-parallax
+                className="w-[520px] h-[520px] pointer-events-none opacity-60"
+              >
+                <AnimatedConstellation opacity={1} />
               </div>
             </div>
           </div>

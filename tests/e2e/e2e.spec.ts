@@ -344,4 +344,61 @@ test.describe("Perseus Talent E2E Test Suite", () => {
       expect(f).not.toContain("lead-clinical-nurse-specialist");
     }
   });
+  // 13. Home hero stars animate by default and settle into the finished still picture under reduced motion.
+  test("Home hero stars animate and respect reduced motion", async ({ browser, baseURL }) => {
+    // Default motion
+    const ctx = await browser.newContext({ baseURL });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    const svg = page.locator("svg[data-animated-constellation]:visible");
+    await expect(svg).toHaveCount(1);
+    await expect(page.locator("[data-hero-star-field] [data-field-star]:visible").first()).toBeVisible();
+    expect(await page.locator("[data-hero-star-field] [data-field-star]").count()).toBeGreaterThanOrEqual(30);
+
+    const running = await svg.evaluate((el) => {
+      const stars = Array.from(el.querySelectorAll("[data-star]"));
+      return {
+        stars: stars.length,
+        animated: stars.filter((s) => s.getAnimations().length > 0).length,
+      };
+    });
+    expect(running.stars).toBe(10);
+    expect(running.animated).toBe(10);
+    await ctx.close();
+
+    // Reduced motion
+    const rctx = await browser.newContext({ baseURL, reducedMotion: "reduce" });
+    const rpage = await rctx.newPage();
+    await rpage.goto("/");
+    const rsvg = rpage.locator("svg[data-animated-constellation]:visible");
+    await expect(rsvg).toHaveCount(1);
+    const state = await rpage.evaluate(() => {
+      const hero = document.querySelector("section")!;
+      const animations = hero.getAnimations({ subtree: true }).length;
+      const svgEl = Array.from(
+        hero.querySelectorAll("svg[data-animated-constellation]"),
+      ).find((e) => (e as SVGElement).getBoundingClientRect().width > 0)!;
+      const lines = Array.from(svgEl.querySelectorAll("[data-line]")).map((l) => {
+        const cs = getComputedStyle(l);
+        return { opacity: cs.opacity, offset: parseFloat(cs.strokeDashoffset) };
+      });
+      const stars = Array.from(svgEl.querySelectorAll("[data-star]")).map((s) => ({
+        opacity: getComputedStyle(s).opacity,
+        parentOpacity: getComputedStyle(s.closest(".hs-appear")!).opacity,
+      }));
+      return { animations, lines, stars };
+    });
+    expect(state.animations).toBe(0);
+    expect(state.lines.length).toBe(11);
+    for (const l of state.lines) {
+      expect(l.opacity).toBe("1");
+      expect(l.offset).toBe(0);
+    }
+    expect(state.stars.length).toBe(10);
+    for (const s of state.stars) {
+      expect(s.opacity).toBe("1");
+      expect(s.parentOpacity).toBe("1");
+    }
+    await rctx.close();
+  });
 });
