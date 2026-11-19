@@ -20,8 +20,27 @@ describe("Delivery Adapters (Part LH / Part P)", () => {
   };
 
   describe("Local Delivery Adapter", () => {
+    const submissionsDir = path.join(process.cwd(), ".local-submissions");
+    const createdIds: string[] = [];
+
+    // Remove exactly the folders these tests created (matched by their random id), nothing else.
+    afterEach(async () => {
+      let entries: string[] = [];
+      try {
+        entries = await fs.readdir(submissionsDir);
+      } catch {
+        return;
+      }
+      for (const id of createdIds.splice(0)) {
+        for (const e of entries.filter((x) => x.endsWith(`_${id}`))) {
+          await fs.rm(path.join(submissionsDir, e), { recursive: true, force: true });
+        }
+      }
+    });
+
     it("delivers submission locally and writes metadata file", async () => {
       const res = await deliverLocal(sampleSubmission);
+      createdIds.push(res.id);
       expect(res.ok).toBe(true);
       expect(res.delivery).toBe("local");
       expect(res.id).toBeDefined();

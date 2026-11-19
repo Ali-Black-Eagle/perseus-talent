@@ -85,11 +85,11 @@ describe("Validation Schemas & File Checkers", () => {
       expect(res.error).toContain("does not match its extension");
     });
 
-    it("rejects files exceeding 4MB", () => {
+    it("rejects files exceeding 3MB", () => {
       const largeBuffer = Buffer.alloc(5 * 1024 * 1024); // 5MB
       const res = validateCvFile(largeBuffer, "large.pdf");
       expect(res.valid).toBe(false);
-      expect(res.error).toContain("exceeds the 4MB limit");
+      expect(res.error).toContain("exceeds the 3MB limit");
     });
 
     it("rejects unsupported extensions like .png", () => {
@@ -98,5 +98,19 @@ describe("Validation Schemas & File Checkers", () => {
       expect(res.valid).toBe(false);
       expect(res.error).toContain("Only PDF, DOC, and DOCX files are accepted");
     });
+  });
+});
+
+describe("CV size limit boundary", () => {
+  it("is 3MB: exactly 3MB passes, just over is rejected", () => {
+    const pdfHead = Buffer.from("%PDF-1.4\n");
+    const ok = Buffer.alloc(3 * 1024 * 1024);
+    pdfHead.copy(ok);
+    expect(validateCvFile(ok, "cv.pdf").valid).toBe(true);
+    const tooBig = Buffer.alloc(3 * 1024 * 1024 + 1);
+    pdfHead.copy(tooBig);
+    const res = validateCvFile(tooBig, "cv.pdf");
+    expect(res.valid).toBe(false);
+    expect(res.error).toContain("3MB");
   });
 });

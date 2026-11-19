@@ -53,7 +53,7 @@ async function main() {
   let allPass = true;
 
   for (const r of routes) {
-    const url = `http://localhost:3000${r.path}`;
+    const url = `${process.env.LIGHTHOUSE_BASE_URL || "http://localhost:3000"}${r.path}`;
     const safeName = r.name.toLowerCase().replace(/[^a-z0-9]/g, "-");
     const jsonPath = path.join(reportsDir, `${safeName}.json`);
 

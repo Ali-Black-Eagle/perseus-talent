@@ -10,10 +10,15 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/core-web-vitals", "plugin:jsx-a11y/recommended"),
   {
     ignores: [
       ".next/*",
+      ".next-verify/*",
+      ".next-admin/*",
+      ".next-seo/*",
+      ".test-content/*",
+      "test-results/*",
       "node_modules/*",
       ".local-submissions/*",
       "dist/*",
