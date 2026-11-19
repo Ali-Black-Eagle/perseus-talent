@@ -2,7 +2,10 @@ import { chromium } from '@playwright/test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const BASE_URL = 'http://localhost:3000';
+// Point OFFLINE_BASE_URL at the running production server (default: the dev server on port 3000).
+const BASE_URL = process.env.OFFLINE_BASE_URL || 'http://localhost:3000';
+// OFFLINE_ONLY_HTML=1 writes only perseus-talent-offline.html (no PDF, no copies outside the repo).
+const ONLY_HTML = process.env.OFFLINE_ONLY_HTML === '1';
 const ROOT_DIR = process.cwd();
 
 async function fileToBase64DataUri(filePath, mimeType) {
@@ -111,7 +114,7 @@ async function main() {
   const routes = [
     { id: 'home', path: '/', title: 'Perseus Talent | UK Healthcare Recruitment Consultancy' },
     { id: 'employers', path: '/employers', title: 'For Employers — Healthcare Recruitment | Perseus Talent' },
-    { id: 'candidates', path: '/candidates', title: 'For Candidates — Career Opportunities in Healthcare | Perseus Talent' },
+    { id: 'candidates', path: '/candidates', title: 'For Candidates — Register Your CV | Perseus Talent' },
     { id: 'fee-calculator', path: '/fee-calculator', title: 'Fee Calculator — Transparent 15% Pricing | Perseus Talent' },
     { id: 'specialisms', path: '/specialisms', title: 'Our Specialisms — Healthcare Practice Areas | Perseus Talent' },
     { id: 'specialism-healthcare', path: '/specialisms/healthcare', title: 'Healthcare Recruitment Specialism | Perseus Talent' },
@@ -627,6 +630,8 @@ async function main() {
   const outputPath = path.join(ROOT_DIR, 'perseus-talent-offline.html');
   await fs.writeFile(outputPath, offlineHtml, 'utf8');
   console.log(`Successfully generated ${outputPath}! Size: ${(Buffer.byteLength(offlineHtml) / 1024).toFixed(1)} KB`);
+
+  if (ONLY_HTML) return;
 
   const artifactPath = path.join('C:/Users/nekba/.gemini/antigravity/brain/d2df8d38-3107-4f4f-885a-17bcbe2ae5ef', 'perseus-talent-offline.html');
   try {

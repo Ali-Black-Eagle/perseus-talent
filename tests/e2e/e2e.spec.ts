@@ -3,36 +3,74 @@ import fs from "fs";
 import path from "path";
 
 test.describe("Perseus Talent E2E Test Suite", () => {
-  // 1. Zero Console Errors Monitor Across All Routes
-  test("Zero console errors on all routes", async ({ page }) => {
-    const consoleErrors: string[] = [];
+  // 1. Zero console errors and zero uncaught page errors on all routes.
+  // React reports hydration mismatches (e.g. error #418) as page errors, not console errors, so both are watched.
+  const allRoutes = [
+    "/",
+    "/employers",
+    "/candidates",
+    "/fee-calculator",
+    "/contact",
+    "/about",
+    "/specialisms",
+    "/specialisms/healthcare",
+    "/insights",
+    "/privacy-policy",
+    "/terms",
+    "/cookie-policy",
+  ];
+
+  test("Zero console errors and page errors on all routes", async ({ page }) => {
+    const problems: string[] = [];
     page.on("console", (msg) => {
       if (msg.type() === "error") {
-        consoleErrors.push(`${msg.location().url}: ${msg.text()}`);
+        problems.push(`console: ${msg.location().url}: ${msg.text()}`);
       }
     });
-
-    const allRoutes = [
-      "/",
-      "/employers",
-      "/candidates",
-      "/fee-calculator",
-      "/contact",
-      "/about",
-      "/specialisms",
-      "/specialisms/healthcare",
-      "/insights",
-      "/privacy-policy",
-      "/terms",
-      "/cookie-policy",
-    ];
+    page.on("pageerror", (err) => problems.push(`pageerror: ${err.message}`));
 
     for (const route of allRoutes) {
       await page.goto(route);
-      await page.waitForLoadState("domcontentloaded");
+      await page.waitForLoadState("networkidle");
+      // Give hydration a moment to finish and report any mismatch.
+      await page.waitForTimeout(500);
     }
 
-    expect(consoleErrors).toEqual([]);
+    expect(problems).toEqual([]);
+  });
+
+  // Hosts such as Netlify rewrite the HTML on the way out (a whitespace + comment after <meta charset> in <head>,
+  // a script after </html>). That must never break hydration (React error #418).
+  test("Hydrates cleanly when the host injects markup into the HTML", async ({ page }) => {
+    const problems: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") problems.push(`console: ${msg.text()}`);
+    });
+    page.on("pageerror", (err) => problems.push(`pageerror: ${err.message}`));
+
+    await page.route("**/*", async (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.startsWith("/.netlify/")) {
+        return route.fulfill({ status: 200, contentType: "text/javascript", body: "" });
+      }
+      if (route.request().resourceType() !== "document") return route.continue();
+      const response = await route.fetch();
+      const html = (await response.text())
+        .replace(
+          '<meta charSet="utf-8"/>',
+          '<meta charSet="utf-8"/>\n<!-- hosted by a CDN\n     with a multi-line comment -->'
+        )
+        .concat('<script async src="/.netlify/scripts/hud?variant=public"></script>');
+      return route.fulfill({ response, body: html });
+    });
+
+    for (const route of ["/", "/candidates", "/contact"]) {
+      await page.goto(route);
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+    }
+
+    expect(problems).toEqual([]);
   });
 
   // 2. Navigation & Mobile Menu Focus Trap

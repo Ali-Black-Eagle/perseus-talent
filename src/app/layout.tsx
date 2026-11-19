@@ -24,6 +24,8 @@ const manrope = Manrope({
 
 const siteUrl = getSiteUrl();
 
+const HEAD_BOOTSTRAP_SCRIPT = `document.documentElement.classList.add('js');(function(){function c(){var h=document.head,n=h.firstChild,x;while(n){x=n.nextSibling;if(n.nodeType===3&&!n.data.trim())h.removeChild(n);n=x}}c();document.addEventListener('DOMContentLoaded',c)})();`;
+
 export const viewport: Viewport = {
   themeColor: "#1C052E",
   width: "device-width",
@@ -61,9 +63,17 @@ export default function RootLayout({
       className={`${cormorant.variable} ${manrope.variable}`}
     >
       <head>
+        {/*
+          1. Marks the page as script-enabled (used by the reveal animations in globals.css).
+          2. Removes whitespace-only text nodes from <head>. Netlify's edge injects "
+<!-- ... -->" right
+             after <meta charset>; the stray text node is not in React's tree, so hydrating <head> fails
+             with React error #418. The script runs during parsing, before hydration, and only touches
+             nodes that React never rendered (React emits no whitespace between head elements).
+        */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add('js');`,
+            __html: HEAD_BOOTSTRAP_SCRIPT,
           }}
         />
         <JsonLd data={[orgJsonLd, websiteJsonLd]} />

@@ -105,7 +105,7 @@ async function readCollection(collection: string): Promise<Loaded[]> {
   return items;
 }
 
-function parseOrThrow<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, item: Loaded): T {
+function parseOrThrow<T>(schema: z.ZodType<T>, item: Loaded): T {
   const result = schema.safeParse(item.data);
   if (!result.success) {
     const problems = result.error.issues

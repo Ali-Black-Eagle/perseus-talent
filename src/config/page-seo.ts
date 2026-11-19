@@ -30,9 +30,9 @@ export const pageSeo = {
     path: "/employers",
   },
   candidates: {
-    title: "Healthcare Jobs & Career Opportunities",
+    title: "Register Your CV for Healthcare Roles",
     description:
-      "Register your profile with Perseus Talent, a UK healthcare recruitment consultancy, and connect with meaningful healthcare opportunities.",
+      "Register your CV with Perseus Talent, a UK healthcare recruitment consultancy, and a consultant will be in touch when a role matches your experience.",
     path: "/candidates",
   },
   feeCalculator: {

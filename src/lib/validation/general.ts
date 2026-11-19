@@ -19,12 +19,9 @@ export const generalEnquirySchema = z.object({
       if (!val || val.length === 0) return true;
       return isValidPhoneNumber(val);
     }, "Please enter a valid UK or international telephone number"),
-  enquiryType: z.enum(
-    ["employer", "candidate", "general", "other"],
-    {
-      errorMap: () => ({ message: "Please select an enquiry category" }),
-    }
-  ),
+  enquiryType: z.enum(["employer", "candidate", "general", "other"], {
+    error: "Please select an enquiry category",
+  }),
   message: z
     .string()
     .trim()

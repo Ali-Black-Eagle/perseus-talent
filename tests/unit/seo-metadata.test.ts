@@ -73,7 +73,7 @@ describe("fixed pages", () => {
 
   it("the requested titles are in place", () => {
     expect(pageSeo.feeCalculator.title).toBe("Recruitment Fee Calculator — 15% Flat Fee");
-    expect(pageSeo.candidates.title).toBe("Healthcare Jobs & Career Opportunities");
+    expect(pageSeo.candidates.title).toBe("Register Your CV for Healthcare Roles");
     expect(pageSeo.about.title).toBe("About Us — Relationship-Led Recruitment");
     expect(pageSeo.employers.title).toBe("Healthcare Recruitment for Employers");
   });
