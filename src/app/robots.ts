@@ -1,10 +1,8 @@
 import { MetadataRoute } from "next";
+import { getSiteUrl, isIndexingAllowed } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
-
-  if (!allowIndexing) {
+  if (!isIndexingAllowed()) {
     return {
       rules: {
         userAgent: "*",
@@ -17,8 +15,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/dev/"],
+      // /api/ also covers the admin API (/api/keystatic).
+      disallow: ["/api/", "/dev/", "/keystatic", "/styleguide"],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${getSiteUrl()}/sitemap.xml`,
   };
 }

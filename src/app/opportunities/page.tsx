@@ -4,20 +4,18 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
-import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { EightPointStar } from "@/components/brand/EightPointStar";
 import { Button } from "@/components/ui/Button";
 import { JobDirectory } from "@/components/opportunities/JobDirectory";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
+import { pageSeo } from "@/config/page-seo";
 import { getJobs } from "@/lib/content";
 
-export const metadata = createPageMetadata({
-  title: "Opportunities — Healthcare Vacancies & Careers",
-  description:
-    "Explore current healthcare vacancies and career opportunities with Perseus Talent across the UK.",
-  path: "/opportunities",
-});
+export const dynamic = "force-dynamic";
+
+export const metadata = createPageMetadata(pageSeo.opportunities);
 
 export default async function OpportunitiesPage() {
   const jobs = await getJobs();
@@ -30,68 +28,33 @@ export default async function OpportunitiesPage() {
     <div className="flex flex-col">
       <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
-        <GeometricPattern opacity={0.04} />
-
-        <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[380px] h-[380px] pointer-events-none opacity-25">
-          <ConstellationGraphic opacity={0.6} />
-        </div>
-
-        <Container className="relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-2 text-xs font-sans text-white/60">
-              <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li className="text-[#C5A15B]" aria-hidden="true">
-                /
-              </li>
-              <li className="text-white font-medium" aria-current="page">
-                Opportunities
-              </li>
-            </ol>
-          </nav>
-
-          <div className="max-w-[760px]">
-            <Eyebrow theme="dark" withLine={true} className="mb-4">
-              Career Directory
-            </Eyebrow>
-
-            <Heading
-              level="h1"
-              color="white"
-              className="mb-6 leading-tight max-w-[20ch]"
-            >
-              Current Opportunities
-            </Heading>
-
-            <p className="text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[50ch]">
-              Discover clinical and operational healthcare positions across the
-              United Kingdom.
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PageHero
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Opportunities" },
+        ]}
+        eyebrow="Career Directory"
+        title="Current Opportunities"
+        lead="Discover clinical and operational healthcare positions across the United Kingdom."
+      />
 
       {/* 2. DIRECTORY & FILTERS */}
       <Section bg="white">
         <Container>
           {jobs.length === 0 ? (
             <div className="relative overflow-hidden bg-ivory border border-line rounded-[4px] p-12 md:p-20 text-center max-w-2xl mx-auto shadow-xs">
-              <div className="w-16 h-16 rounded-full bg-purple-900 text-gold-500 flex items-center justify-center font-serif text-2xl font-bold mx-auto mb-6">
-                ✦
+              <div className="w-16 h-16 rounded-full bg-purple-900 text-gold-500 flex items-center justify-center mx-auto mb-6">
+                <EightPointStar size={24} className="text-gold-500" />
               </div>
 
               <Heading level="h2" color="ink" className="mb-4">
                 New opportunities are on the horizon.
               </Heading>
 
-              <p className="font-sans text-base text-muted leading-relaxed mb-8 max-w-[46ch] mx-auto">
-                We are currently partnering with healthcare clients on new clinical briefs.
-                Register your interest with Perseus Talent and let us know what your next
-                career move looks like.
+              <p className="font-sans text-base text-muted leading-relaxed mb-8 max-w-[48ch] mx-auto">
+                We partner on bespoke and confidential healthcare mandates.
+                While roles are being prepared for public listing, we invite clinical
+                and operational leaders to register directly with our search team.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
