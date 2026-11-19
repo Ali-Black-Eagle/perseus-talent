@@ -5,6 +5,7 @@ import { site } from "@/config/site";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { RevealProvider } from "@/components/layout/RevealProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getOrganizationJsonLd, getWebSiteJsonLd, getSiteUrl } from "@/lib/seo";
 
@@ -90,7 +91,7 @@ export default function RootLayout({
         <SkipLink />
         <Header />
         <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
-          {children}
+          <RevealProvider>{children}</RevealProvider>
         </main>
         <Footer />
       </body>

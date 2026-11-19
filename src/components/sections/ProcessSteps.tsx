@@ -47,7 +47,10 @@ export function ProcessSteps({
   return (
     <div className={`w-full ${className}`}>
       {/* 4 Steps Grid */}
-      <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+      <div
+        data-reveal-stagger
+        className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
+      >
         {/* Connecting hairline on desktop (>=1024px) */}
         <div
           className="hidden lg:block absolute top-9 left-10 right-10 h-[1px] bg-[#C5A15B]/30 -z-0"
@@ -57,6 +60,7 @@ export function ProcessSteps({
         {steps.map((step) => (
           <div
             key={step.number}
+            data-reveal
             className="relative z-10 flex flex-col items-start bg-transparent"
           >
             {/* Serif Gold Numeral */}
