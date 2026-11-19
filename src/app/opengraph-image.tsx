@@ -10,7 +10,21 @@ export const size = {
 };
 export const contentType = "image/png";
 
+function toDataUri(buf: ArrayBuffer, mime: string) {
+  const bytes = new Uint8Array(buf);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return `data:${mime};base64,${btoa(bin)}`;
+}
+
 export default async function Image() {
+  const logoBuf = await fetch(
+    new URL("../../public/brand/logo-full.png", import.meta.url),
+  ).then((r) => r.arrayBuffer());
+  const logo = toDataUri(logoBuf, "image/png");
+
   return new ImageResponse(
     (
       <div
@@ -18,111 +32,79 @@ export default async function Image() {
           height: "100%",
           width: "100%",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          backgroundColor: "#1C052E",
-          padding: "80px",
-          position: "relative",
+          alignItems: "center",
+          backgroundColor: "#FBF9F6",
+          padding: "40px 56px",
+          borderBottom: "10px solid #1C052E",
         }}
       >
-        {/* Top bar: Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "4px",
-              border: "1px solid #C5A15B",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#C5A15B",
-              fontSize: "24px",
-            }}
-          >
-            ✦
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span
-              style={{
-                color: "#FFFFFF",
-                fontSize: "36px",
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-              }}
-            >
-              PERSEUS
-            </span>
-            <span
-              style={{
-                color: "#C5A15B",
-                fontSize: "14px",
-                fontWeight: 600,
-                letterSpacing: "0.32em",
-              }}
-            >
-              TALENT
-            </span>
-          </div>
-        </div>
+        {/* Full logo on ivory */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logo}
+          width={600}
+          height={421}
+          alt=""
+          style={{ width: "600px", height: "421px" }}
+        />
 
-        {/* Center: Statement */}
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: "900px" }}>
+        {/* Statement */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginLeft: "56px",
+            flex: 1,
+            borderLeft: "2px solid #C5A15B",
+            paddingLeft: "48px",
+          }}
+        >
           <span
             style={{
-              color: "#C5A15B",
-              fontSize: "16px",
+              color: "#7A5A20",
+              fontSize: "18px",
               fontWeight: 600,
               letterSpacing: "0.2em",
-              marginBottom: "16px",
+              marginBottom: "18px",
               textTransform: "uppercase",
             }}
           >
-            UK Healthcare Recruitment Consultancy
+            UK Healthcare Recruitment
           </span>
           <span
             style={{
-              color: "#FFFFFF",
-              fontSize: "56px",
-              fontWeight: 500,
-              lineHeight: 1.15,
+              color: "#1C052E",
+              fontSize: "40px",
+              fontWeight: 600,
+              lineHeight: 1.18,
             }}
           >
             The right people. The right opportunities. A better future.
           </span>
           <span
             style={{
-              color: "rgba(255, 255, 255, 0.75)",
-              fontSize: "24px",
-              marginTop: "20px",
+              color: "#4A3A5A",
+              fontSize: "20px",
+              marginTop: "22px",
               lineHeight: 1.4,
             }}
           >
             {site.positioning}
           </span>
-        </div>
-
-        {/* Bottom bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-            paddingTop: "24px",
-            color: "#C5A15B",
-            fontSize: "16px",
-          }}
-        >
-          <span>Transparent 15% Flat Rate Fee</span>
-          <span>perseustalent.co.uk</span>
+          <span
+            style={{
+              color: "#7A5A20",
+              fontSize: "18px",
+              marginTop: "26px",
+            }}
+          >
+            Transparent 15% Flat Rate Fee · perseustalent.co.uk
+          </span>
         </div>
       </div>
     ),
     {
       ...size,
-    }
+    },
   );
 }

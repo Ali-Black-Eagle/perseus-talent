@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 
 interface ConstellationProps {
   className?: string;
@@ -9,6 +9,8 @@ export function ConstellationGraphic({
   className = "",
   opacity = 0.55,
 }: ConstellationProps) {
+  const glowId = useId();
+
   // Perseus constellation star coordinate map (Mirfak, Algol, Gorgonea, Menkib, Atik, Miram)
   return (
     <svg
@@ -20,10 +22,28 @@ export function ConstellationGraphic({
       aria-hidden="true"
     >
       <defs>
-        <filter id="gold-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="3" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <style>{`
+          @keyframes starTwinkleA {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+          }
+          @keyframes starTwinkleB {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+          }
+          @media (prefers-reduced-motion: no-preference) {
+            .perseus-twinkle-a {
+              animation: starTwinkleA 5s ease-in-out infinite;
+            }
+            .perseus-twinkle-b {
+              animation: starTwinkleB 5s ease-in-out infinite 2s;
+            }
+          }
+        `}</style>
       </defs>
 
       {/* Primary constellation segment lines */}
@@ -49,19 +69,19 @@ export function ConstellationGraphic({
       <circle cx="360" cy="80" r="2.5" fill="#C5A15B" />
       <circle cx="160" cy="300" r="2.5" fill="#C5A15B" />
       <circle cx="390" cy="190" r="2" fill="#C5A15B" />
-      <circle cx="370" cy="320" r="3" fill="#C5A15B" />
+      <circle cx="370" cy="320" r="3" fill="#C5A15B" className="perseus-twinkle-b" />
       <circle cx="230" cy="360" r="2.5" fill="#C5A15B" />
       <circle cx="290" cy="400" r="2.5" fill="#C5A15B" />
       <circle cx="330" cy="230" r="3" fill="#C5A15B" />
 
       {/* Key stars with glow (Mirfak - alpha Persei, Algol - beta Persei) */}
-      <g filter="url(#gold-glow)">
+      <g filter={`url(#${glowId})`}>
         {/* Mirfak */}
-        <circle cx="260" cy="180" r="4.5" fill="#FFFFFF" />
+        <circle cx="260" cy="180" r="4.5" fill="#FFFFFF" className="perseus-twinkle-a" />
         <circle cx="260" cy="180" r="7" stroke="#C5A15B" strokeWidth="0.75" />
-        
+
         {/* Algol */}
-        <circle cx="210" cy="240" r="4" fill="#FFFFFF" />
+        <circle cx="210" cy="240" r="4" fill="#FFFFFF" className="perseus-twinkle-b" />
         <circle cx="210" cy="240" r="6" stroke="#C5A15B" strokeWidth="0.75" />
 
         {/* Gamma Persei */}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 
 interface PatternProps {
   className?: string;
@@ -9,6 +9,8 @@ export function GeometricPattern({
   className = "",
   opacity = 0.04,
 }: PatternProps) {
+  const patternId = useId();
+
   return (
     <div
       className={`absolute inset-0 pointer-events-none select-none overflow-hidden ${className}`}
@@ -23,14 +25,27 @@ export function GeometricPattern({
       >
         <defs>
           <pattern
-            id="perseus-girih-pattern"
+            id={patternId}
             width="80"
             height="80"
             patternUnits="userSpaceOnUse"
           >
-            {/* 8-point star at centre (40, 40) */}
-            <path
-              d="M40 24 L44 34 L54 34 L46 41 L49 51 L40 45 L31 51 L34 41 L26 34 L36 34 Z"
+            {/* Canonical 8-point girih star at centre (40, 40): two concentric overlapping squares */}
+            <rect
+              x="30"
+              y="30"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="#C5A15B"
+              strokeWidth="0.8"
+            />
+            <rect
+              x="30"
+              y="30"
+              width="20"
+              height="20"
+              transform="rotate(45 40 40)"
               fill="none"
               stroke="#C5A15B"
               strokeWidth="0.8"
@@ -39,14 +54,18 @@ export function GeometricPattern({
             <line x1="0" y1="0" x2="80" y2="80" stroke="#C5A15B" strokeWidth="0.5" strokeOpacity="0.5" />
             <line x1="80" y1="0" x2="0" y2="80" stroke="#C5A15B" strokeWidth="0.5" strokeOpacity="0.5" />
             <rect x="20" y="20" width="40" height="40" fill="none" stroke="#C5A15B" strokeWidth="0.5" strokeOpacity="0.4" />
-            {/* Corner star fragments */}
-            <circle cx="0" cy="0" r="4" fill="none" stroke="#C5A15B" strokeWidth="0.6" />
-            <circle cx="80" cy="0" r="4" fill="none" stroke="#C5A15B" strokeWidth="0.6" />
-            <circle cx="0" cy="80" r="4" fill="none" stroke="#C5A15B" strokeWidth="0.6" />
-            <circle cx="80" cy="80" r="4" fill="none" stroke="#C5A15B" strokeWidth="0.6" />
+            {/* Corner 8-point star fragments */}
+            <rect x="-6" y="-6" width="12" height="12" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="-6" y="-6" width="12" height="12" transform="rotate(45 0 0)" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="74" y="-6" width="12" height="12" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="74" y="-6" width="12" height="12" transform="rotate(45 80 0)" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="-6" y="74" width="12" height="12" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="-6" y="74" width="12" height="12" transform="rotate(45 0 80)" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="74" y="74" width="12" height="12" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
+            <rect x="74" y="74" width="12" height="12" transform="rotate(45 80 80)" fill="none" stroke="#C5A15B" strokeWidth="0.6" strokeOpacity="0.6" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#perseus-girih-pattern)" />
+        <rect width="100%" height="100%" fill={`url(#${patternId})`} />
       </svg>
     </div>
   );
