@@ -31,9 +31,9 @@ export function JobDirectory({ initialJobs }: JobDirectoryProps) {
 
   // Read initial values from URL search params
   const paramQuery = searchParams.get("q") || "";
-  const paramLocations = useSearchParamsMulti(searchParams, "location");
-  const paramSpecialisms = useSearchParamsMulti(searchParams, "specialism");
-  const paramTypes = useSearchParamsMulti(searchParams, "type");
+  const paramLocations = getSearchParamsMulti(searchParams, "location");
+  const paramSpecialisms = getSearchParamsMulti(searchParams, "specialism");
+  const paramTypes = getSearchParamsMulti(searchParams, "type");
 
   // Local state
   const [query, setQuery] = useState(paramQuery);
@@ -72,9 +72,9 @@ export function JobDirectory({ initialJobs }: JobDirectoryProps) {
   // Sync state with URL params when user navigates (back/forward)
   useEffect(() => {
     setQuery(searchParams.get("q") || "");
-    setSelectedLocations(useSearchParamsMulti(searchParams, "location"));
-    setSelectedSpecialisms(useSearchParamsMulti(searchParams, "specialism"));
-    setSelectedTypes(useSearchParamsMulti(searchParams, "type"));
+    setSelectedLocations(getSearchParamsMulti(searchParams, "location"));
+    setSelectedSpecialisms(getSearchParamsMulti(searchParams, "specialism"));
+    setSelectedTypes(getSearchParamsMulti(searchParams, "type"));
   }, [searchParams]);
 
   // Debounced URL update when search or filters change
@@ -732,7 +732,7 @@ export function JobDirectory({ initialJobs }: JobDirectoryProps) {
 }
 
 // Helper to extract multi-value search parameters safely
-function useSearchParamsMulti(
+function getSearchParamsMulti(
   searchParams: ReturnType<typeof useSearchParams>,
   key: string
 ): string[] {
