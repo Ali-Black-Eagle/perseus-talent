@@ -35,25 +35,10 @@ function truncateMiddle(name: string, maxLen = 32): string {
 }
 
 interface CandidateFormProps {
-  initialJobSlug?: string;
   className?: string;
 }
 
-export function CandidateRegistrationForm({
-  initialJobSlug = "",
-  className = "",
-}: CandidateFormProps) {
-  const [jobSlug, setJobSlug] = useState(initialJobSlug);
-
-  useEffect(() => {
-    if (initialJobSlug) {
-      setJobSlug(initialJobSlug);
-    } else if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const j = params.get("job");
-      if (j) setJobSlug(j);
-    }
-  }, [initialJobSlug]);
+export function CandidateRegistrationForm({ className = "" }: CandidateFormProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -224,9 +209,6 @@ export function CandidateRegistrationForm({
       }
       if (formData._hp) {
         formPayload.append("_hp", formData._hp);
-      }
-      if (jobSlug) {
-        formPayload.append("applyingForJob", jobSlug);
       }
 
       const res = await fetch("/api/enquiries/candidate", {

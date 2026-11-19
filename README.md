@@ -43,7 +43,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run typecheck` | Validates TypeScript types across all components, schemas, and routes (`tsc --noEmit`). |
 | `npm run check:links` | Crawls all 17 site routes to ensure zero broken links. |
 | `npm run verify` | Full verification pipeline: lint, typecheck, unit tests, content audit, then a production build tested in the browser on port 3400. |
-| `npm run test:admin` | Browser tests for the admin panel (`/keystatic`), including a create / open / close / delete round trip of a test job. Starts its own dev server on port 3600. |
 
 ---
 
@@ -83,30 +82,7 @@ Forms operate through a pluggable delivery adapter controlled by `FORM_DELIVERY`
 
 Content is data-driven using MDX/Markdown files with front-matter validated by Zod at build time.
 
-### Easiest: the admin panel
-Run `npm run dev` and open <http://localhost:3000/keystatic>. Jobs, Insights articles and Specialisms can be added, edited, closed and deleted with forms; the panel writes the `.mdx` files below for you. On the live site the same panel (with GitHub sign-in) is documented in `DEPLOYMENT.md`, section "Managing jobs and articles". Job status: **Draft** (hidden), **Open** (listed), **Closed** (not listed, page stays up with a notice).
-
-### How to Add a Job Vacancy by hand
-1. Refer to the template at `docs/job-template.mdx` (it is outside `content/` so it never appears on the site or in the admin). **Never add a made-up vacancy to `content/jobs/`.** The `slug` line is optional: the file name is used when it is missing.
-2. Create a new file in `content/jobs/<slug>.mdx` with:
-   ```yaml
-   ---
-   title: "Lead Healthcare Practitioner"
-   slug: "lead-healthcare-practitioner"
-   employerName: "NHS Trust"
-   employerDisclosed: false
-   location: "London"
-   salaryText: "£55,000 - £65,000"
-   employmentType: "Permanent"
-   specialism: "healthcare"
-   datePosted: "2026-11-18"
-   status: "open"
-   requiredExperience: "Minimum 5 years clinical experience..."
-   ---
-
-   Job description markdown content goes here.
-   ```
-3. Set `status: "open"` to list it on `/opportunities`. `status: "closed"` removes it from the list but keeps the page with a "no longer accepting applications" notice (and `noindex`).
+Insights and Specialisms are MDX files in `content/`, edited in code (there is no admin panel). The site does not list job vacancies: candidates register their CV on `/candidates`.
 
 ### How to Add an Insight Article
 1. Create a file in `content/insights/<slug>.mdx`:

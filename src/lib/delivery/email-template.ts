@@ -159,13 +159,12 @@ const ORDER: Record<SubmissionPayload["type"], string[]> = {
     "specialism",
     "currentPosition",
     "preferredOpportunities",
-    "applyingForJob",
     "additionalInfo",
   ],
   general: ["fullName", "email", "telephone", "enquiryType", "message"],
 };
 
-const SKIPPED = new Set(["privacyConsent", "specialismOther", "applyingForJobTitle", "_hp", "startedAt", "turnstileToken"]);
+const SKIPPED = new Set(["privacyConsent", "specialismOther", "_hp", "startedAt", "turnstileToken"]);
 
 function buildFields(submission: SubmissionPayload): Field[] {
   const data = submission.data;
@@ -212,13 +211,6 @@ function buildFields(submission: SubmissionPayload): Field[] {
       case "preferredOpportunities":
         push("Preferred opportunities", str(raw));
         break;
-      case "applyingForJob": {
-        const slug = str(raw);
-        if (!slug) break;
-        const title = str(data.applyingForJobTitle);
-        push("Applying for", title ? `${title} (${slug})` : slug);
-        break;
-      }
       case "enquiryType": {
         const t = str(raw);
         push("Enquiry type", ENQUIRY_TYPE_LABELS[t] ?? humanise(t));
@@ -260,10 +252,7 @@ export function buildSubject(submission: SubmissionPayload): string {
       break;
     }
     case "candidate": {
-      const jobTitle = str(d.applyingForJobTitle) || str(d.applyingForJob);
-      subject = jobTitle
-        ? `New Candidate Application: ${name} — ${jobTitle}`
-        : `New Candidate Registration: ${name}`;
+      subject = `New Candidate Registration: ${name}`;
       break;
     }
     case "general":
@@ -342,8 +331,7 @@ export function buildNotificationEmail(submission: SubmissionPayload): Notificat
   const fields = buildFields(submission);
   const sender = str(submission.data.fullName) || "the sender";
   const when = formatUkTime(submission.submittedAt);
-  const isApplication = submission.type === "candidate" && Boolean(str(submission.data.applyingForJob));
-  const heading = isApplication ? "New job application" : HEADINGS[submission.type] ?? "New enquiry";
+  const heading = HEADINGS[submission.type] ?? "New enquiry";
   const consentLine = `Privacy consent: given at ${when}`;
 
   const rows = fields
@@ -399,7 +387,6 @@ export function buildAcknowledgementEmail(submission: SubmissionPayload): (Built
   const name = str(submission.data.fullName);
   const firstName = name.split(/\s+/)[0] || "";
   const greeting = firstName ? `Dear ${firstName},` : "Hello,";
-  const jobTitle = str(submission.data.applyingForJobTitle);
 
   let received: string;
   let next: string;
@@ -410,9 +397,7 @@ export function buildAcknowledgementEmail(submission: SubmissionPayload): (Built
         "A member of our team will read your enquiry and get back to you using the contact details you provided.";
       break;
     case "candidate":
-      received = jobTitle
-        ? `Thank you for your application for the ${jobTitle} role and for sharing your CV. We have received it.`
-        : "Thank you for registering with Perseus Talent and for sharing your CV. We have received it.";
+      received = "Thank you for registering with Perseus Talent and for sharing your CV. We have received it.";
       next =
         "We review registrations against the roles we are recruiting for. Where there is a role that matches your experience, a member of our team will be in touch to discuss it with you. Registering does not guarantee an interview or placement, and we will not share your CV with an employer without speaking to you first.";
       break;

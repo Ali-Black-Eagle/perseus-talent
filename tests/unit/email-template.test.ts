@@ -41,8 +41,6 @@ const candidate: SubmissionPayload = {
     specialismOther: "Clinical informatics",
     currentPosition: "Ward Manager",
     preferredOpportunities: ["Permanent", "Part-time"],
-    applyingForJob: "test-fixture-role",
-    applyingForJobTitle: "Test Fixture Role",
     additionalInfo: "Available from September.\nThank you.",
     privacyConsent: true,
   },
@@ -167,36 +165,15 @@ describe("buildNotificationEmail", () => {
     expect(e.replyTo).toBeUndefined();
   });
 
-  it("candidate: job title line, combined specialism, joined opportunities, subject", () => {
+  it("candidate: combined specialism, joined opportunities, registration subject", () => {
     const e = buildNotificationEmail(candidate);
-    expect(e.subject).toBe("New Candidate Application: Amira Khan — Test Fixture Role");
-    expect(e.html).toContain("Applying for");
-    expect(e.html).toContain("Test Fixture Role (test-fixture-role)");
-    expect(e.text).toContain(
-      "Applying for: Test Fixture Role (test-fixture-role)"
-    );
+    expect(e.subject).toBe("New Candidate Registration: Amira Khan");
     expect(e.html).toContain("Clinical informatics");
     expect(e.html).not.toContain("Specialism other");
     expect(e.html).toContain("Permanent, Part-time");
     expect(e.html).toContain("Attached to this email");
     expect(e.html).toContain("Available from September.<br>Thank you.");
-  });
-
-  it("candidate with an unknown slug keeps the slug text", () => {
-    const e = buildNotificationEmail({
-      ...candidate,
-      data: { ...candidate.data, applyingForJobTitle: undefined, applyingForJob: "old-role" },
-    });
-    expect(e.subject).toBe("New Candidate Application: Amira Khan — old-role");
-    expect(e.text).toContain("Applying for: old-role");
-  });
-
-  it("candidate without a job uses the registration subject", () => {
-    const e = buildNotificationEmail({
-      ...candidate,
-      data: { ...candidate.data, applyingForJob: undefined, applyingForJobTitle: undefined },
-    });
-    expect(e.subject).toBe("New Candidate Registration: Amira Khan");
+    expect(e.html).not.toContain("Applying for");
   });
 
   it("general enquiry shows a readable enquiry type", () => {
@@ -217,7 +194,6 @@ describe("buildAcknowledgementEmail", () => {
     expect(a.html).toContain(site.email);
     expect(a.html).toContain(site.phoneDisplay);
     expect(a.text).toContain(site.phoneDisplay);
-    expect(a.html).toContain("Test Fixture Role");
     expect(a.html).toMatch(/does not guarantee an interview or placement/);
     expect(a.html).not.toContain("Ward Manager");
     expect(a.html).not.toContain("Manchester");

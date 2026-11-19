@@ -15,8 +15,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // /api/ also covers the admin API (/api/keystatic).
-      disallow: ["/api/", "/dev/", "/keystatic", "/styleguide"],
+      disallow: ["/api/", "/dev/", "/styleguide"],
     },
     sitemap: `${getSiteUrl()}/sitemap.xml`,
   };

@@ -75,8 +75,7 @@ These are private settings kept inside Netlify, not in the website files.
 | `TURNSTILE_ENABLED` | `true` (once you have the keys from step 7) | Switches on the spam check |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | The **Site key** from Cloudflare (step 7) | Public half of the spam check |
 | `TURNSTILE_SECRET_KEY` | The **Secret key** from Cloudflare (step 7) | Private half of the spam check. Keep it secret |
-| `SHOW_DRAFTS` | `false` | Makes sure unfinished jobs and articles are never shown on the live site |
-| `KEYSTATIC_STORAGE` and the other `KEYSTATIC_...` settings | See section 11 | Switch on the private admin panel for jobs and articles |
+| `SHOW_DRAFTS` | `false` | Makes sure unfinished articles are never shown on the live site |
 
 Tips:
 
@@ -140,7 +139,6 @@ Do these on the live site, ideally on both a computer and a phone. Use real emai
 1. **Employer enquiry** (the Employers page and the Contact page): fill it in and submit.
 2. **Candidate registration** (the Candidates page): fill it in, attach a CV and submit.
 3. **General enquiry** (the Contact page): fill it in and submit.
-4. **Job application**: open a job on the Opportunities page, choose to apply, submit, and check that the job title appears in the email.
 
 For each one, check:
 
@@ -173,7 +171,7 @@ This checks that visitors see a helpful message, rather than a broken page, if e
 ### Final checks
 
 - [ ] `https://perseustalent.co.uk` loads with the padlock, and the `www` version redirects to it.
-- [ ] No "draft" or sample jobs or articles are visible (`SHOW_DRAFTS` is `false`).
+- [ ] No "draft" or sample articles are visible (`SHOW_DRAFTS` is `false`).
 - [ ] Search engines are allowed (`NEXT_PUBLIC_ALLOW_INDEXING` is `true`).
 
 ---
@@ -189,93 +187,20 @@ For urgent problems visitors can always reach you at Perseustalent@gmail.com or 
 
 ---
 
-## 11. Managing jobs and articles (the admin panel)
+## 11. Updating articles and specialisms
 
-The website has a private admin panel at **`https://perseustalent.co.uk/keystatic`** (Keystatic). It lets you add, edit, close and delete **jobs**, **Insights articles** and **specialisms** with simple forms, without touching any code.
-
-How it works: when you press **Create** or **Save**, the admin saves your change to the website's files on **GitHub**. Netlify notices the change and rebuilds the website automatically.
-
-> **Important: each save republishes the site.** A save takes about **1 to 2 minutes** to go live, and every republish uses about **15 of your 300 free monthly Netlify credits**. So make **several changes first and then save**, rather than saving after every small edit. (The admin saves one job or article at a time, so finish writing it before you press Save.)
-
-### 11.1 One-time connection (you do the sign-ins yourself)
-
-You only do this once. Never share a password or a secret key with anyone, and never paste one into a file in the project. You type them into GitHub's and Netlify's own websites.
-
-1. **The website must be on GitHub** and connected to Netlify (steps 3 and 4 above). Write down the repository name exactly as GitHub shows it, in the form `owner/name` (for example `yourname/perseus-talent`).
-2. **Create the connection (a "GitHub App") on a computer that has the project folder:**
-   1. In the project folder, add these two lines to a file called `.env.local` (create it if it is not there):
-      ```
-      KEYSTATIC_STORAGE=github
-      KEYSTATIC_GITHUB_REPO=yourname/perseus-talent
-      ```
-   2. Run `npm run dev` and open <http://localhost:3000/keystatic> in your browser.
-   3. Keystatic shows a button to **set up a GitHub App**. Follow it. GitHub asks you to sign in and confirm the creation of the app; this is GitHub's own page.
-   4. When it finishes, Keystatic writes four new lines into a file called `.env` in the project folder. They look like `KEYSTATIC_GITHUB_CLIENT_ID=...`. **Keep this file private.** It is already excluded from GitHub.
-   5. On GitHub, open the new app (GitHub, **Settings**, **Developer settings**, **GitHub Apps**, your app, **Edit**) and:
-      - under **Callback URL**, **add** `https://perseustalent.co.uk/api/keystatic/github/oauth/callback` (keep the localhost one);
-      - choose **Install App** and install it on **only** the Perseus repository.
-   6. Remove the two lines you added to `.env.local` in step 1, so that your local copy goes back to editing local files (unless you want to edit the live site's files from your own computer).
-3. **Add the settings to Netlify** (Site configuration, Environment variables), then trigger a new deploy:
-
-| Name | Value | What it does |
-| --- | --- | --- |
-| `KEYSTATIC_STORAGE` | `github` | Turns the live admin on and makes it save to GitHub. **Without this, `/keystatic` shows "page not found" on the live site, on purpose.** |
-| `KEYSTATIC_GITHUB_REPO` | `owner/name`, for example `yourname/perseus-talent` | Which GitHub repository the admin saves to |
-| `KEYSTATIC_GITHUB_CLIENT_ID` | From the `.env` file created in step 2 | Identifies your GitHub App |
-| `KEYSTATIC_GITHUB_CLIENT_SECRET` | From the `.env` file | The app's private key. **Keep it secret.** |
-| `KEYSTATIC_SECRET` | From the `.env` file (a long random text of at least 32 characters) | Protects the admin sign-in |
-| `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | From the `.env` file | The short name of your GitHub App |
-
-4. Open `https://perseustalent.co.uk/keystatic` and choose **Sign in with GitHub**. Only people who have **write access to the repository** on GitHub can save. Anyone else who finds the page only sees the sign-in button.
-
-### 11.2 Post a job
-
-1. Open `/keystatic`, choose **Jobs**, then **Create** (the **+** button).
-2. Fill in the form. Every box has a short explanation under its name.
-   - Leave the **Salary** boxes blank if the salary is not disclosed.
-   - Leave **Show employer name publicly?** unticked for a confidential search.
-   - Only write facts that you have confirmed with the employer. Never invent a job.
-3. Set **Status** to **Draft** while you are writing (nobody can see a draft), then **Open** when it is ready.
-4. Press **Create**. After 1 to 2 minutes the job is on the **Opportunities** page, with its own page that Google can show in job search.
-
-### 11.3 Edit or close a job
-
-1. Open **Jobs**, then click the job.
-2. Change what you need and press **Save**.
-3. To close a job, set **Status** to **Closed** and press **Save**. The job disappears from the Opportunities list and from the sitemap, but its page stays online with a notice saying **"This role is no longer accepting applications"** (so old links do not break), and it asks search engines not to list it.
-4. To remove a job completely, open it and choose **Delete** from the menu at the top right.
-
-If there are no open jobs, the Opportunities page shows **"New opportunities are on the horizon"**.
-
-### 11.4 Publish an article
-
-1. Open **Insights articles**, then **Create**.
-2. Write the **title**, a **summary** of 120 to 155 characters (it is also what Google shows), pick the **category**, add an **image** and its **description** (alt text), and write the article. Start the article with a subheading, because the title is already the main heading.
-3. Leave **Status** as **Draft** until you have proofread it. Set it to **Published** and press **Save** to put it live.
-4. Review the three articles already on the site in the admin before launch.
-
-### 11.5 Specialisms
-
-Under **Specialisms** you can edit the Healthcare page text or add another sector. Take care: the Healthcare page has its own designed layout, while a new sector shows the text you write in the admin.
-
-### 11.6 If something does not work
-
-- **`/keystatic` says "page not found" on the live site:** `KEYSTATIC_STORAGE` is not set to `github`, or the site was not redeployed after adding it.
-- **You can sign in but cannot save:** your GitHub account needs write access to the repository, and the GitHub App must be installed on that repository.
-- **The site did not change after a save:** open **Deploys** in Netlify. If the build failed, the old site stays live, and the build log names the file with the problem (for example a job missing its location).
-- **You are running out of credits:** batch your changes. At 15 credits per save, the free plan allows about 20 saves a month.
+Insights articles and specialisms are plain MDX files in the `content/` folder (`content/insights/` and `content/specialisms/`). They are edited in code by a developer and published by pushing the change to GitHub; Netlify rebuilds the website automatically. There is no admin panel, and the site does not list job vacancies (candidates register their CV on the Candidates page). See `README.md`, section "Adding New Content", for the file format.
 
 ---
 
 ## 12. SEO checklist for the owner
 
-The site is already set up for search engines (page titles and descriptions, sitemap, `robots.txt`, structured data for jobs and articles). These steps need **you**, because they involve your accounts. Do them once the live site is running with `NEXT_PUBLIC_ALLOW_INDEXING=true`.
+The site is already set up for search engines (page titles and descriptions, sitemap, `robots.txt`, structured data for articles). These steps need **you**, because they involve your accounts. Do them once the live site is running with `NEXT_PUBLIC_ALLOW_INDEXING=true`.
 
 1. **Google Search Console** (<https://search.google.com/search-console>): add the **domain** `perseustalent.co.uk`, verify it by adding the DNS record that Google gives you (at your domain seller or in Netlify DNS), then open **Sitemaps** and submit `https://perseustalent.co.uk/sitemap.xml`.
 2. **Bing Webmaster Tools** (<https://www.bing.com/webmasters>): sign in and choose **Import from Google Search Console**.
 3. **Google Business Profile** (<https://business.google.com>): create the profile as a **service-area business** with **no public address**, using the website address and the official email and telephone number on this site. Do not add a street address unless you want one shown.
-4. **Publish the three draft articles** after you have reviewed them (section 11.4), then aim for **one useful article a month**.
-5. **Put real jobs on the site as soon as you have them** (section 11.2). Open job pages can appear in Google's job search. Never post a job that is not real.
+4. **Publish the three draft articles** after you have reviewed them (section 11), then aim for **one useful article a month**.
 6. **Get listed honestly** in UK recruitment directories (for example REC membership, if it applies to you). **Never buy links.**
 7. **Check the redirect:** `https://www.perseustalent.co.uk` should jump to `https://perseustalent.co.uk`. The rules are in `netlify.toml`; make sure the domain in Netlify includes both the `www` and non-`www` versions.
 8. **Check the result:** in Search Console, **URL inspection** on the home page should say "URL is on Google" within a few days. If a page says "Excluded by noindex", check that `NEXT_PUBLIC_ALLOW_INDEXING` is `true` in Netlify and redeploy.

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
-import type { JobItem, InsightItem } from "@/lib/content";
-import { markdownToHtml } from "@/lib/markdown";
+import type { InsightItem } from "@/lib/content";
 
 export const TITLE_SUFFIX = " | Perseus Talent";
 export const MAX_TITLE_LENGTH = 60;
@@ -271,107 +270,7 @@ export function getFaqPageJsonLd(faqs: { question: string; answer: string }[]) {
   };
 }
 
-const GOOGLE_EMPLOYMENT_TYPE: Record<JobItem["meta"]["employmentType"], string> = {
-  Permanent: "FULL_TIME",
-  "Full-time": "FULL_TIME",
-  "Part-time": "PART_TIME",
-  Contract: "CONTRACTOR",
-  Temporary: "TEMPORARY",
-};
-
-/**
- * JobPosting schema (Google's job posting structured data). For real, OPEN jobs only:
- * callers must not use it for closed or draft jobs.
- */
-export function getJobPostingJsonLd(job: JobItem) {
-  const siteUrl = getSiteUrl();
-  const { meta } = job;
-  const bodyHtml = markdownToHtml(job.content).trim();
-  const extraHtml = [
-    meta.requiredExperience ? `<p><strong>Experience:</strong> ${escapeHtml(meta.requiredExperience)}</p>` : "",
-    meta.requiredQualifications
-      ? `<p><strong>Qualifications:</strong> ${escapeHtml(meta.requiredQualifications)}</p>`
-      : "",
-  ].join("");
-  const description = `${bodyHtml}${extraHtml}` || `<p>${escapeHtml(meta.requiredExperience)}</p>`;
-
-  const hasSalary = meta.salaryMin !== undefined || meta.salaryMax !== undefined;
-  const salaryValue = {
-    "@type": "QuantitativeValue",
-    ...(meta.salaryMin !== undefined ? { minValue: meta.salaryMin } : {}),
-    ...(meta.salaryMax !== undefined ? { maxValue: meta.salaryMax } : {}),
-    unitText: "YEAR",
-  };
-
-  const disclosed = meta.employerDisclosed && meta.employerName;
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "JobPosting",
-    title: meta.title,
-    description,
-    datePosted: String(meta.datePosted),
-    ...(meta.validThrough ? { validThrough: String(meta.validThrough) } : {}),
-    employmentType: GOOGLE_EMPLOYMENT_TYPE[meta.employmentType],
-    hiringOrganization: {
-      "@type": "Organization",
-      name: disclosed ? meta.employerName : site.name,
-      ...(disclosed
-        ? {}
-        : { sameAs: siteUrl, logo: `${siteUrl}/brand/logo-emblem-512.png` }),
-    },
-    jobLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: meta.location,
-        ...(meta.region ? { addressRegion: meta.region } : {}),
-        addressCountry: "GB",
-      },
-    },
-    ...(hasSalary
-      ? {
-          baseSalary: {
-            "@type": "MonetaryAmount",
-            currency: "GBP",
-            value: salaryValue,
-          },
-        }
-      : {}),
-    directApply: false,
-    identifier: {
-      "@type": "PropertyValue",
-      name: site.name,
-      value: meta.slug,
-    },
-    url: `${siteUrl}/opportunities/${meta.slug}`,
-  };
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
 // --- Generated titles and descriptions for content pages ---
-
-/** Meta description for a job page, built only from the job's own fields. */
-export function buildJobDescription(job: JobItem, specialismTitle?: string): string {
-  const { meta } = job;
-  const kind = specialismTitle ? `${meta.employmentType} ${specialismTitle} role` : `${meta.employmentType} role`;
-  const parts = [
-    `${meta.title}: ${kind} in ${meta.location}${meta.salaryText ? `, ${meta.salaryText}` : ""}.`,
-    meta.requiredExperience.trim(),
-  ];
-  return fitDescription(parts.join(" "), [
-    "Register with Perseus Talent, a UK healthcare recruitment consultancy.",
-    "Apply through Perseus Talent.",
-    "Advice for UK healthcare teams.",
-  ]);
-}
 
 /** Meta description for an article: its excerpt, trimmed to 155 characters (padded if too short). */
 export function buildArticleDescription(article: InsightItem): string {

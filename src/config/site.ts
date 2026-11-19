@@ -81,7 +81,6 @@ export const site: SiteConfig = {
     { label: "Employer Recruitment", href: "/employers" },
     { label: "Healthcare Recruitment", href: "/specialisms/healthcare" },
     { label: "Candidate Registration", href: "/candidates#register" },
-    { label: "Current Opportunities", href: "/opportunities" },
     { label: "Fee Calculator", href: "/fee-calculator" },
   ],
   legal: [

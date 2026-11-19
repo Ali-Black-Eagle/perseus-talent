@@ -41,40 +41,6 @@ export interface SpecialismItem {
   content: string;
 }
 
-// --- Job Schema ---
-export const jobSchema = z.object({
-  title: z.string(),
-  slug: z.string(),
-  employerName: z.string().optional(),
-  employerDisclosed: z.boolean().default(false),
-  location: z.string(),
-  region: z.string().optional(),
-  salaryMin: z.number().optional(),
-  salaryMax: z.number().optional(),
-  salaryText: z.string().optional(),
-  employmentType: z.enum([
-    "Permanent",
-    "Contract",
-    "Temporary",
-    "Part-time",
-    "Full-time",
-  ]),
-  specialism: z.string(),
-  datePosted: dateStringSchema,
-  validThrough: dateStringSchema.optional(),
-  status: z.enum(["open", "closed", "draft"]),
-  requiredExperience: z.string(),
-  requiredQualifications: z.string().optional(),
-  applicationInstructions: z.string().optional(),
-});
-
-export type JobMeta = z.infer<typeof jobSchema>;
-
-export interface JobItem {
-  meta: JobMeta;
-  content: string;
-}
-
 // --- Insight Schema ---
 export const insightSchema = z.object({
   title: z.string(),
@@ -101,7 +67,7 @@ export interface InsightItem {
 
 type Loaded = { data: Record<string, unknown>; content: string; file: string };
 
-/** Keystatic writes empty optional fields as null or "". Treat them as "not set". */
+/** Empty optional fields in the front matter (null or "") are treated as "not set". */
 function stripEmpty(data: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(
     Object.entries(data).filter(
@@ -112,8 +78,7 @@ function stripEmpty(data: Record<string, unknown>): Record<string, unknown> {
 
 /**
  * Reads every .mdx/.md file in content/<collection> (ignoring files that start with "_").
- * The slug comes from the file name when the front matter has none, so both Keystatic's
- * file-name slugs and older files with an explicit slug work.
+ * The slug comes from the file name when the front matter has none; an explicit slug in the front matter wins.
  */
 async function readCollection(collection: string): Promise<Loaded[]> {
   const dir = path.join(getContentRoot(), collection);
@@ -165,44 +130,6 @@ export async function getSpecialismBySlug(
 ): Promise<SpecialismItem | null> {
   const specialisms = await getSpecialisms();
   return specialisms.find((s) => s.meta.slug === slug) || null;
-}
-
-async function loadAllJobs(): Promise<JobItem[]> {
-  return (await readCollection("jobs")).map((l) => ({
-    meta: parseOrThrow(jobSchema, l),
-    content: l.content,
-  }));
-}
-
-function byDatePostedDesc(a: JobItem, b: JobItem): number {
-  return new Date(b.meta.datePosted).getTime() - new Date(a.meta.datePosted).getTime();
-}
-
-/**
- * Jobs LISTED on /opportunities: open jobs (and drafts when drafts are visible).
- * Closed jobs are not listed.
- */
-export async function getJobs(): Promise<JobItem[]> {
-  const showDrafts = draftsVisible();
-  return (await loadAllJobs())
-    .filter((j) => j.meta.status === "open" || (showDrafts && j.meta.status === "draft"))
-    .sort(byDatePostedDesc);
-}
-
-/**
- * Jobs that have a page: everything listed, plus closed jobs. A closed job keeps its page
- * (with a "no longer accepting applications" banner) so old links and shared URLs do not break.
- */
-export async function getJobPages(): Promise<JobItem[]> {
-  const showDrafts = draftsVisible();
-  return (await loadAllJobs())
-    .filter((j) => j.meta.status !== "draft" || showDrafts)
-    .sort(byDatePostedDesc);
-}
-
-export async function getJobBySlug(slug: string): Promise<JobItem | null> {
-  const jobs = await getJobPages();
-  return jobs.find((j) => j.meta.slug === slug) || null;
 }
 
 export async function getInsights(): Promise<InsightItem[]> {

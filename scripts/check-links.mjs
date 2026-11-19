@@ -14,7 +14,6 @@ const coreRoutes = [
   "/specialisms/healthcare",
   "/about",
   "/insights",
-  "/opportunities",
   "/contact",
   "/privacy-policy",
   "/cookie-policy",

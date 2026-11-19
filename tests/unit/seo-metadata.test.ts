@@ -5,7 +5,6 @@ import {
   createPageMetadata,
   fitTitle,
   fitDescription,
-  buildJobDescription,
   buildArticleDescription,
   buildSpecialismDescription,
   buildCategoryMetadata,
@@ -16,7 +15,7 @@ import {
 } from "@/lib/seo";
 import { pageSeo } from "@/config/page-seo";
 import { INSIGHT_CATEGORIES } from "@/config/insight-categories";
-import { getInsights, getJobPages, getSpecialisms, type JobItem, type InsightItem } from "@/lib/content";
+import { getInsights, getSpecialisms, type InsightItem } from "@/lib/content";
 
 const BASE = "https://perseustalent.co.uk";
 
@@ -81,7 +80,7 @@ describe("fixed pages", () => {
 
   it("every public page file takes its metadata from the shared config or a content generator", () => {
     const appDir = path.resolve(__dirname, "../../src/app");
-    const skip = ["dev", "styleguide", "keystatic"];
+    const skip = ["dev", "styleguide"];
     const files: string[] = [];
     const walk = (dir: string) => {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -241,36 +240,6 @@ describe("generated descriptions", () => {
       });
       expectGoodMetadata(meta, `specialism ${s.meta.slug}`);
     }
-  });
-
-  it("jobs: long titles are shortened and the description is 120 to 155 characters", async () => {
-    vi.stubEnv("CONTENT_DIR", path.resolve(__dirname, "../fixtures/content"));
-    const jobs = await getJobPages();
-    expect(jobs.length).toBeGreaterThan(0);
-    for (const j of jobs) {
-      const meta = createPageMetadata({
-        title: j.meta.title,
-        description: buildJobDescription(j, "Healthcare"),
-        path: `/opportunities/${j.meta.slug}`,
-      });
-      expectGoodMetadata(meta, `job ${j.meta.slug}`);
-    }
-    const longJob: JobItem = {
-      meta: {
-        ...jobs[0].meta,
-        title: "Senior Advanced Clinical Practitioner (Emergency Medicine and Urgent Care Services)",
-        requiredExperience: "x ".repeat(200),
-      },
-      content: "",
-    };
-    expectGoodMetadata(
-      createPageMetadata({
-        title: longJob.meta.title,
-        description: buildJobDescription(longJob, "Healthcare"),
-        path: "/opportunities/long",
-      }),
-      "long job"
-    );
   });
 
   it("articles: a very long title and a short excerpt still produce valid metadata", () => {

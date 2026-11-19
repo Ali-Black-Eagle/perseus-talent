@@ -31,7 +31,6 @@ const STATIC_PAGES = [
   "/about",
   "/specialisms",
   "/specialisms/healthcare",
-  "/opportunities",
   "/insights",
   "/insights/category/employer-guidance",
   "/privacy-policy",
@@ -174,111 +173,56 @@ test.describe("SEO on every public page", () => {
   });
 });
 
-test.describe("job pages", () => {
-  test("open job: JobPosting, apply link, internal links, valid headings", async ({ page }) => {
-    const route = "/opportunities/test-open-role";
-    const res = await page.goto(route);
-    expect(res?.status()).toBe(200);
-    const data = await collect(page);
-    expectGoodPage(data, route);
-    expect(data.jsonLdTypes).toContain("JobPosting");
-    expect(data.jsonLdTypes).toContain("BreadcrumbList");
-    await expect(page.getByRole("link", { name: /Apply for this role/ })).toBeVisible();
-    await expect(page.getByTestId("closed-banner")).toHaveCount(0);
-    const hrefs = await page.locator("main a[href]").evaluateAll((as) => as.map((a) => a.getAttribute("href") || ""));
-    expect(hrefs.some((h) => h.startsWith("/candidates"))).toBe(true);
-    expect(hrefs.some((h) => h.startsWith("/specialisms"))).toBe(true);
-  });
-
-  test("open job JSON-LD has Google's required properties", async ({ page }) => {
-    await page.goto("/opportunities/test-open-role");
-    const jobPosting = await page.evaluate(() => {
-      for (const s of Array.from(document.querySelectorAll('script[type="application/ld+json"]'))) {
-        const data = JSON.parse(s.textContent || "");
-        for (const item of Array.isArray(data) ? data : [data]) if (item["@type"] === "JobPosting") return item;
-      }
-      return null;
-    });
-    expect(jobPosting).not.toBeNull();
-    expect(jobPosting.title).toBe("Test Open Role");
-    expect(jobPosting.description).toContain("<");
-    expect(jobPosting.datePosted).toBe("2026-11-01");
-    expect(jobPosting.validThrough).toBe("2026-12-31");
-    expect(jobPosting.employmentType).toBe("FULL_TIME");
-    expect(jobPosting.hiringOrganization.name).toBe("Test Employer");
-    expect(jobPosting.jobLocation.address.addressCountry).toBe("GB");
-    expect(jobPosting.baseSalary.currency).toBe("GBP");
-    expect(jobPosting.directApply).toBe(false);
-    expect(jobPosting.identifier.value).toBe("test-open-role");
-  });
-
-  test("closed job keeps its page with a banner, no apply button, no JobPosting, noindex", async ({ page }) => {
-    const res = await page.goto("/opportunities/test-closed-role");
-    expect(res?.status()).toBe(200);
-    await expect(page.getByTestId("closed-banner")).toContainText("This role is no longer accepting applications");
-    await expect(page.getByRole("link", { name: /Apply/ })).toHaveCount(0);
-    const data = await collect(page);
-    expect(data.robots).toBe("noindex, nofollow");
-    expect(data.jsonLdTypes).not.toContain("JobPosting");
-    expect(data.h1Count).toBe(1);
-  });
-
-  test("draft job is never visible on a production build", async ({ request }) => {
-    const res = await request.get("/opportunities/test-draft-role");
-    expect(res.status()).toBe(404);
-  });
-
-  test("list shows only open jobs, as real links", async ({ page, request }) => {
-    await page.goto("/opportunities");
-    const link = page.locator('a[href="/opportunities/test-open-role"]').first();
-    await expect(link).toBeVisible();
-    await expect(page.locator('a[href="/opportunities/test-closed-role"]')).toHaveCount(0);
-    await expect(page.locator('a[href="/opportunities/test-draft-role"]')).toHaveCount(0);
-    // The sitemap is built at deploy time from content/ (which holds no test jobs), so here we only check that
-    // closed and draft jobs never appear. Open jobs in the sitemap are covered by the unit tests and the admin test.
-    const sitemap = await (await request.get("/sitemap.xml")).text();
-    expect(sitemap).not.toContain("test-closed-role");
-    expect(sitemap).not.toContain("test-draft-role");
-  });
-});
-
 test.describe("healthcare specialism internal links", () => {
-  test("links to Opportunities and the Fee Calculator", async ({ page }) => {
+  test("links to candidate registration and the Fee Calculator", async ({ page }) => {
     await page.goto("/specialisms/healthcare");
     const hrefs = await page.locator("main a[href]").evaluateAll((as) => as.map((a) => a.getAttribute("href") || ""));
-    expect(hrefs).toContain("/opportunities");
+    expect(hrefs).toContain("/candidates#register");
     expect(hrefs).toContain("/fee-calculator");
   });
 });
 
-test.describe("admin is hidden on a production build", () => {
-  test("/keystatic answers 404 and noindex when GitHub storage is not configured", async ({ request }) => {
-    const res = await request.get("/keystatic");
-    expect(res.status()).toBe(404);
-    expect(res.headers()["x-robots-tag"]).toContain("noindex");
-    const sub = await request.get("/keystatic/collection/jobs");
-    expect(sub.status()).toBe(404);
+test.describe("removed pages", () => {
+  test("/opportunities and any /opportunities/<slug> permanently redirect to /candidates", async ({ request }) => {
+    for (const route of ["/opportunities", "/opportunities/anything", "/opportunities/some/deep/path"]) {
+      const res = await request.get(route, { maxRedirects: 0 });
+      expect(res.status(), route).toBe(308);
+      expect(res.headers()["location"], route).toMatch(/\/candidates$/);
+    }
   });
 
-  test("/api/keystatic answers 404 and noindex", async ({ request }) => {
-    const res = await request.get("/api/keystatic/tree", { headers: { "no-cors": "1" } });
-    expect(res.status()).toBe(404);
-    expect(res.headers()["x-robots-tag"]).toContain("noindex");
+  test("following the old /opportunities link lands on the candidates page", async ({ page }) => {
+    const res = await page.goto("/opportunities/old-job");
+    expect(res?.status()).toBe(200);
+    expect(new URL(page.url()).pathname).toBe("/candidates");
   });
 
-  test("the public site keeps its strict CSP (no GitHub allowance)", async ({ request }) => {
-    const csp = (await request.get("/about")).headers()["content-security-policy"];
-    expect(csp).toContain("default-src 'self'");
-    expect(csp).not.toContain("github");
-    expect(csp).not.toContain("'unsafe-eval'");
+  test("/keystatic and /api/keystatic answer 404", async ({ request }) => {
+    for (const route of ["/keystatic", "/keystatic/collection/jobs", "/api/keystatic/tree"]) {
+      const res = await request.get(route);
+      expect(res.status(), route).toBe(404);
+    }
+  });
+});
+
+test.describe("public site hardening", () => {
+  test("the public site has the strict CSP", async ({ request }) => {
+    for (const route of ["/about", "/candidates", "/does-not-exist"]) {
+      const csp = (await request.get(route)).headers()["content-security-policy"];
+      expect(csp, route).toContain("default-src 'self'");
+      expect(csp, route).toContain("frame-ancestors 'none'");
+      expect(csp, route).not.toContain("github");
+      expect(csp, route).not.toContain("'unsafe-eval'");
+    }
   });
 
-  test("robots.txt and the sitemap never mention the admin, /dev or /styleguide", async ({ request }) => {
+  test("robots.txt and the sitemap never mention /dev, /styleguide or job pages", async ({ request }) => {
     const sitemap = await (await request.get("/sitemap.xml")).text();
-    for (const bad of ["keystatic", "/dev", "styleguide", "/api/"]) expect(sitemap).not.toContain(bad);
+    for (const bad of ["keystatic", "opportunities", "/dev", "styleguide", "/api/"]) expect(sitemap).not.toContain(bad);
     const txt = await (await request.get("/robots.txt")).text();
+    expect(txt).not.toContain("keystatic");
     if (/Allow:/i.test(txt)) {
-      for (const must of ["/api/", "/dev/", "/keystatic", "/styleguide"]) expect(txt).toContain(`Disallow: ${must}`);
+      for (const must of ["/api/", "/dev/", "/styleguide"]) expect(txt).toContain(`Disallow: ${must}`);
       expect(txt).toMatch(/Sitemap: https?:\/\/.+\/sitemap\.xml/);
     } else {
       expect(txt).toMatch(/Disallow:\s*\/\s*$/m);

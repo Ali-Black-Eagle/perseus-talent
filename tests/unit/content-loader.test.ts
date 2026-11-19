@@ -3,9 +3,6 @@ import path from "path";
 import fs from "fs";
 import os from "os";
 import {
-  getJobs,
-  getJobPages,
-  getJobBySlug,
   getInsights,
   getInsightBySlug,
   getSpecialisms,
@@ -24,21 +21,17 @@ afterEach(() => {
 });
 
 describe("slug from file name", () => {
-  it("uses the file name when the front matter has no slug (Keystatic style)", async () => {
-    const job = await getJobBySlug("test-open-role");
-    expect(job?.meta.slug).toBe("test-open-role");
-    expect(job?.meta.title).toBe("Test Open Role");
+  it("uses the file name when the front matter has no slug", async () => {
+    const article = await getInsightBySlug("test-published-article");
+    expect(article?.meta.slug).toBe("test-published-article");
+    expect(article?.meta.title).toBe("Test Published Article");
+    expect((await getSpecialismBySlug("test-specialism"))?.meta.slug).toBe("test-specialism");
   });
 
-  it("still honours an explicit slug in the front matter (existing files)", async () => {
+  it("still honours an explicit slug in the front matter", async () => {
     vi.stubEnv("SHOW_DRAFTS", "true");
-    const job = await getJobBySlug("test-draft-role");
-    expect(job?.meta.slug).toBe("test-draft-role");
-  });
-
-  it("works for insights and specialisms too", async () => {
-    expect((await getInsightBySlug("test-published-article"))?.meta.title).toBe("Test Published Article");
-    expect((await getSpecialismBySlug("test-specialism"))?.meta.title).toBe("Test Specialism");
+    const draft = await getInsightBySlug("test-draft-article");
+    expect(draft?.meta.slug).toBe("test-draft-article");
   });
 
   it("keeps every real content file valid and gives each one a slug", async () => {
@@ -48,83 +41,47 @@ describe("slug from file name", () => {
     const insights = await getInsights();
     expect(insights.length).toBeGreaterThan(0);
     for (const i of insights) expect(i.meta.slug).toMatch(/^[a-z0-9-]+$/);
-    // The real content folder must never hold a made-up or test vacancy.
-    expect(
-      fs.existsSync(path.resolve(__dirname, "../../content/jobs/lead-clinical-nurse-specialist.mdx"))
-    ).toBe(false);
+  });
+
+  it("the real content folder holds only insights and specialisms collections", () => {
+    const root = path.resolve(__dirname, "../../content");
+    const dirs = fs
+      .readdirSync(root, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name)
+      .sort();
+    expect(dirs).toEqual(["insights", "specialisms"]);
   });
 });
 
-describe("Keystatic empty optional fields", () => {
+describe("empty optional fields", () => {
   it("treats null and empty strings as not set", async () => {
-    const job = await getJobBySlug("test-closed-role");
-    expect(job).not.toBeNull();
-    expect(job?.meta.region).toBeUndefined();
-    expect(job?.meta.salaryMin).toBeUndefined();
-    expect(job?.meta.salaryText).toBeUndefined();
-    expect(job?.meta.employerName).toBeUndefined();
-    expect(job?.meta.validThrough).toBeUndefined();
-  });
-
-  it("turns unquoted YAML dates into YYYY-MM-DD strings", async () => {
-    const job = await getJobBySlug("test-open-role");
-    expect(job?.meta.datePosted).toBe("2026-11-01");
-    expect(job?.meta.validThrough).toBe("2026-12-31");
-  });
-});
-
-describe("job lifecycle", () => {
-  it("lists only open jobs on /opportunities", async () => {
-    const slugs = (await getJobs()).map((j) => j.meta.slug);
-    expect(slugs).toEqual(["test-open-role"]);
-  });
-
-  it("closed jobs are not listed but keep their page", async () => {
-    expect((await getJobs()).some((j) => j.meta.slug === "test-closed-role")).toBe(false);
-    const closed = await getJobBySlug("test-closed-role");
-    expect(closed?.meta.status).toBe("closed");
-    expect((await getJobPages()).map((j) => j.meta.slug)).toContain("test-closed-role");
-  });
-
-  it("hides drafts everywhere by default", async () => {
-    expect(await getJobBySlug("test-draft-role")).toBeNull();
-    expect((await getJobPages()).map((j) => j.meta.slug)).not.toContain("test-draft-role");
-  });
-
-  it("shows drafts locally only when SHOW_DRAFTS=true", async () => {
-    vi.stubEnv("SHOW_DRAFTS", "true");
-    expect((await getJobs()).map((j) => j.meta.slug)).toContain("test-draft-role");
-    expect(await getJobBySlug("test-draft-role")).not.toBeNull();
-  });
-
-  it("never shows drafts in production, even with SHOW_DRAFTS=true", async () => {
-    vi.stubEnv("SHOW_DRAFTS", "true");
-    vi.stubEnv("NODE_ENV", "production");
-    expect((await getJobs()).map((j) => j.meta.slug)).toEqual(["test-open-role"]);
-    expect(await getJobBySlug("test-draft-role")).toBeNull();
-    expect(await getInsightBySlug("test-draft-article")).toBeNull();
-  });
-
-  it("an empty or closed-only folder gives an empty list", async () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "perseus-content-"));
     try {
-      fs.mkdirSync(path.join(tmp, "jobs"));
-      fs.copyFileSync(
-        path.join(FIXTURES, "jobs/test-closed-role.mdx"),
-        path.join(tmp, "jobs/test-closed-role.mdx")
+      fs.mkdirSync(path.join(tmp, "insights"));
+      fs.writeFileSync(
+        path.join(tmp, "insights/empty-fields.mdx"),
+        '---\ntitle: Empty Fields\nexcerpt: Excerpt\ncategory: Candidate Advice\ndate: 2026-11-02\nupdated: ""\nimage: null\nimageAlt: ""\n---\nBody\n'
       );
       vi.stubEnv("CONTENT_DIR", tmp);
-      expect(await getJobs()).toEqual([]);
-      expect((await getJobPages()).length).toBe(1);
-      vi.stubEnv("CONTENT_DIR", path.join(tmp, "does-not-exist"));
-      expect(await getJobs()).toEqual([]);
+      const article = await getInsightBySlug("empty-fields");
+      expect(article).not.toBeNull();
+      expect(article?.meta.updated).toBeUndefined();
+      expect(article?.meta.image).toBeUndefined();
+      expect(article?.meta.imageAlt).toBeUndefined();
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
   });
+
+  it("turns unquoted YAML dates into YYYY-MM-DD strings", async () => {
+    const article = await getInsightBySlug("test-published-article");
+    expect(article?.meta.date).toBe("2026-11-02");
+    expect(article?.meta.updated).toBe("2026-11-03");
+  });
 });
 
-describe("insight drafts", () => {
+describe("drafts", () => {
   it("hides draft articles by default and shows them with SHOW_DRAFTS=true", async () => {
     expect((await getInsights()).map((i) => i.meta.slug)).toEqual(["test-published-article"]);
     vi.stubEnv("SHOW_DRAFTS", "true");
@@ -133,16 +90,29 @@ describe("insight drafts", () => {
       "test-published-article",
     ]);
   });
+
+  it("never shows drafts in production, even with SHOW_DRAFTS=true", async () => {
+    vi.stubEnv("SHOW_DRAFTS", "true");
+    vi.stubEnv("NODE_ENV", "production");
+    expect(await getInsightBySlug("test-draft-article")).toBeNull();
+    expect((await getInsights()).map((i) => i.meta.slug)).toEqual(["test-published-article"]);
+  });
+
+  it("a missing content folder gives an empty list", async () => {
+    vi.stubEnv("CONTENT_DIR", path.join(os.tmpdir(), "perseus-does-not-exist"));
+    expect(await getInsights()).toEqual([]);
+    expect(await getSpecialisms()).toEqual([]);
+  });
 });
 
 describe("invalid content", () => {
   it("fails loudly with the file name instead of silently dropping the page", async () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "perseus-content-"));
     try {
-      fs.mkdirSync(path.join(tmp, "jobs"));
-      fs.writeFileSync(path.join(tmp, "jobs/broken.mdx"), "---\ntitle: Broken\nstatus: open\n---\nBody\n");
+      fs.mkdirSync(path.join(tmp, "insights"));
+      fs.writeFileSync(path.join(tmp, "insights/broken.mdx"), "---\ntitle: Broken\n---\nBody\n");
       vi.stubEnv("CONTENT_DIR", tmp);
-      await expect(getJobs()).rejects.toThrow(/content\/jobs\/broken\.mdx/);
+      await expect(getInsights()).rejects.toThrow(/content\/insights\/broken\.mdx/);
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }

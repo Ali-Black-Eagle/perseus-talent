@@ -116,7 +116,6 @@ export function Header() {
   // Active link matching
   const isLinkActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/candidates" && pathname.startsWith("/opportunities")) return true;
     if (href === "/specialisms" && pathname.startsWith("/specialisms")) return true;
     if (href === "/insights" && pathname.startsWith("/insights")) return true;
     return pathname.startsWith(href);
@@ -238,11 +237,7 @@ export function Header() {
               className="flex flex-col divide-y divide-white/10"
               aria-label="Mobile Navigation"
             >
-              {[
-                ...site.nav.slice(0, 3),
-                { label: "Opportunities", href: "/opportunities" },
-                ...site.nav.slice(3),
-              ].map((item, index) => {
+              {site.nav.map((item, index) => {
                 const active = isLinkActive(item.href);
                 const numeral = String(index + 1).padStart(2, "0");
                 return (

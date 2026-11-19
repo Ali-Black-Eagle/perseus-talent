@@ -82,10 +82,10 @@ export default function HomePage() {
                 <Button
                   variant="outline-light"
                   size="lg"
-                  href="/opportunities"
+                  href="/candidates#register"
                   className="w-full sm:w-auto text-center"
                 >
-                  Explore Opportunities
+                  Register Your CV
                 </Button>
               </div>
 
@@ -262,10 +262,10 @@ export default function HomePage() {
                     variant="outline-dark"
                     size="md"
                     arrow={true}
-                    href="/opportunities"
+                    href="/candidates#register"
                     className="w-full sm:w-auto"
                   >
-                    Explore Opportunities
+                    Register Your CV
                   </Button>
                 </div>
               </div>
@@ -361,8 +361,8 @@ export default function HomePage() {
           variant: "purple",
         }}
         secondaryButton={{
-          label: "Explore Opportunities",
-          href: "/opportunities",
+          label: "Register Your CV",
+          href: "/candidates#register",
           variant: "outline-dark",
         }}
       />

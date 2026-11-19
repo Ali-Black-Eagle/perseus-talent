@@ -1,7 +1,7 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { site } from "@/config/site";
-
-export const runtime = "edge";
 
 export const alt = "Perseus Talent — UK Healthcare Recruitment Consultancy";
 export const size = {
@@ -10,19 +10,14 @@ export const size = {
 };
 export const contentType = "image/png";
 
-function toDataUri(buf: ArrayBuffer, mime: string) {
-  const bytes = new Uint8Array(buf);
-  let bin = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  }
-  return `data:${mime};base64,${btoa(bin)}`;
+function toDataUri(buf: Buffer, mime: string) {
+  return `data:${mime};base64,${buf.toString("base64")}`;
 }
 
 export default async function Image() {
-  const logoBuf = await fetch(
-    new URL("../../public/brand/logo-full.png", import.meta.url),
-  ).then((r) => r.arrayBuffer());
+  const logoBuf = await readFile(
+    join(process.cwd(), "public/brand/logo-full.png"),
+  );
   const logo = toDataUri(logoBuf, "image/png");
 
   return new ImageResponse(

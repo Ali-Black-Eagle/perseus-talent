@@ -12,7 +12,6 @@ const routes = [
   "/insights/preparing-for-a-healthcare-interview",
   "/insights/writing-a-clear-job-brief",
   "/insights/understanding-recruitment-fees",
-  "/opportunities",
   "/contact",
   "/privacy-policy",
   "/cookie-policy",
@@ -31,7 +30,7 @@ async function runVerification() {
   let failures = 0;
 
   // 1. Route Crawl
-  console.log("[1/5] Checking All Site Routes (HTTP 200)...");
+  console.log("[1/4] Checking All Site Routes (HTTP 200)...");
   for (const route of routes) {
     try {
       const res = await fetch(`${BASE_URL}${route}`);
@@ -54,7 +53,7 @@ async function runVerification() {
   }
 
   // 2. Contact Details & Link Verification
-  console.log("\n[2/5] Verifying Contact Links on Core Pages...");
+  console.log("\n[2/4] Verifying Contact Links on Core Pages...");
   const pagesToCheck = ["/", "/contact", "/employers", "/candidates"];
   for (const page of pagesToCheck) {
     try {
@@ -79,7 +78,7 @@ async function runVerification() {
   }
 
   // 3. Dynamic Footer Year Check
-  console.log("\n[3/5] Verifying Dynamic Copyright Year in Footer...");
+  console.log("\n[3/4] Verifying Dynamic Copyright Year in Footer...");
   const currentYear = new Date().getFullYear().toString();
   const homeRes = await fetch(`${BASE_URL}/`);
   const homeHtml = await homeRes.text();
@@ -96,7 +95,7 @@ async function runVerification() {
   }
 
   // 4. End-to-End Form Submission Verification
-  console.log("\n[4/5] Verifying API Submissions & Local Storage...");
+  console.log("\n[4/4] Verifying API Submissions & Local Storage...");
   try {
     const testPayload = {
       fullName: "QA Audit Officer",
@@ -125,17 +124,6 @@ async function runVerification() {
     }
   } catch (e) {
     console.error(`  ✘ API submission error: ${e.message}`);
-    failures++;
-  }
-
-  // 5. Empty State & No Fabrication Checks
-  console.log("\n[5/5] Verifying Vacancy Empty State Copy...");
-  const oppRes = await fetch(`${BASE_URL}/opportunities`);
-  const oppHtml = await oppRes.text();
-  if (oppHtml.includes("New opportunities are on the horizon")) {
-    console.log("  ✔ Authentic zero-job empty state confirmed on /opportunities");
-  } else {
-    console.error("  ✘ Expected empty state copy not found on /opportunities");
     failures++;
   }
 

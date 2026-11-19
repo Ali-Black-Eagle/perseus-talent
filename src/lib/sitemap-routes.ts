@@ -5,8 +5,7 @@
 export const STATIC_PAGES_LAST_MODIFIED = new Date("2026-11-19");
 
 /**
- * Public, indexable pages only. Deliberately NOT listed: /keystatic and /api (admin), /dev, /styleguide,
- * draft articles, draft jobs and closed jobs.
+ * Public, indexable pages only. Deliberately NOT listed: /api, /dev, /styleguide and draft articles.
  */
 export const STATIC_ROUTES = [
   "",
@@ -17,7 +16,6 @@ export const STATIC_ROUTES = [
   "/insights",
   "/contact",
   "/fee-calculator",
-  "/opportunities",
   "/privacy-policy",
   "/cookie-policy",
   "/terms",

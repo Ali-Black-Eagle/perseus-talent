@@ -113,7 +113,6 @@ async function main() {
     { id: 'employers', path: '/employers', title: 'For Employers — Healthcare Recruitment | Perseus Talent' },
     { id: 'candidates', path: '/candidates', title: 'For Candidates — Career Opportunities in Healthcare | Perseus Talent' },
     { id: 'fee-calculator', path: '/fee-calculator', title: 'Fee Calculator — Transparent 15% Pricing | Perseus Talent' },
-    { id: 'opportunities', path: '/opportunities', title: 'Opportunities — Healthcare Vacancies & Careers | Perseus Talent' },
     { id: 'specialisms', path: '/specialisms', title: 'Our Specialisms — Healthcare Practice Areas | Perseus Talent' },
     { id: 'specialism-healthcare', path: '/specialisms/healthcare', title: 'Healthcare Recruitment Specialism | Perseus Talent' },
     { id: 'about', path: '/about', title: 'About Us — Leadership, Heritage & Ethics | Perseus Talent' },
@@ -283,15 +282,14 @@ async function main() {
         <option value="/employers">02 For Employers (/employers)</option>
         <option value="/candidates">03 For Candidates (/candidates)</option>
         <option value="/fee-calculator">04 Fee Calculator (/fee-calculator)</option>
-        <option value="/opportunities">05 Opportunities Directory (/opportunities)</option>
-        <option value="/specialisms">06 Our Specialisms (/specialisms)</option>
+        <option value="/specialisms">05 Our Specialisms (/specialisms)</option>
         <option value="/specialisms/healthcare">-- Specialism: Healthcare</option>
-        <option value="/about">07 About Us (/about)</option>
-        <option value="/insights">08 Insights & Perspectives (/insights)</option>
+        <option value="/about">06 About Us (/about)</option>
+        <option value="/insights">07 Insights & Perspectives (/insights)</option>
         <option value="/insights/preparing-for-a-healthcare-interview">-- Insight: Interview Prep</option>
-        <option value="/contact">09 Contact Hub (/contact)</option>
-        <option value="/privacy-policy">10 Privacy Policy</option>
-        <option value="/terms">11 Terms & Conditions</option>
+        <option value="/contact">08 Contact Hub (/contact)</option>
+        <option value="/privacy-policy">09 Privacy Policy</option>
+        <option value="/terms">10 Terms & Conditions</option>
       </select>
       <button type="button" onclick="toggleShowcaseBar(true)" class="text-xs text-white/60 hover:text-gold-400 underline ml-2">Hide Bar</button>
     </div>
@@ -316,11 +314,10 @@ async function main() {
       <a href="/" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">01</span> Home</a>
       <a href="/employers" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">02</span> For Employers</a>
       <a href="/candidates" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">03</span> For Candidates</a>
-      <a href="/opportunities" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">04</span> Opportunities</a>
-      <a href="/specialisms" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">05</span> Our Specialisms</a>
-      <a href="/about" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">06</span> About Us</a>
-      <a href="/insights" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">07</span> Insights</a>
-      <a href="/contact" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">08</span> Contact</a>
+      <a href="/specialisms" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">04</span> Our Specialisms</a>
+      <a href="/about" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">05</span> About Us</a>
+      <a href="/insights" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">06</span> Insights</a>
+      <a href="/contact" class="hover:text-gold-400 border-b border-white/10 pb-2"><span class="text-gold-400 text-sm font-sans mr-2">07</span> Contact</a>
     </nav>
     <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4 text-sm font-sans">
       <a href="/fee-calculator" class="w-full py-3 text-center border border-gold-400 text-gold-400 font-semibold tracking-wider hover:bg-gold-400 hover:text-purple-950 transition-colors">CALCULATE YOUR FEE</a>

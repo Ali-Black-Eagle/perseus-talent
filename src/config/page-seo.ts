@@ -65,12 +65,6 @@ export const pageSeo = {
       "Articles from Perseus Talent on healthcare recruitment, employer guidance, interview preparation and talent acquisition for UK organisations.",
     path: "/insights",
   },
-  opportunities: {
-    title: "Healthcare Vacancies & Opportunities",
-    description:
-      "Explore current healthcare vacancies and career opportunities with Perseus Talent, a UK healthcare recruitment consultancy working across the UK.",
-    path: "/opportunities",
-  },
   privacyPolicy: {
     title: "Privacy Policy",
     description:

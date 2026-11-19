@@ -35,4 +35,3 @@ This document tracks all real-world business details, legal confirmations, and a
 - [ ] **Domain & DNS:** Purchase and point `perseustalent.co.uk` to host (e.g. Vercel Pro or Netlify).
 - [ ] **Business Email Routing:** Create domain mailbox (e.g. `hello@perseustalent.co.uk`) or generate Google App Password for `Perseustalent@gmail.com` to enable live SMTP delivery.
 - [ ] **Cloudflare Turnstile:** Add production Turnstile site key and secret key when domain is active.
-- [ ] **Live Vacancies:** Real client vacancies to replace the initial zero-job empty state in `/opportunities`.

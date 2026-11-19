@@ -164,12 +164,12 @@ export default async function SpecialismDetailPage({
             </p>
 
             <p className="text-base text-body leading-relaxed">
-              Looking for your next role? Browse our{" "}
+              Looking for your next role?{" "}
               <Link
-                href="/opportunities"
+                href="/candidates#register"
                 className="font-semibold text-purple-900 underline decoration-gold-500 underline-offset-4 hover:decoration-2"
               >
-                current opportunities
+                Register your CV
               </Link>
               . Hiring? Work out your cost with the{" "}
               <Link

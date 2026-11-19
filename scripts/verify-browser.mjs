@@ -1,5 +1,5 @@
 // Builds the site into its own folder (.next-verify) and runs the browser tests against it on port 3400
-// (accessibility, end-to-end, SEO), then the admin panel tests on a dev server on port 3600.
+// (accessibility, end-to-end, SEO).
 // This keeps `npm run verify` from clashing with a running `npm run dev`, which uses .next on port 3000.
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -16,8 +16,6 @@ const steps = [
   ["npx", ["playwright", "test", "tests/e2e/accessibility.spec.ts"]],
   ["npx", ["playwright", "test", "tests/e2e/e2e.spec.ts"]],
   ["npx", ["playwright", "test", "tests/e2e/seo.spec.ts"]],
-  // The admin panel (Keystatic local mode) runs on `next dev`, on its own port (3600) and folder (.next-admin).
-  ["npx", ["playwright", "test", "-c", "playwright.admin.config.ts"]],
 ];
 
 for (const [cmd, args] of steps) {

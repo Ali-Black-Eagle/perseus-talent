@@ -21,9 +21,6 @@ test.describe("Perseus Talent E2E Test Suite", () => {
       "/about",
       "/specialisms",
       "/specialisms/healthcare",
-      "/opportunities",
-      "/opportunities/test-open-role",
-      "/opportunities/test-closed-role",
       "/insights",
       "/privacy-policy",
       "/terms",
@@ -316,35 +313,7 @@ test.describe("Perseus Talent E2E Test Suite", () => {
     expect(body.error).toContain("The file content does not match its extension");
   });
 
-  // 11. Job search and filters, using the test-only job fixtures (tests/fixtures/content/jobs).
-  // The test server reads a copy of content/ with these added, so no test job ever exists in content/.
-  test("Job search and filters with the fixture jobs", async ({ page }) => {
-    await page.goto("/opportunities");
-    await page.waitForLoadState("domcontentloaded");
-
-    const searchInput = page.locator("#opportunities-search");
-    await searchInput.fill("Testville");
-
-    // Only the open fixture job is listed (level 2 heading in its card); closed and draft jobs are not.
-    await expect(page.getByRole("heading", { name: "Test Open Role" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Test Closed Role" })).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Test Draft Role" })).toHaveCount(0);
-
-    // Search for a non-existent keyword
-    await searchInput.fill("AstronomerPhysics999");
-    await expect(page.locator("text=No opportunities match your search")).toBeVisible();
-  });
-
-  // 12. The real content folder never holds a test or invented vacancy.
-  test("content/jobs contains no test or fixture jobs", async () => {
-    const dir = path.join(process.cwd(), "content", "jobs");
-    const files = fs.existsSync(dir) ? fs.readdirSync(dir) : [];
-    for (const f of files) {
-      expect(f, "content/jobs file").not.toMatch(/^(test-|zz-|temp-|e2e-)/);
-      expect(f).not.toContain("lead-clinical-nurse-specialist");
-    }
-  });
-  // 13. Home hero stars animate by default and settle into the finished still picture under reduced motion.
+  // 11. Home hero stars animate by default and settle into the finished still picture under reduced motion.
   test("Home hero stars animate and respect reduced motion", async ({ browser, baseURL }) => {
     // Default motion
     const ctx = await browser.newContext({ baseURL });

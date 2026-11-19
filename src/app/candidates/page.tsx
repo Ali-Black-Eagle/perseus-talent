@@ -155,15 +155,7 @@ export default function CandidatesPage() {
             href="#register"
             className="w-full sm:w-auto text-center"
           >
-            Register Your Interest
-          </Button>
-          <Button
-            variant="outline-light"
-            size="lg"
-            href="/opportunities"
-            className="w-full sm:w-auto text-center"
-          >
-            Explore Opportunities
+            Register Your CV
           </Button>
         </div>
       </PageHero>
@@ -288,36 +280,6 @@ export default function CandidatesPage() {
         </Container>
       </Section>
 
-      {/* 4. CAREER OPPORTUNITIES TEASER */}
-      <Section bg="white">
-        <Container>
-          <div data-reveal className="max-w-2xl mx-auto text-center mb-8">
-            <Eyebrow theme="light" withLine={true} className="mb-3">
-              Current Vacancies
-            </Eyebrow>
-            <Heading level="h2" color="ink">
-              Career opportunities
-            </Heading>
-            <p className="text-muted text-base mt-2">
-              Browse our latest specialist opportunities across UK healthcare.
-            </p>
-          </div>
-
-          <div className="p-10 border border-line rounded-[4px] bg-ivory text-center max-w-xl mx-auto">
-            <p className="font-serif text-2xl text-purple-900 mb-2">
-              New opportunities are on the horizon.
-            </p>
-            <p className="text-sm text-muted mb-6">
-              Register your interest below or view our opportunities directory to
-              explore upcoming roles as they open.
-            </p>
-            <Button variant="outline-dark" size="md" href="/opportunities">
-              View All Opportunities
-            </Button>
-          </div>
-        </Container>
-      </Section>
-
       {/* 5. CANDIDATE REGISTRATION + CV FORM */}
       <section
         id="register"
@@ -359,14 +321,9 @@ export default function CandidatesPage() {
         heading="Let's take the next step together."
         copy="Register your CV today to be considered for relevant healthcare opportunities as they arise."
         primaryButton={{
-          label: "Register Your Interest",
+          label: "Register Your CV",
           href: "#register",
           variant: "gold",
-        }}
-        secondaryButton={{
-          label: "Explore Opportunities",
-          href: "/opportunities",
-          variant: "outline-light",
         }}
       />
     </div>

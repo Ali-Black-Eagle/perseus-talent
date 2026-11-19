@@ -1,4 +1,4 @@
-/** The fixed list of Insights categories. Used by the site and by the admin panel's category menu. */
+/** The fixed list of Insights categories. Used by the site. */
 export const INSIGHT_CATEGORIES = [
   "Healthcare Recruitment",
   "Recruitment Industry",

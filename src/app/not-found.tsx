@@ -63,10 +63,6 @@ export default function NotFound() {
             Fee Calculator
           </Link>
           <span className="text-white/30 hidden sm:inline" aria-hidden="true">·</span>
-          <Link href="/opportunities" className="hover:text-gold-400 transition-colors">
-            Opportunities
-          </Link>
-          <span className="text-white/30 hidden sm:inline" aria-hidden="true">·</span>
           <Link href="/insights" className="hover:text-gold-400 transition-colors">
             Insights
           </Link>

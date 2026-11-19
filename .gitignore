@@ -1,9 +1,7 @@
 # Next.js
 .next/
 .next-verify/
-.next-admin/
 .next-seo/
-.test-content/
 out/
 build/
 dist/

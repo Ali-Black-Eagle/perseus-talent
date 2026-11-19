@@ -263,8 +263,8 @@ export default function AboutPage() {
           variant: "purple",
         }}
         secondaryButton={{
-          label: "Explore Opportunities",
-          href: "/opportunities",
+          label: "Register Your CV",
+          href: "/candidates#register",
           variant: "outline-dark",
         }}
       />

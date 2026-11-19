@@ -15,28 +15,25 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllEnvs());
 
 describe("sitemap", () => {
-  it("excludes the admin, /dev, /styleguide, drafts and closed jobs", async () => {
+  it("excludes /api, /dev, /styleguide, drafts and any job URLs", async () => {
     const urls = (await sitemap()).map((e) => e.url);
     for (const u of urls) {
-      expect(u).not.toMatch(/keystatic/);
+      expect(u).not.toContain("opportunities");
       expect(u).not.toMatch(/\/api\//);
       expect(u).not.toMatch(/\/dev(\/|$)/);
       expect(u).not.toMatch(/styleguide/);
     }
-    expect(urls).not.toContain(`${BASE}/opportunities/test-closed-role`);
-    expect(urls).not.toContain(`${BASE}/opportunities/test-draft-role`);
     expect(urls).not.toContain(`${BASE}/insights/test-draft-article`);
   });
 
-  it("includes open jobs and published articles", async () => {
+  it("includes published articles and specialisms", async () => {
     const urls = (await sitemap()).map((e) => e.url);
-    expect(urls).toContain(`${BASE}/opportunities/test-open-role`);
     expect(urls).toContain(`${BASE}/insights/test-published-article`);
     expect(urls).toContain(`${BASE}/specialisms/test-specialism`);
     expect(urls).toContain(BASE);
   });
 
-  it("uses fixed dates for static pages and content dates for jobs and articles", async () => {
+  it("uses fixed dates for static pages and content dates for articles", async () => {
     const entries = await sitemap();
     const byUrl = new Map(entries.map((e) => [e.url, e]));
     for (const route of STATIC_ROUTES) {
@@ -44,7 +41,6 @@ describe("sitemap", () => {
       expect(e?.lastModified).toEqual(STATIC_PAGES_LAST_MODIFIED);
     }
     expect(STATIC_PAGES_LAST_MODIFIED.getTime()).toBeLessThan(Date.now());
-    expect(byUrl.get(`${BASE}/opportunities/test-open-role`)?.lastModified).toEqual(new Date("2026-11-01"));
     // The article has updated: 2026-11-03, which wins over date: 2026-11-02.
     expect(byUrl.get(`${BASE}/insights/test-published-article`)?.lastModified).toEqual(new Date("2026-11-03"));
   });
@@ -62,12 +58,12 @@ describe("robots.txt", () => {
     expect(robots().rules).toEqual({ userAgent: "*", disallow: "/" });
   });
 
-  it("when live: allows the site, hides admin/dev/styleguide/api, links the sitemap", () => {
+  it("when live: allows the site, hides dev/styleguide/api, links the sitemap", () => {
     vi.stubEnv("NEXT_PUBLIC_ALLOW_INDEXING", "true");
     const r = robots();
     const rules = r.rules as { allow: string; disallow: string[] };
     expect(rules.allow).toBe("/");
-    expect(rules.disallow).toEqual(expect.arrayContaining(["/api/", "/dev/", "/keystatic", "/styleguide"]));
+    expect(rules.disallow).toEqual(expect.arrayContaining(["/api/", "/dev/", "/styleguide"]));
     expect(r.sitemap).toBe(`${BASE}/sitemap.xml`);
   });
 });
