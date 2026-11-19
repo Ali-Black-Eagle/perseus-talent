@@ -77,3 +77,22 @@ describe("admin availability", () => {
     vi.unstubAllEnvs();
   });
 });
+
+// Keystatic refuses to open an entry whose front matter has a key it doesn't know
+// ("Key on object value ... is not allowed"). Check every real content file against its collection.
+describe("Real content files only use keys the admin panel knows", () => {
+  it.each(["jobs", "insights", "specialisms"])("content/%s", async (name) => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const matter = (await import("gray-matter")).default;
+    const dir = path.join(process.cwd(), "content", name);
+    const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".mdx")) : [];
+    const allowed = Object.keys(collections[name].schema);
+    for (const file of files) {
+      const { data } = matter(fs.readFileSync(path.join(dir, file), "utf8"));
+      for (const key of Object.keys(data)) {
+        expect(allowed, `${name}/${file} has front-matter key "${key}" the admin panel doesn't know`).toContain(key);
+      }
+    }
+  });
+});
