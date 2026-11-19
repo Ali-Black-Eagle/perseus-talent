@@ -12,13 +12,16 @@ import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { CategoryChips } from "@/components/insights/CategoryChips";
 import { Pagination } from "@/components/ui/Pagination";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 import { getInsights } from "@/lib/content";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Insights — Perspectives on Healthcare Recruitment & Careers",
   description:
     "Read articles and perspectives from Perseus Talent on healthcare recruitment, employer guidance, interview preparation, and talent acquisition.",
-};
+  path: "/insights",
+});
 
 const ARTICLES_PER_PAGE = 9;
 
@@ -30,6 +33,10 @@ export default async function InsightsPage({
   const articles = await getInsights();
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const pageParam = resolvedSearchParams.page;
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Insights", url: "/insights" },
+  ]);
 
   const featured = articles.find((a) => a.meta.featured) || articles[0];
   const regularArticles = articles.filter(
@@ -47,6 +54,7 @@ export default async function InsightsPage({
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

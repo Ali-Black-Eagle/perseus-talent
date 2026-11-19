@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/Badge";
 import { MapPin, PoundSterling, Briefcase, Calendar, CheckCircle } from "lucide-react";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd, getJobPostingJsonLd } from "@/lib/seo";
 import { getJobBySlug, getJobs } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -26,10 +28,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const job = await getJobBySlug(slug);
   if (!job) return { title: "Role Not Found" };
-  return {
+  return createPageMetadata({
     title: `${job.meta.title} — Healthcare Vacancy`,
     description: job.meta.requiredExperience,
-  };
+    path: `/opportunities/${slug}`,
+  });
 }
 
 export default async function JobDetailPage({
@@ -47,8 +50,20 @@ export default async function JobDetailPage({
   const { meta, content } = job;
   const isClosed = meta.status === "closed";
 
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Opportunities", url: "/opportunities" },
+    { name: meta.title, url: `/opportunities/${slug}` },
+  ]);
+
+  const jsonLdBlocks: Record<string, unknown>[] = [breadcrumbs];
+  if (meta.status === "open") {
+    jsonLdBlocks.push(getJobPostingJsonLd(job));
+  }
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={jsonLdBlocks} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

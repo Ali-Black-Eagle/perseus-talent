@@ -11,6 +11,8 @@ import { CtaBand } from "@/components/sections/CtaBand";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { Calendar, User, Clock } from "lucide-react";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd, getArticleJsonLd } from "@/lib/seo";
 import { getInsightBySlug, getInsights } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -26,10 +28,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const article = await getInsightBySlug(slug);
   if (!article) return { title: "Article Not Found" };
-  return {
+  return createPageMetadata({
     title: article.meta.title,
     description: article.meta.excerpt,
-  };
+    path: `/insights/${slug}`,
+  });
 }
 
 export default async function InsightDetailPage({
@@ -45,9 +48,16 @@ export default async function InsightDetailPage({
   }
 
   const { meta, content } = article;
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Insights", url: "/insights" },
+    { name: meta.title, url: `/insights/${slug}` },
+  ]);
+  const articleJsonLd = getArticleJsonLd(article);
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={[breadcrumbs, articleJsonLd]} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

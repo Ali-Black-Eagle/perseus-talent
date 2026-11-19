@@ -5,16 +5,25 @@ import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { site } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
-  title: "Terms and Conditions — Perseus Talent",
+export const metadata = createPageMetadata({
+  title: "Terms and Conditions",
   description:
     "Website terms and conditions governing the use of Perseus Talent's website, fee calculator, and recruitment enquiry services.",
-};
+  path: "/terms",
+});
 
 export default function TermsPage() {
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Terms and Conditions", url: "/terms" },
+  ]);
+
   return (
     <div className="py-12 bg-white">
+      <JsonLd data={breadcrumbs} />
       <Container narrow={true}>
         <div className="mb-8">
           <Eyebrow theme="light" withLine={true} className="mb-2">

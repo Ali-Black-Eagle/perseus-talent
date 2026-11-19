@@ -10,16 +10,26 @@ import { FeeCalculator } from "@/components/calculator/FeeCalculator";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "The Perseus Fee Calculator — Transparent 15% Recruitment Pricing",
   description:
     "Calculate your healthcare recruitment fee instantly. Straightforward flat 15% rate applied to annual gross base salary with zero hidden fees.",
-};
+  path: "/fee-calculator",
+});
 
 export default function FeeCalculatorPage() {
+  const breadcrumbJsonLd = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Fee Calculator", url: "/fee-calculator" },
+  ]);
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbJsonLd} />
+
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />
@@ -40,14 +50,14 @@ export default function FeeCalculatorPage() {
                 /
               </li>
               <li className="text-white font-medium" aria-current="page">
-                Calculate Your Fee
+                Fee Calculator
               </li>
             </ol>
           </nav>
 
           <div className="max-w-[760px]">
             <Eyebrow theme="dark" withLine={true} className="mb-4">
-              The Perseus Fee Calculator
+              Transparent Pricing
             </Eyebrow>
 
             <Heading
@@ -58,22 +68,19 @@ export default function FeeCalculatorPage() {
               Transparent recruitment pricing. No guesswork.
             </Heading>
 
-            <div className="space-y-4 text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[50ch]">
-              <p>Calculate your recruitment fee in seconds.</p>
-              <p>
-                Enter the annual salary of your intended hire and discover your
-                estimated recruitment fee using our straightforward 15% flat-rate
-                pricing model.
-              </p>
-            </div>
+            <p className="text-base md:text-lg text-white/80 font-sans leading-relaxed mb-4 max-w-[50ch]">
+              We believe great partnerships start with clarity. Use our
+              straightforward calculator to estimate your recruitment investment
+              based on our flat 15% fee structure.
+            </p>
           </div>
         </Container>
       </section>
 
-      {/* 2. INTERACTIVE FEE CALCULATOR COMPONENT */}
+      {/* 2. INTERACTIVE FEE CALCULATOR COMPONENT (Starts empty per Item 7) */}
       <Section bg="white">
         <Container>
-          <FeeCalculator initialSalary="40000" variant="standalone" />
+          <FeeCalculator variant="standalone" />
         </Container>
       </Section>
 
@@ -85,59 +92,68 @@ export default function FeeCalculatorPage() {
               Clear & Simple
             </Eyebrow>
             <Heading level="h2" color="ink">
-              How our recruitment fee works
+              How our fee model works
             </Heading>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card hoverable={false} className="p-8">
-              <span className="font-serif text-3xl font-medium text-[#C5A15B] mb-3 block">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card hoverable={true} className="p-8">
+              <span className="font-serif text-3xl font-bold text-[#C5A15B] mb-4 block">
                 15%
               </span>
-              <Heading level="h3" color="ink" className="mb-3">
-                A single flat rate
-              </Heading>
-              <p className="font-sans text-sm md:text-base text-[#625A6B] leading-relaxed">
-                Our standard fee is always calculated at 15% of the successful
-                candidate&apos;s annual gross base salary. We do not use fee
-                brackets, sliding scales, or variable percentages based on
-                seniority.
+              <h3 className="font-serif text-xl font-semibold text-[#1C052E] mb-2">
+                Flat percentage rate
+              </h3>
+              <p className="text-sm text-[#625A6B] leading-relaxed">
+                Applied strictly to the successful candidate&apos;s annual gross
+                base salary. No tiered complexity, sliding scales or hidden
+                surcharges.
               </p>
             </Card>
 
-            <Card hoverable={false} className="p-8">
-              <span className="font-serif text-3xl font-medium text-[#C5A15B] mb-3 block">
-                Base
+            <Card hoverable={true} className="p-8">
+              <span className="font-serif text-3xl font-bold text-[#C5A15B] mb-4 block">
+                0%
               </span>
-              <Heading level="h3" color="ink" className="mb-3">
-                What counts as base salary?
-              </Heading>
-              <p className="font-sans text-sm md:text-base text-[#625A6B] leading-relaxed">
-                The fee applies exclusively to annual gross base salary before
-                tax. It does not automatically include discretionary bonuses,
-                commissions, car allowances, relocation expenses, or employee
-                benefits.
+              <h3 className="font-serif text-xl font-semibold text-[#1C052E] mb-2">
+                Excludes variable pay
+              </h3>
+              <p className="text-sm text-[#625A6B] leading-relaxed">
+                Our fee calculation excludes overtime, bonuses, commissions, car
+                allowances, pension contributions and other employee benefits.
+              </p>
+            </Card>
+
+            <Card hoverable={true} className="p-8">
+              <span className="font-serif text-3xl font-bold text-[#C5A15B] mb-4 block">
+                Success
+              </span>
+              <h3 className="font-serif text-xl font-semibold text-[#1C052E] mb-2">
+                Pay only on placement
+              </h3>
+              <p className="text-sm text-[#625A6B] leading-relaxed">
+                Fees become payable only when you successfully hire a candidate
+                introduced by Perseus Talent, subject to agreed terms.
               </p>
             </Card>
           </div>
         </Container>
       </Section>
 
-      {/* 4. CTA BAND */}
+      {/* 4. CTA */}
       <CtaBand
-        bg="purple-50"
-        heading="Ready to discuss your hiring requirements?"
-        copy="Contact our team today with your recruitment brief to discuss timelines, candidate availability, and role specifications."
+        heading="Let's find the exceptional talent your organisation needs."
         primaryButton={{
-          label: "Discuss Your Recruitment Needs",
+          label: "Discuss Recruitment Needs",
           href: "/employers#enquiry",
-          variant: "purple",
+          variant: "gold",
         }}
         secondaryButton={{
-          label: "View Our Specialisms",
-          href: "/specialisms",
-          variant: "outline-dark",
+          label: "Contact Team",
+          href: "/contact",
+          variant: "outline-light",
         }}
+        bg="purple"
       />
     </div>
   );

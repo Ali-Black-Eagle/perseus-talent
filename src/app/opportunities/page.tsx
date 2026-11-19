@@ -7,19 +7,27 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { JobDirectory } from "@/components/opportunities/JobDirectory";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 import { getJobs } from "@/lib/content";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Opportunities — Healthcare Vacancies & Careers",
   description:
     "Explore current healthcare vacancies and career opportunities with Perseus Talent across the UK.",
-};
+  path: "/opportunities",
+});
 
 export default async function OpportunitiesPage() {
   const jobs = await getJobs();
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Opportunities", url: "/opportunities" },
+  ]);
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

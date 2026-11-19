@@ -6,16 +6,25 @@ import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { site } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
-  title: "Privacy Policy — Perseus Talent",
+export const metadata = createPageMetadata({
+  title: "Privacy Policy",
   description:
     "Perseus Talent Privacy Policy explaining how we process, store, and protect candidate CVs and employer enquiries under UK GDPR and the Data Protection Act 2018.",
-};
+  path: "/privacy-policy",
+});
 
 export default function PrivacyPolicyPage() {
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Privacy Policy", url: "/privacy-policy" },
+  ]);
+
   return (
     <div className="py-12 bg-white">
+      <JsonLd data={breadcrumbs} />
       <Container narrow={true}>
         <div className="mb-8">
           <Eyebrow theme="light" withLine={true} className="mb-2">

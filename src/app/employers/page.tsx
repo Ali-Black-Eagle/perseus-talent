@@ -14,12 +14,15 @@ import { EmployerEnquiryForm } from "@/components/forms/EmployerEnquiryForm";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "For Employers — Healthcare Recruitment",
   description:
     "Partner with Perseus Talent to identify and secure exceptional healthcare professionals. Relationship-led recruitment with a transparent 15% flat fee.",
-};
+  path: "/employers",
+});
 
 export default function EmployersPage({
   searchParams,
@@ -38,9 +41,14 @@ async function EmployersContent({
 }) {
   const resolvedParams = searchParams ? await searchParams : undefined;
   const initialSalary = resolvedParams?.salary || "";
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "For Employers", url: "/employers" },
+  ]);
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
       {/* 1. INTERIOR HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

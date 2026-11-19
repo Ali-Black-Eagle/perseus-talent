@@ -4,16 +4,25 @@ import { Container } from "@/components/layout/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { site } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
-  title: "Cookie Policy — Perseus Talent",
+export const metadata = createPageMetadata({
+  title: "Cookie Policy",
   description:
     "Perseus Talent Cookie Policy explaining our minimal, privacy-first use of necessary technologies and cookies.",
-};
+  path: "/cookie-policy",
+});
 
 export default function CookiePolicyPage() {
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Cookie Policy", url: "/cookie-policy" },
+  ]);
+
   return (
     <div className="py-12 bg-white">
+      <JsonLd data={breadcrumbs} />
       <Container narrow={true}>
         <div className="mb-8">
           <Eyebrow theme="light" withLine={true} className="mb-2">

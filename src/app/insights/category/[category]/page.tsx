@@ -13,6 +13,8 @@ import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { CategoryChips } from "@/components/insights/CategoryChips";
 import { Pagination } from "@/components/ui/Pagination";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 import {
   INSIGHT_CATEGORIES,
   slugifyCategory,
@@ -36,10 +38,11 @@ export async function generateMetadata({
   const { category } = await params;
   const categoryName = getCategoryFromSlug(category) || category;
 
-  return {
+  return createPageMetadata({
     title: `${categoryName} — Insights & Perspectives`,
     description: `Read practical guidance, industry analysis and career advice in ${categoryName} from Perseus Talent.`,
-  };
+    path: `/insights/category/${category}`,
+  });
 }
 
 export default async function InsightCategoryPage({
@@ -68,8 +71,15 @@ export default async function InsightCategoryPage({
     startIndex + ARTICLES_PER_PAGE
   );
 
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Insights", url: "/insights" },
+    { name: categoryName, url: `/insights/category/${category}` },
+  ]);
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

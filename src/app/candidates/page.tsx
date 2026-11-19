@@ -14,12 +14,15 @@ import { CtaBand } from "@/components/sections/CtaBand";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
 import { site } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd, getFaqPageJsonLd } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "For Candidates — Career Opportunities in Healthcare",
   description:
     "Register your professional profile with Perseus Talent. We connect talented professionals with meaningful healthcare opportunities across the UK.",
-};
+  path: "/candidates",
+});
 
 const candidateFaqs: AccordionItem[] = [
   {
@@ -96,8 +99,47 @@ async function CandidatesContent({
   const resolved = searchParams ? await searchParams : undefined;
   const initialJobSlug = resolved?.job || "";
 
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "For Candidates", url: "/candidates" },
+  ]);
+
+  const faqJsonLd = getFaqPageJsonLd([
+    {
+      question: "Do I have to pay to register?",
+      answer:
+        "No. We do not charge candidates for helping them find work. In accordance with UK employment agency regulations, our recruitment fees are paid entirely by hiring organisations upon successful placement.",
+    },
+    {
+      question: "What happens after I register?",
+      answer:
+        "We review your details and CV against our current and upcoming healthcare briefs. Where we have or anticipate a role aligned with your experience and aspirations, a member of our team will be in touch. Registering does not guarantee an interview or placement.",
+    },
+    {
+      question: "Will you share my CV without asking me?",
+      answer:
+        "No. We will always discuss a specific role and organisation with you before your CV or personal information is submitted to any prospective employer.",
+    },
+    {
+      question: "Which file types can I upload?",
+      answer:
+        "We accept PDF, DOC, and DOCX files up to 4MB in size. We verify the file format when uploading to maintain system integrity.",
+    },
+    {
+      question: "What healthcare roles do you recruit for?",
+      answer:
+        "We focus on clinical, nursing, allied health and healthcare operational roles across the UK.",
+    },
+    {
+      question: "How is my information used and can I ask for it to be deleted?",
+      answer:
+        "Your personal details and CV are processed solely to evaluate suitability for recruitment opportunities, stored securely, and never sold to third parties. You may request rectification, access, or permanent erasure of your data at any time by contacting our privacy officer at Perseustalent@gmail.com.",
+    },
+  ]);
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={[breadcrumbs, faqJsonLd]} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />

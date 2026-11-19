@@ -13,12 +13,15 @@ import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "About Us — Built on Ambition, Driven by People",
   description:
     "Learn about Perseus Talent: our story, relationship-led recruitment philosophy, core values, and vision for the UK healthcare recruitment industry.",
-};
+  path: "/about",
+});
 
 const companyValues = [
   {
@@ -44,8 +47,14 @@ const companyValues = [
 ];
 
 export default function AboutPage() {
+  const breadcrumbs = getBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "About Us", url: "/about" },
+  ]);
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
       {/* 1. HERO */}
       <section className="relative overflow-hidden bg-[#1C052E] text-white pt-16 pb-16 md:pt-24 md:pb-20 border-b border-[#C5A15B]/30">
         <GeometricPattern opacity={0.04} />
