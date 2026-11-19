@@ -6,6 +6,21 @@ import { AlertCircle, CheckCircle2, FileUp, FileText, X } from "lucide-react";
 import { candidateRegistrationSchema } from "@/lib/validation/candidate";
 import { site } from "@/config/site";
 import { Button } from "@/components/ui/Button";
+import { FormErrorSummary } from "@/components/forms/FormErrorSummary";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+
+const FIELD_LABELS: Record<string, string> = {
+  fullName: "Full name",
+  email: "Email address",
+  telephone: "Telephone number",
+  location: "Current location",
+  specialism: "Professional specialism",
+  specialismOther: "Specified specialism",
+  currentPosition: "Current position",
+  cv: "Curriculum Vitae (CV)",
+  additionalInfo: "Additional information",
+  privacyConsent: "Privacy & processing consent",
+};
 
 interface CandidateFormProps {
   initialJobSlug?: string;
@@ -38,6 +53,8 @@ export function CandidateRegistrationForm({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [startedAt] = useState<number>(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -108,9 +125,9 @@ export function CandidateRegistrationForm({
     setServerError(null);
 
     // CV validation
-    if (!cvFile) {
+    const hasCv = Boolean(cvFile);
+    if (!hasCv) {
       setCvError("Please upload your CV document (required).");
-      return;
     }
 
     // Zod validation
@@ -119,20 +136,27 @@ export function CandidateRegistrationForm({
       preferredOpportunities: preferredOps,
     });
 
-    if (!validation.success) {
+    if (!validation.success || !hasCv) {
       const formattedErrors: Record<string, string> = {};
-      const fieldErrors = validation.error.flatten().fieldErrors;
-      Object.entries(fieldErrors).forEach(([key, errList]) => {
-        if (errList && errList[0]) {
-          formattedErrors[key] = errList[0];
-        }
-      });
+      if (!hasCv) {
+        formattedErrors.cv = "Please upload your CV document (required).";
+      }
+      if (!validation.success) {
+        const fieldErrors = validation.error.flatten().fieldErrors;
+        Object.entries(fieldErrors).forEach(([key, errList]) => {
+          if (errList && errList[0]) {
+            formattedErrors[key] = errList[0];
+          }
+        });
+      }
       setErrors(formattedErrors);
       const allTouched: Record<string, boolean> = {};
       Object.keys(formData).forEach((k) => (allTouched[k] = true));
       setTouched(allTouched);
       return;
     }
+
+    if (!cvFile) return;
 
     setIsSubmitting(true);
 
@@ -156,6 +180,10 @@ export function CandidateRegistrationForm({
         formPayload.append("additionalInfo", formData.additionalInfo);
       }
       formPayload.append("privacyConsent", String(formData.privacyConsent));
+      formPayload.append("startedAt", String(startedAt));
+      if (turnstileToken) {
+        formPayload.append("turnstileToken", turnstileToken);
+      }
       if (formData._hp) {
         formPayload.append("_hp", formData._hp);
       }
@@ -288,6 +316,8 @@ export function CandidateRegistrationForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <FormErrorSummary errors={errors} fieldLabels={FIELD_LABELS} />
+
         {/* Anti-spam trap */}
         <input
           type="text"
@@ -632,13 +662,18 @@ export function CandidateRegistrationForm({
 
         {/* Consent Checkbox */}
         <div className="pt-2">
-          <label className="flex items-start gap-3 cursor-pointer select-none">
+          <label htmlFor="privacyConsent" className="flex items-start gap-3 cursor-pointer select-none">
             <input
+              id="privacyConsent"
               type="checkbox"
               name="privacyConsent"
               checked={formData.privacyConsent}
               onChange={handleChange}
-              className="mt-1 h-5 w-5 rounded-[2px] border-[#857B90] text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]"
+              aria-invalid={!!errors.privacyConsent}
+              aria-describedby={errors.privacyConsent ? "privacyConsent-error" : undefined}
+              className={`mt-1 h-5 w-5 rounded-[2px] border ${
+                errors.privacyConsent ? "border-[#B42318] ring-1 ring-[#B42318]" : "border-[#857B90]"
+              } text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]`}
             />
             <span className="text-xs md:text-sm text-[#3A3242] leading-relaxed">
               I consent to Perseus Talent processing my details and CV to
@@ -655,12 +690,15 @@ export function CandidateRegistrationForm({
             </span>
           </label>
           {errors.privacyConsent && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
+            <p id="privacyConsent-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
               <AlertCircle className="w-3.5 h-3.5" />
               <span>{errors.privacyConsent}</span>
             </p>
           )}
         </div>
+
+        {/* Optional Cloudflare Turnstile */}
+        <TurnstileWidget onToken={setTurnstileToken} />
 
         {/* Submit */}
         <div className="pt-4">

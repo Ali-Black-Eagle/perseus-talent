@@ -5,6 +5,17 @@ import Link from "next/link";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { generalEnquirySchema } from "@/lib/validation/general";
 import { Button } from "@/components/ui/Button";
+import { FormErrorSummary } from "@/components/forms/FormErrorSummary";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+
+const FIELD_LABELS: Record<string, string> = {
+  fullName: "Full name",
+  email: "Email address",
+  telephone: "Telephone number",
+  enquiryType: "Enquiry type",
+  message: "Message",
+  privacyConsent: "Privacy Policy agreement",
+};
 
 interface GeneralFormProps {
   initialType?: "employer" | "candidate" | "general" | "other";
@@ -27,6 +38,8 @@ export function GeneralEnquiryForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [startedAt] = useState<number>(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -67,7 +80,11 @@ export function GeneralEnquiryForm({
       const res = await fetch("/api/enquiries/general", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          startedAt,
+          turnstileToken,
+        }),
       });
 
       const data = await res.json();
@@ -181,6 +198,8 @@ export function GeneralEnquiryForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <FormErrorSummary errors={errors} fieldLabels={FIELD_LABELS} />
+
         <input
           type="text"
           name="_hp"
@@ -337,13 +356,18 @@ export function GeneralEnquiryForm({
 
         {/* Privacy Consent */}
         <div className="pt-2">
-          <label className="flex items-start gap-3 cursor-pointer select-none">
+          <label htmlFor="privacyConsent" className="flex items-start gap-3 cursor-pointer select-none">
             <input
+              id="privacyConsent"
               type="checkbox"
               name="privacyConsent"
               checked={formData.privacyConsent}
               onChange={handleChange}
-              className="mt-1 h-5 w-5 rounded-[2px] border-[#857B90] text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]"
+              aria-invalid={!!errors.privacyConsent}
+              aria-describedby={errors.privacyConsent ? "privacyConsent-error" : undefined}
+              className={`mt-1 h-5 w-5 rounded-[2px] border ${
+                errors.privacyConsent ? "border-[#B42318] ring-1 ring-[#B42318]" : "border-[#857B90]"
+              } text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]`}
             />
             <span className="text-xs md:text-sm text-[#3A3242] leading-relaxed">
               I have read the{" "}
@@ -359,12 +383,15 @@ export function GeneralEnquiryForm({
             </span>
           </label>
           {errors.privacyConsent && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
+            <p id="privacyConsent-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
               <AlertCircle className="w-3.5 h-3.5" />
               <span>{errors.privacyConsent}</span>
             </p>
           )}
         </div>
+
+        {/* Optional Cloudflare Turnstile */}
+        <TurnstileWidget onToken={setTurnstileToken} />
 
         {/* Submit */}
         <div className="pt-4">

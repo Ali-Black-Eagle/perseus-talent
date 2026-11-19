@@ -6,6 +6,19 @@ import { AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { employerEnquirySchema } from "@/lib/validation/employer";
 import { calculateFee } from "@/lib/fee";
 import { Button } from "@/components/ui/Button";
+import { FormErrorSummary } from "@/components/forms/FormErrorSummary";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+
+const FIELD_LABELS: Record<string, string> = {
+  fullName: "Full name",
+  companyName: "Company name",
+  email: "Business email",
+  telephone: "Telephone number",
+  jobTitle: "Job title or position",
+  salary: "Expected annual salary",
+  additionalInfo: "Additional information",
+  privacyConsent: "Privacy Policy agreement",
+};
 
 interface EmployerFormProps {
   initialSalary?: string;
@@ -31,6 +44,8 @@ export function EmployerEnquiryForm({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [startedAt] = useState<number>(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -113,7 +128,11 @@ export function EmployerEnquiryForm({
       const res = await fetch("/api/enquiries/employer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          startedAt,
+          turnstileToken,
+        }),
       });
 
       const data = await res.json();
@@ -229,6 +248,8 @@ export function EmployerEnquiryForm({
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <FormErrorSummary errors={errors} fieldLabels={FIELD_LABELS} />
+
         {/* Honeypot anti-spam trap */}
         <input
           type="text"
@@ -503,14 +524,19 @@ export function EmployerEnquiryForm({
 
         {/* Privacy Consent Checkbox */}
         <div className="pt-2">
-          <label className="flex items-start gap-3 cursor-pointer select-none">
+          <label htmlFor="privacyConsent" className="flex items-start gap-3 cursor-pointer select-none">
             <input
+              id="privacyConsent"
               type="checkbox"
               name="privacyConsent"
               checked={formData.privacyConsent}
               onChange={handleChange}
               onBlur={handleBlur}
-              className="mt-1 h-5 w-5 rounded-[2px] border-[#857B90] text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]"
+              aria-invalid={!!errors.privacyConsent}
+              aria-describedby={errors.privacyConsent ? "privacyConsent-error" : undefined}
+              className={`mt-1 h-5 w-5 rounded-[2px] border ${
+                errors.privacyConsent ? "border-[#B42318] ring-1 ring-[#B42318]" : "border-[#857B90]"
+              } text-[#1C052E] focus:ring-[#C5A15B] accent-[#1C052E]`}
             />
             <span className="text-xs md:text-sm text-[#3A3242] leading-relaxed">
               I have read the{" "}
@@ -526,12 +552,15 @@ export function EmployerEnquiryForm({
             </span>
           </label>
           {errors.privacyConsent && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
+            <p id="privacyConsent-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-[#B42318] pl-8">
               <AlertCircle className="w-3.5 h-3.5" />
               <span>{errors.privacyConsent}</span>
             </p>
           )}
         </div>
+
+        {/* Optional Cloudflare Turnstile */}
+        <TurnstileWidget onToken={setTurnstileToken} />
 
         {/* Submit Button */}
         <div className="pt-4">
