@@ -29,11 +29,11 @@ export function Heading({
     h4: "font-sans font-semibold text-[18px] md:text-[20px] leading-[1.35]",
   };
 
-  const defaultColor = level === "h4" ? "text-[#1C052E]" : "text-[#1C052E]";
+  const defaultColor = level === "h4" ? "text-purple-900" : "text-purple-900";
   const colorStyles: Record<HeadingColor, string> = {
     white: "text-white",
-    ink: "text-[#1C052E]",
-    gold: "text-[#C5A15B]",
+    ink: "text-purple-900",
+    gold: "text-gold-500",
   };
 
   const appliedColor = color ? colorStyles[color] : defaultColor;

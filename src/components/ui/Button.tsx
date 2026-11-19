@@ -48,15 +48,15 @@ export function Button({
   };
 
   const variantStyles: Record<ButtonVariant, string> = {
-    gold: "bg-[#C5A15B] text-[#1C052E] hover:bg-[#D4B577] active:bg-[#A8853F] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C052E]",
+    gold: "bg-gold-500 text-purple-900 hover:bg-gold-400 active:bg-gold-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-purple-900",
     purple:
-      "bg-[#1C052E] text-white hover:bg-[#2A0B42] active:bg-[#3B1A57] focus-visible:ring-2 focus-visible:ring-[#7A5A20] focus-visible:ring-offset-2",
+      "bg-purple-900 text-white hover:bg-purple-800 active:bg-purple-700 focus-visible:ring-2 focus-visible:ring-gold-text focus-visible:ring-offset-2",
     "outline-light":
-      "border border-white/60 text-white hover:border-[#C5A15B] hover:text-[#C5A15B] active:bg-white/5 focus-visible:ring-2 focus-visible:ring-white",
+      "border border-white/60 text-white hover:border-gold-500 hover:text-gold-500 active:bg-white/5 focus-visible:ring-2 focus-visible:ring-white",
     "outline-dark":
-      "border border-[#1C052E] text-[#1C052E] hover:bg-[#1C052E] hover:text-white active:bg-[#2A0B42] focus-visible:ring-2 focus-visible:ring-[#7A5A20]",
+      "border border-purple-900 text-purple-900 hover:bg-purple-900 hover:text-white active:bg-purple-800 focus-visible:ring-2 focus-visible:ring-gold-text",
     "text-link":
-      "p-0 h-auto font-medium text-[#1C052E] underline decoration-[#C5A15B] underline-offset-4 hover:decoration-2 focus-visible:ring-2 focus-visible:ring-[#C5A15B]",
+      "p-0 h-auto font-medium text-purple-900 underline decoration-gold-500 underline-offset-4 hover:decoration-2 focus-visible:ring-2 focus-visible:ring-gold-500",
   };
 
   const baseStyles =

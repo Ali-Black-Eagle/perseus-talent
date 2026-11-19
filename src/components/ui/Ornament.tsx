@@ -7,7 +7,7 @@ interface OrnamentProps {
 
 export function Ornament({ className = "", color = "gold" }: OrnamentProps) {
   const isGold = color === "gold";
-  const lineColor = isGold ? "bg-[#C5A15B]/40" : "bg-[#E6E0EB]";
+  const lineColor = isGold ? "bg-gold-500/40" : "bg-line";
   const starColor = isGold ? "#C5A15B" : "#857B90";
 
   return (

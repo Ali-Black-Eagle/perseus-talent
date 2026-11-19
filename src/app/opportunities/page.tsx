@@ -6,6 +6,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ConstellationGraphic } from "@/components/brand/ConstellationGraphic";
 import { GeometricPattern } from "@/components/brand/GeometricPattern";
+import { Button } from "@/components/ui/Button";
 import { JobDirectory } from "@/components/opportunities/JobDirectory";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createPageMetadata, getBreadcrumbJsonLd } from "@/lib/seo";
@@ -77,15 +78,42 @@ export default async function OpportunitiesPage() {
       {/* 2. DIRECTORY & FILTERS */}
       <Section bg="white">
         <Container>
-          <Suspense
-            fallback={
-              <div className="py-12 text-center text-sm text-[#625A6B]">
-                Loading opportunities…
+          {jobs.length === 0 ? (
+            <div className="relative overflow-hidden bg-ivory border border-line rounded-[4px] p-12 md:p-20 text-center max-w-2xl mx-auto shadow-xs">
+              <div className="w-16 h-16 rounded-full bg-purple-900 text-gold-500 flex items-center justify-center font-serif text-2xl font-bold mx-auto mb-6">
+                ✦
               </div>
-            }
-          >
-            <JobDirectory initialJobs={jobs} />
-          </Suspense>
+
+              <Heading level="h2" color="ink" className="mb-4">
+                New opportunities are on the horizon.
+              </Heading>
+
+              <p className="font-sans text-base text-muted leading-relaxed mb-8 max-w-[46ch] mx-auto">
+                We are currently partnering with healthcare clients on new clinical briefs.
+                Register your interest with Perseus Talent and let us know what your next
+                career move looks like.
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Button variant="purple" size="md" href="/candidates#register" arrow={true}>
+                  Register Your Profile
+                </Button>
+                <Button variant="outline-dark" size="md" href="/contact">
+                  Speak with a Consultant
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Suspense
+              fallback={
+                <div className="py-12 text-center text-sm text-muted">
+                  Loading opportunities…
+                </div>
+              }
+            >
+              <JobDirectory initialJobs={jobs} />
+            </Suspense>
+          )}
         </Container>
       </Section>
     </div>

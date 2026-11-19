@@ -14,7 +14,7 @@ export function Eyebrow({
   withLine = true,
 }: EyebrowProps) {
   const isLight = theme === "light";
-  const textColor = isLight ? "text-[#7A5A20]" : "text-[#C5A15B]";
+  const textColor = isLight ? "text-gold-text" : "text-gold-500";
 
   return (
     <div
@@ -22,7 +22,7 @@ export function Eyebrow({
     >
       {withLine && (
         <span
-          className="inline-block w-7 h-[1px] bg-[#C5A15B] mr-3 shrink-0"
+          className="inline-block w-7 h-[1px] bg-gold-500 mr-3 shrink-0"
           aria-hidden="true"
         />
       )}

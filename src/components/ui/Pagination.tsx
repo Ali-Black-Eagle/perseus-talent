@@ -22,13 +22,13 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   return (
     <nav
       aria-label="Pagination"
-      className="flex items-center justify-center gap-2 pt-10 border-t border-[#E6E0EB]"
+      className="flex items-center justify-center gap-2 pt-10 border-t border-line"
     >
       {/* Prev Link */}
       {currentPage > 1 ? (
         <Link
           href={getPageUrl(currentPage - 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#1C052E] hover:text-[#7A5A20] transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-purple-900 hover:text-gold-text transition-colors"
           aria-label="Go to previous page"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -36,7 +36,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
         </Link>
       ) : (
         <span
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#625A6B]/50 cursor-not-allowed"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted/50 cursor-not-allowed"
           aria-disabled="true"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -52,7 +52,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             <span
               key={p}
               aria-current="page"
-              className="w-11 h-11 flex items-center justify-center font-sans font-semibold text-sm rounded-[2px] bg-[#1C052E] text-white shadow-xs"
+              className="w-11 h-11 flex items-center justify-center font-sans font-semibold text-sm rounded-[2px] bg-purple-900 text-white shadow-xs"
             >
               {p}
             </span>
@@ -60,7 +60,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             <Link
               key={p}
               href={getPageUrl(p)}
-              className="w-11 h-11 flex items-center justify-center font-sans text-sm rounded-[2px] border border-[#DDD6CE] bg-white text-[#1C052E] hover:border-[#1C052E] hover:text-[#7A5A20] transition-colors"
+              className="w-11 h-11 flex items-center justify-center font-sans text-sm rounded-[2px] border border-line bg-white text-purple-900 hover:border-purple-900 hover:text-gold-text transition-colors"
               aria-label={`Go to page ${p}`}
             >
               {p}
@@ -73,7 +73,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       {currentPage < totalPages ? (
         <Link
           href={getPageUrl(currentPage + 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#1C052E] hover:text-[#7A5A20] transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-purple-900 hover:text-gold-text transition-colors"
           aria-label="Go to next page"
         >
           <span>Next</span>
@@ -81,7 +81,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
         </Link>
       ) : (
         <span
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#625A6B]/50 cursor-not-allowed"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted/50 cursor-not-allowed"
           aria-disabled="true"
         >
           <span>Next</span>

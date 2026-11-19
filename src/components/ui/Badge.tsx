@@ -14,10 +14,10 @@ export function Badge({
   className = "",
 }: BadgeProps) {
   const variantStyles: Record<BadgeVariant, string> = {
-    purple: "bg-[#F7F3FA] text-[#1C052E] border border-[#E6E0EB]",
-    gold: "bg-[#F6EFE1] text-[#7A5A20] border border-[#C5A15B]/30",
-    draft: "bg-[#FEF3F2] text-[#B42318] border border-[#B42318]/30 font-semibold uppercase tracking-wider",
-    outline: "bg-transparent text-[#625A6B] border border-[#E6E0EB]",
+    purple: "bg-purple-50 text-purple-900 border border-line",
+    gold: "bg-gold-100 text-gold-text border border-gold-500/30",
+    draft: "bg-error-bg text-error border border-error/30 font-semibold uppercase tracking-wider",
+    outline: "bg-transparent text-muted border border-line",
   };
 
   return (
