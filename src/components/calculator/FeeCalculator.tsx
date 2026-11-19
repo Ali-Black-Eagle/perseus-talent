@@ -173,7 +173,11 @@ export function FeeCalculator({
       </div>
 
       {/* Mandatory Disclaimer */}
-      <div className="mt-5 flex items-start gap-3 text-xs md:text-[13px] text-[#625A6B] leading-relaxed px-2">
+      <div
+        className={`mt-5 flex items-start gap-3 text-xs md:text-[13px] ${
+          variant === "embedded" ? "text-white/80" : "text-[#625A6B]"
+        } leading-relaxed px-2`}
+      >
         <Info className="w-4 h-4 shrink-0 text-[#C5A15B] mt-0.5" />
         <p>
           All calculations are indicative and based on a flat 15% recruitment fee

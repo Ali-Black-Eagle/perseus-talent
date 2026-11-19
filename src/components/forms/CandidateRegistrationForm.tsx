@@ -558,7 +558,10 @@ export function CandidateRegistrationForm({
 
         {/* CV UPLOAD DROPZONE */}
         <div>
-          <label className="block font-sans text-sm font-semibold text-[#1C052E] mb-2">
+          <label
+            htmlFor="cv-file-input"
+            className="block font-sans text-sm font-semibold text-[#1C052E] mb-2"
+          >
             Upload your CV{" "}
             <span className="font-normal text-[#625A6B]">(required)</span>
           </label>
@@ -567,6 +570,7 @@ export function CandidateRegistrationForm({
             ref={fileInputRef}
             type="file"
             accept=".pdf,.doc,.docx"
+            aria-label="Upload your CV (PDF, DOC, DOCX)"
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
                 handleFileChange(e.target.files[0]);

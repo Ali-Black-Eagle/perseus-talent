@@ -106,7 +106,6 @@ export function Logo({
     return (
       <Link
         href="/"
-        aria-label="Perseus Talent — Home"
         className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A15B] focus-visible:ring-offset-2 rounded-[2px]"
       >
         {content}
