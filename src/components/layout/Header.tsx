@@ -14,6 +14,7 @@ export function Header() {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   // Monitor scroll for subtle shadow & border
   useEffect(() => {
@@ -29,19 +30,55 @@ export function Header() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Lock body scroll and handle Escape key when mobile menu is open
+  // Lock body scroll, manage focus trap and inert background when mobile menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+
+      // Mark background main and footer as inert
+      const mainEl = document.getElementById("main-content");
+      const footerEl = document.querySelector("footer");
+      mainEl?.setAttribute("inert", "");
+      footerEl?.setAttribute("inert", "");
+
+      // Move focus to first navigation link
+      const focusTimer = setTimeout(() => {
+        firstLinkRef.current?.focus();
+      }, 50);
+
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
           setIsOpen(false);
           toggleRef.current?.focus();
+          return;
+        }
+
+        // Focus trap inside drawer
+        if (e.key === "Tab" && menuRef.current) {
+          const focusable = menuRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          if (focusable.length > 0) {
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
         }
       };
+
       window.addEventListener("keydown", handleKeyDown);
       return () => {
+        clearTimeout(focusTimer);
         document.body.style.overflow = "";
+        mainEl?.removeAttribute("inert");
+        footerEl?.removeAttribute("inert");
         window.removeEventListener("keydown", handleKeyDown);
       };
     } else {
@@ -151,12 +188,16 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Drawer Panel */}
+      {/* Mobile Drawer Panel (FE4 / Item 8) */}
       {isOpen && (
         <div
           id="mobile-nav"
           ref={menuRef}
-          className="fixed inset-0 top-[72px] md:top-[88px] z-[60] flex flex-col justify-between bg-[#1C052E] overflow-y-auto px-5 py-8 md:px-8 border-t border-white/10 xl:hidden animate-in fade-in slide-in-from-top-2 duration-250"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="fixed inset-x-0 bottom-0 z-[60] flex flex-col justify-between bg-[#1C052E] overflow-y-auto px-5 py-8 md:px-8 border-t border-white/10 xl:hidden mobile-drawer-animate"
+          style={{ top: "var(--header-h, 72px)" }}
         >
           <GeometricPattern opacity={0.04} />
 
@@ -168,10 +209,11 @@ export function Header() {
                 return (
                   <Link
                     key={item.href}
+                    ref={index === 0 ? firstLinkRef : undefined}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     aria-current={active ? "page" : undefined}
-                    className="flex items-center gap-4 py-4 text-white hover:text-[#C5A15B] transition-colors"
+                    className="flex items-center gap-4 py-4 text-white hover:text-[#C5A15B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5A15B]"
                   >
                     <span className="font-sans text-xs text-[#C5A15B]/70 font-semibold tracking-wider">
                       {numeral}
