@@ -69,7 +69,7 @@ describe("deliverSmtp (injected transport)", () => {
     const ack = sendMail.mock.calls[1][0];
     expect(ack.to).toBe("amira@example.com");
     expect(ack.attachments).toBeUndefined();
-    expect(ack.subject).toBe("Thank you for contacting Perseus Talent");
+    expect(ack.subject).toBe("We've received your CV registration | Perseus Talent");
   });
 
   it("still succeeds when the acknowledgement fails", async () => {

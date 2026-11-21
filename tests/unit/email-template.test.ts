@@ -189,7 +189,7 @@ describe("buildAcknowledgementEmail", () => {
   it("is addressed to the submitter, contains site contact details and no CV or data copy", () => {
     const a = buildAcknowledgementEmail(candidate)!;
     expect(a.to).toBe("amira@example.com");
-    expect(a.subject).toBe("Thank you for contacting Perseus Talent");
+    expect(a.subject).toBe("We've received your CV registration | Perseus Talent");
     expect(a.html).toContain("What happens next");
     expect(a.html).toContain(site.email);
     expect(a.html).toContain(site.phoneDisplay);
@@ -197,6 +197,23 @@ describe("buildAcknowledgementEmail", () => {
     expect(a.html).toMatch(/does not guarantee an interview or placement/);
     expect(a.html).not.toContain("Ward Manager");
     expect(a.html).not.toContain("Manchester");
+  });
+
+  it("has its own subject, steps and link for each form type", () => {
+    const e = buildAcknowledgementEmail(employer)!;
+    expect(e.subject).toBe("We've received your recruitment enquiry | Perseus Talent");
+    expect(e.html).toContain("Thank you, Dr Vance.");
+    expect(e.html).toContain(`${site.url}/fee-calculator`);
+    expect(e.html).not.toContain("Medical Director");
+    expect(e.html).not.toContain("120,000");
+
+    const g = buildAcknowledgementEmail(general)!;
+    expect(g.subject).toBe("We've received your message | Perseus Talent");
+    expect(g.html).toContain("Thank you, Sam.");
+    expect(g.html).not.toContain("please call me");
+    expect(g.text).toContain("1. We read your message");
+    expect(g.html).toContain(`${site.url}/brand/email-logo.png`);
+    expect(g.html).toContain(`${site.url}/privacy-policy`);
   });
 
   it("escapes the name and returns null for an invalid address", () => {

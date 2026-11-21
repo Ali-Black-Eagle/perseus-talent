@@ -378,68 +378,225 @@ export function buildNotificationEmail(submission: SubmissionPayload): Notificat
 
 // ---------------------------------------------------------------------------
 // Acknowledgement email (optional, sent to the submitter)
+//
+// Deliberately contains NO copy of what the person submitted: if they mistyped
+// their address, a stranger would otherwise receive their details.
 // ---------------------------------------------------------------------------
+
+const IVORY = "#FBF9F6";
+const INK = "#2B2433";
+const GOLD_TEXT = "#7A5A20";
+const SERIF = "Georgia,'Times New Roman',serif";
+const SANS = "Arial,Helvetica,sans-serif";
+
+interface AckCopy {
+  subject: string;
+  eyebrow: string;
+  intro: string;
+  steps: { title: string; body: string }[];
+  note?: string;
+  cta: { label: string; path: string };
+}
+
+function ackCopy(type: SubmissionPayload["type"]): AckCopy {
+  switch (type) {
+    case "employer":
+      return {
+        subject: "We've received your recruitment enquiry",
+        eyebrow: "Enquiry received",
+        intro:
+          "Your recruitment enquiry has reached our team, and a consultant will be in touch to talk through the role with you.",
+        steps: [
+          { title: "We review your enquiry", body: "A consultant reads the details of the role you shared with us." },
+          {
+            title: "We contact you",
+            body: "We call or email you to understand the role, your team and the person you are looking for.",
+          },
+          {
+            title: "We start the search",
+            body: `Once you are happy to go ahead, we begin finding the right people, at our transparent ${site.fee.rateDisplay} flat fee.`,
+          },
+        ],
+        cta: { label: "Estimate your fee", path: "/fee-calculator" },
+      };
+    case "candidate":
+      return {
+        subject: "We've received your CV registration",
+        eyebrow: "Registration received",
+        intro:
+          "Your registration and CV have reached our team. We're glad you chose Perseus Talent to help with the next step in your career.",
+        steps: [
+          {
+            title: "We review your profile",
+            body: "We look at your experience alongside the roles we are recruiting for.",
+          },
+          {
+            title: "We get in touch when there is a match",
+            body: "When a role suits your experience, a consultant will contact you to discuss it.",
+          },
+          {
+            title: "Nothing is shared without you",
+            body: "We never send your CV to an employer without speaking to you first.",
+          },
+        ],
+        note: "Registering does not guarantee an interview or placement, but it means we can think of you as soon as the right role comes in.",
+        cta: { label: "Read our insights", path: "/insights" },
+      };
+    default:
+      return {
+        subject: "We've received your message",
+        eyebrow: "Message received",
+        intro:
+          "Your message has reached our team, and we will reply using the contact details you gave us.",
+        steps: [
+          { title: "We read your message", body: "A member of our team looks at what you have asked." },
+          { title: "We reply to you", body: "We get back to you by email or phone with an answer or next steps." },
+        ],
+        cta: { label: "Visit our website", path: "/" },
+      };
+  }
+}
+
+const TITLES = /^(dr|mr|mrs|ms|miss|mx|prof|professor|sir|dame|rev|revd)\.?$/i;
+
+/** "Amira Khan" -> "Amira"; "Dr Robert Vance" -> "Dr Vance"; a title alone -> "". */
+export function greetingNameFor(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "";
+  if (TITLES.test(parts[0])) {
+    return parts.length > 1 ? `${parts[0].replace(/\.$/, "")} ${parts[parts.length - 1]}` : "";
+  }
+  return parts[0];
+}
+
+function ackShell(opts: { title: string; preheader: string; bodyHtml: string; footerHtml: string }): string {
+  const logoUrl = `${site.url}/brand/email-logo.png`;
+  return `<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>${escapeHtml(opts.title)}</title>
+</head>
+<body style="margin:0;padding:0;background-color:${IVORY};">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:${IVORY};">${escapeHtml(opts.preheader)}&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${IVORY};">
+  <tr>
+    <td align="center" style="padding:32px 12px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
+        <tr>
+          <td align="center" style="padding:0 0 24px 0;">
+            <a href="${escapeHtml(site.url)}" style="text-decoration:none;"><img src="${escapeHtml(logoUrl)}" width="200" height="140" alt="${escapeHtml(site.name)}" style="display:block;width:200px;height:auto;border:0;font-family:${SERIF};font-size:22px;letter-spacing:3px;color:${PURPLE};text-transform:uppercase;"></a>
+          </td>
+        </tr>
+        <tr>
+          <td style="background-color:#FFFFFF;border:1px solid ${LINE};border-top:3px solid ${GOLD};border-bottom:6px solid ${PURPLE};padding:40px 36px 32px 36px;font-family:${SANS};color:${INK};">
+            ${opts.bodyHtml}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:24px 24px 0 24px;font-family:${SANS};font-size:12px;line-height:19px;color:${MUTED};">
+            ${opts.footerHtml}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
+}
 
 export function buildAcknowledgementEmail(submission: SubmissionPayload): (BuiltEmail & { to: string }) | null {
   const to = str(submission.data.email);
   if (!isValidEmail(to)) return null;
 
-  const name = str(submission.data.fullName);
-  const firstName = name.split(/\s+/)[0] || "";
-  const greeting = firstName ? `Dear ${firstName},` : "Hello,";
+  const greetingName = greetingNameFor(str(submission.data.fullName));
+  const copy = ackCopy(submission.type);
+  const heading = greetingName ? `Thank you, ${greetingName}.` : "Thank you.";
+  const when = formatUkTime(submission.submittedAt);
+  const ctaUrl = `${site.url}${copy.cta.path}`;
+  const privacyUrl = `${site.url}/privacy-policy`;
+  const subject = sanitizeSubject(`${copy.subject} | ${site.name}`);
 
-  let received: string;
-  let next: string;
-  switch (submission.type) {
-    case "employer":
-      received = "Thank you for your recruitment enquiry. We have received it.";
-      next =
-        "A member of our team will read your enquiry and get back to you using the contact details you provided.";
-      break;
-    case "candidate":
-      received = "Thank you for registering with Perseus Talent and for sharing your CV. We have received it.";
-      next =
-        "We review registrations against the roles we are recruiting for. Where there is a role that matches your experience, a member of our team will be in touch to discuss it with you. Registering does not guarantee an interview or placement, and we will not share your CV with an employer without speaking to you first.";
-      break;
-    default:
-      received = "Thank you for getting in touch. We have received your message.";
-      next = "A member of our team will read it and reply using the contact details you provided.";
-  }
+  const p = (t: string, extra = "") =>
+    `<p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:${INK};${extra}">${escapeHtml(t)}</p>`;
 
-  const subject = sanitizeSubject(`Thank you for contacting ${site.name}`);
-  const contactHtml = `Email: <a href="mailto:${escapeHtml(site.email)}" style="color:${PURPLE};">${escapeHtml(site.email)}</a><br>
-            Telephone: <a href="${escapeHtml(site.phoneHref)}" style="color:${PURPLE};">${escapeHtml(site.phoneDisplay)}</a>`;
+  const steps = copy.steps
+    .map(
+      (s, i) => `<tr>
+                <td valign="top" width="42" style="padding:0 0 18px 0;">
+                  <div style="width:28px;height:28px;line-height:28px;border:1px solid ${GOLD};border-radius:50%;text-align:center;font-family:${SERIF};font-size:14px;color:${GOLD_TEXT};">${i + 1}</div>
+                </td>
+                <td valign="top" style="padding:3px 0 18px 0;">
+                  <div style="font-size:15px;font-weight:bold;color:${PURPLE};margin:0 0 3px 0;">${escapeHtml(s.title)}</div>
+                  <div style="font-size:14px;line-height:22px;color:${INK};">${escapeHtml(s.body)}</div>
+                </td>
+              </tr>`
+    )
+    .join("\n              ");
 
-  const p = (t: string) => `<p style="margin:0 0 14px 0;font-size:14px;line-height:22px;color:#2B2433;">${escapeHtml(t)}</p>`;
-  const bodyHtml = `<h1 style="margin:0 0 18px 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:normal;color:${PURPLE};">Thank you</h1>
-            ${p(greeting)}
-            ${p(received)}
-            <p style="margin:0 0 6px 0;font-size:14px;font-weight:bold;color:${PURPLE};">What happens next</p>
-            ${p(next)}
-            <p style="margin:0 0 6px 0;font-size:14px;font-weight:bold;color:${PURPLE};">Need to reach us sooner?</p>
-            <p style="margin:0 0 14px 0;font-size:14px;line-height:22px;color:#2B2433;">${contactHtml}</p>
-            ${p("Kind regards,")}
-            <p style="margin:0 0 14px 0;font-size:14px;color:${PURPLE};font-family:Georgia,'Times New Roman',serif;">${escapeHtml(site.name)}</p>`;
+  const bodyHtml = `<div style="font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${GOLD_TEXT};margin:0 0 12px 0;">${escapeHtml(copy.eyebrow)}</div>
+            <h1 style="margin:0 0 20px 0;font-family:${SERIF};font-size:28px;line-height:34px;font-weight:normal;color:${PURPLE};">${escapeHtml(heading)}</h1>
+            ${p(copy.intro)}
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 0 0;">
+              <tr><td style="border-top:1px solid ${LINE};padding:24px 0 14px 0;font-family:${SERIF};font-size:18px;color:${PURPLE};">What happens next</td></tr>
+            </table>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              ${steps}
+            </table>
+            ${copy.note ? p(copy.note, `font-size:13px;line-height:21px;color:${MUTED};`) : ""}
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 28px 0;">
+              <tr>
+                <td style="background-color:${PURPLE};border-radius:2px;">
+                  <a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding:13px 26px;font-family:${SANS};font-size:14px;font-weight:bold;letter-spacing:0.5px;color:#FFFFFF;text-decoration:none;">${escapeHtml(copy.cta.label)} &rarr;</a>
+                </td>
+              </tr>
+            </table>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${IVORY};border-left:3px solid ${GOLD};">
+              <tr>
+                <td style="padding:16px 20px;font-size:14px;line-height:22px;color:${INK};">
+                  <div style="font-weight:bold;color:${PURPLE};margin:0 0 4px 0;">Need to reach us sooner?</div>
+                  Email <a href="mailto:${escapeHtml(site.email)}" style="color:${PURPLE};">${escapeHtml(site.email)}</a><br>
+                  Call <a href="${escapeHtml(site.phoneHref)}" style="color:${PURPLE};">${escapeHtml(site.phoneDisplay)}</a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:28px 0 4px 0;font-size:15px;line-height:24px;color:${INK};">Kind regards,</p>
+            <p style="margin:0;font-family:${SERIF};font-size:17px;color:${PURPLE};">The ${escapeHtml(site.name)} team</p>`;
 
-  const footerHtml = `This is an automatic confirmation from ${escapeHtml(site.urlDisplay)}. You can reply to this email if you need to add anything.`;
+  const footerHtml = `<span style="font-family:${SERIF};font-size:13px;color:${GOLD_TEXT};font-style:italic;">${escapeHtml(site.statement)}</span><br><br>
+            You are receiving this because a form was submitted on <a href="${escapeHtml(site.url)}" style="color:${MUTED};">${escapeHtml(site.urlDisplay)}</a> on ${escapeHtml(when)}. If that was not you, you can ignore this email.<br>
+            <a href="${escapeHtml(privacyUrl)}" style="color:${MUTED};">Privacy Policy</a>`;
 
-  const html = shell({ title: subject, preheader: received, bodyHtml, footerHtml });
+  const html = ackShell({ title: subject, preheader: copy.intro, bodyHtml, footerHtml });
+
   const text = [
-    greeting,
+    copy.eyebrow.toUpperCase(),
     "",
-    received,
+    heading,
+    "",
+    copy.intro,
     "",
     "What happens next",
-    next,
+    ...copy.steps.map((s, i) => `${i + 1}. ${s.title}: ${s.body}`),
+    ...(copy.note ? ["", copy.note] : []),
+    "",
+    `${copy.cta.label}: ${ctaUrl}`,
     "",
     "Need to reach us sooner?",
     `Email: ${site.email}`,
-    `Telephone: ${site.phoneDisplay}`,
+    `Call: ${site.phoneDisplay}`,
     "",
     "Kind regards,",
-    site.name,
+    `The ${site.name} team`,
     "",
-    `This is an automatic confirmation from ${site.urlDisplay}. You can reply to this email if you need to add anything.`,
+    "--",
+    site.statement,
+    `You are receiving this because a form was submitted on ${site.urlDisplay} on ${when}. If that was not you, you can ignore this email.`,
+    `Privacy Policy: ${privacyUrl}`,
   ].join("\n");
 
   return { to: to.trim(), subject, html, text };
