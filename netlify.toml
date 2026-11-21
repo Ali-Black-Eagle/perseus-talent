@@ -13,24 +13,7 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# --- Host-level redirects (SEO) ---
-# One address for the whole site: https://perseustalent.co.uk (no www, always HTTPS).
-# Netlify applies these rules before the site, so search engines only ever see one version of each page.
-# (Trailing-slash duplicates are handled by Next.js: /about/ redirects to /about.)
-[[redirects]]
-  from = "https://www.perseustalent.co.uk/*"
-  to = "https://perseustalent.co.uk/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.perseustalent.co.uk/*"
-  to = "https://perseustalent.co.uk/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://perseustalent.co.uk/*"
-  to = "https://perseustalent.co.uk/:splat"
-  status = 301
-  force = true
+# --- Domain (SEO) ---
+# The one official address is https://perseustalent.co.uk (no www). It is set as the PRIMARY domain in
+# Netlify > Domain management, and Netlify itself redirects www and http to it. Do not add host redirects
+# here: a rule that disagrees with the primary-domain setting causes an endless redirect loop.
