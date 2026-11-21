@@ -6,7 +6,7 @@ import path from "path";
  * SEO checks on the generated HTML of every public page.
  *
  * Works against any running build (npm run verify uses the build on port 3400). To check a build made for the
- * live site, set SEO_EXPECT_INDEXING=true and SEO_EXPECT_SITE_URL=https://perseustalent.co.uk (see DEPLOYMENT.md).
+ * live site, set SEO_EXPECT_INDEXING=true and SEO_EXPECT_SITE_URL=https://perseustalent.co.uk (see docs/DEPLOYMENT.md).
  */
 
 const EXPECT_INDEXING = process.env.SEO_EXPECT_INDEXING; // "true" | "false" | undefined (either, but consistent)

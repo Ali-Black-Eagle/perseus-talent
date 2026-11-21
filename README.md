@@ -1,134 +1,67 @@
-# PERSEUS TALENT — Website Codebase
+# Perseus Talent: UK Healthcare Recruitment Website
 
-Premium, responsive website for **Perseus Talent**, a UK recruitment consultancy specialising in healthcare staffing and talent acquisition.
+**Live site: [perseustalent.co.uk](https://www.perseustalent.co.uk)**
 
-Built from scratch in strict accordance with `PERSEUS_TALENT_WEBSITE_PLAN.md`.
+The production website for Perseus Talent, a UK recruitment consultancy in healthcare. I designed and built it end to end: brand system, front end, form handling, email delivery, testing and deployment.
 
----
+![Perseus Talent home page](docs/screenshots/home.png)
 
-## 1. Quick Start (Localhost-First)
+## Highlights
 
-The website is engineered to run locally on Windows 11 with **zero paid services and zero external accounts required**.
+- **Lighthouse 99–100 for performance, 100 for accessibility, best practices and SEO** on every key page ([reports](lighthouse-reports/))
+- **Candidate CV registration** with drag-and-drop upload. Files are checked by their real content (magic bytes), not only by extension, and stored outside the public folder
+- **Employer enquiry form** and an **interactive fee calculator** with live results and optional VAT
+- **Spam and abuse protection**: Cloudflare Turnstile, server-side rate limiting and Zod validation on every request
+- **Branded email notifications** through a delivery layer with a pluggable backend (local files in development, SMTP or Resend in production)
+- **Content in MDX files** (insights articles and specialisms), checked against a Zod schema at build time
+- **SEO built in**: generated sitemap, robots rules, Open Graph images and JSON-LD structured data
+- **118 automated tests**: Vitest unit tests plus Playwright end-to-end, accessibility (axe) and SEO checks
 
-### Prerequisites
-- Node.js 20+ (developed on Node 24.20)
-- npm 10+ (developed on npm 11.19)
-- Git
+| Fee calculator | Candidate registration | Mobile |
+|---|---|---|
+| ![Fee calculator](docs/screenshots/fee-calculator.png) | ![Candidate form](docs/screenshots/candidates.png) | ![Mobile view](docs/screenshots/mobile.png) |
 
-### Installation & Execution (PowerShell)
-```powershell
-# 1. Install dependencies
-npm install
+## Tech stack
 
-# 2. Configure local environment (already preconfigured with localhost defaults)
-Copy-Item .env.example .env.local
+| Area | Tools |
+|---|---|
+| Framework | Next.js 16 (App Router, Server Components), React 19, TypeScript |
+| Styling | Tailwind CSS 4, self-hosted fonts |
+| Forms and validation | Zod, libphonenumber-js |
+| Email | Nodemailer (SMTP), Resend |
+| Content | MDX with gray-matter and remark |
+| Testing | Vitest, Playwright, @axe-core/playwright, Lighthouse |
+| Hosting | Netlify, Cloudflare Turnstile |
 
-# 3. Start development server
-npm run dev
+## Project structure
+
+```text
+src/
+  app/          routes: home, employers, candidates, fee calculator, insights, API
+  components/   UI, forms, calculator, layout and SEO components
+  lib/          fee maths, validation, rate limiting, file checks, email delivery
+content/        MDX articles and specialisms
+tests/          unit tests (Vitest) and e2e/a11y/SEO tests (Playwright)
+scripts/        link checker, content audit, Lighthouse runner
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Run it locally
 
----
+```bash
+npm install
+cp .env.example .env.local   # works out of the box: form submissions are saved locally
+npm run dev                  # http://localhost:3000
+```
 
-## 2. Available Scripts
-
-| Command | Description |
+| Command | What it does |
 |---|---|
-| `npm run dev` | Starts Next.js development server on `http://localhost:3000`. |
-| `npm run dev:lan` | Runs dev server on `0.0.0.0:3000` for testing on mobile devices on the same Wi-Fi. |
-| `npm run build` | Compiles optimized static pages and server routes for production. |
-| `npm start` | Starts the production build locally on `http://localhost:3000`. |
-| `npm run test` | Runs unit tests (Vitest) for fee calculation, phone validation, and CV file verification. |
-| `npm run typecheck` | Validates TypeScript types across all components, schemas, and routes (`tsc --noEmit`). |
-| `npm run check:links` | Crawls all 17 site routes to ensure zero broken links. |
-| `npm run verify` | Full verification pipeline: lint, typecheck, unit tests, content audit, then a production build tested in the browser on port 3400. |
+| `npm test` | Unit tests |
+| `npm run test:e2e` | Playwright end-to-end tests |
+| `npm run check:a11y` | Accessibility tests with axe |
+| `npm run verify` | Lint, typecheck, tests, content audit and a production build checked in the browser |
 
----
+More detail: [development guide](docs/DEVELOPMENT.md) · [deployment](docs/DEPLOYMENT.md)
 
-## 3. Key Local Development Routes
+## Author
 
-- **Design System Style Guide:** [http://localhost:3000/styleguide](http://localhost:3000/styleguide)  
-  *Presents all color tokens, typography scales, buttons, card variants, and interactive calculator states (404 in production).*
-- **Local Submissions Inspector:** [http://localhost:3000/dev/submissions](http://localhost:3000/dev/submissions)  
-  *Inspects form enquiries and downloads test CVs captured in `.local-submissions/` (404 in production).*
-
----
-
-## 4. How Form Enquiries Work
-
-Forms operate through a pluggable delivery adapter controlled by `FORM_DELIVERY` in `.env.local`:
-
-1. **`FORM_DELIVERY=local` (Default):**  
-   Enquiries and uploaded CV files are saved directly to `./.local-submissions/` on your computer. CV files are validated with magic-byte checks and saved outside `public/`. Submissions can be inspected at `/dev/submissions`.
-2. **`FORM_DELIVERY=smtp` (Real Gmail Sending from Localhost):**  
-   To send real notification emails from localhost without a custom domain:
-   - Generate a **Google App Password** for `Perseustalent@gmail.com` (requires 2-Step Verification).
-   - In `.env.local`, set:
-     ```env
-     FORM_DELIVERY=smtp
-     SMTP_HOST=smtp.gmail.com
-     SMTP_PORT=465
-     SMTP_USER=Perseustalent@gmail.com
-     SMTP_APP_PASSWORD=your_16_char_app_password
-     ```
-   - Restart the dev server. Enquiries and candidate CV attachments will now be emailed directly to `Perseustalent@gmail.com`.
-3. **`FORM_DELIVERY=resend` (Production Live Domain):**  
-   Configured after `perseustalent.co.uk` domain ownership and DNS (SPF/DKIM/DMARC) are established.
-
----
-
-## 5. Adding New Content
-
-Content is data-driven using MDX/Markdown files with front-matter validated by Zod at build time.
-
-Insights and Specialisms are MDX files in `content/`, edited in code (there is no admin panel). The site does not list job vacancies: candidates register their CV on `/candidates`.
-
-### How to Add an Insight Article
-1. Create a file in `content/insights/<slug>.mdx`:
-   ```yaml
-   ---
-   title: "Clinical Staffing Strategies for 2027"
-   slug: "clinical-staffing-strategies"
-   excerpt: "Key staffing considerations for modern healthcare providers."
-   category: "Healthcare Recruitment"
-   date: "2026-11-18"
-   author: "Perseus Talent"
-   status: "published"
-   ---
-
-   Article markdown body goes here.
-   ```
-2. Set `status: "published"` to publish to `/insights`. Set `status: "draft"` to keep it hidden. Drafts are visible only when running locally with `SHOW_DRAFTS=true`, never on the live site. Also add `imageAlt` (a short description of the image).
-
-### How to Add a New Specialism
-Create `content/specialisms/<slug>.mdx` with `title, slug, summary, order, primary: false, status: 'active'`. It will automatically appear in `/specialisms` and `sitemap.xml`.
-
----
-
-## 6. Going Live (Future Deployment)
-
-When domain registration (`perseustalent.co.uk`) and hosting (Vercel Pro or Netlify) are ready:
-1. Connect this Git repository to Vercel Pro or Netlify.
-2. In the hosting dashboard, configure production environment variables:
-   ```env
-   NEXT_PUBLIC_SITE_URL=https://perseustalent.co.uk
-   NEXT_PUBLIC_ALLOW_INDEXING=true
-   FORM_DELIVERY=smtp    # or resend once domain DKIM is verified
-   ENQUIRY_TO_ADDRESS=Perseustalent@gmail.com
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=465
-   SMTP_USER=Perseustalent@gmail.com
-   SMTP_APP_PASSWORD=...
-   TURNSTILE_ENABLED=true
-   NEXT_PUBLIC_TURNSTILE_SITE_KEY=...
-   TURNSTILE_SECRET_KEY=...
-   SHOW_DRAFTS=false
-   ```
-3. Deploy. No code changes are required.
-
----
-
-## 7. Business Information Checklist
-
-Refer to `CONTENT_TODO.md` for corporate details, registered addresses, and legal review sign-offs to supply prior to public release.
+Built by **Ali Hosseini**, full-stack developer. [LinkedIn](https://www.linkedin.com/in/ali-hosseini-dev/) · [GitHub](https://github.com/Ali-Black-Eagle)

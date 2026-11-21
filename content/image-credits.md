@@ -1,6 +1,6 @@
 # Perseus Talent — Visual Assets & Photography Credits
 
-This document tracks all photography and visual assets deployed across the Perseus Talent website, adhering strictly to the brand identity and photography guidelines in `PERSEUS_TALENT_WEBSITE_PLAN.md` (Part D7) and `FRONTEND_DESIGN_FIX_PLAN.md` (P0 Item 2).
+This document tracks all photography and visual assets deployed across the Perseus Talent website, adhering strictly to the brand identity and photography guidelines in `docs/notes/PERSEUS_TALENT_WEBSITE_PLAN.md` (Part D7) and `docs/notes/FRONTEND_DESIGN_FIX_PLAN.md` (P0 Item 2).
 
 In accordance with brand guidelines and trademark protection rules:
 - All previous AI-generated placeholders and any images bearing unauthorised NHS logos or reversed text have been replaced.
