@@ -8,6 +8,12 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Not Found", { status: 404 });
   }
 
+  // Defence in depth: even a non-production build only serves CVs to the local machine
+  const hostname = req.nextUrl.hostname;
+  if (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "[::1]") {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
   const { searchParams } = new URL(req.url);
   const folder = searchParams.get("folder");
   const file = searchParams.get("file");

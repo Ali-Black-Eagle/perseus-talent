@@ -26,14 +26,18 @@ export const candidateRegistrationSchema = z.object({
   specialism: z
     .string()
     .trim()
-    .min(1, "Please select your primary professional specialism"),
-  specialismOther: z.string().optional(),
+    .min(1, "Please select your primary professional specialism")
+    .max(100, "Specialism cannot exceed 100 characters"),
+  specialismOther: z.string().trim().max(100, "Specialism cannot exceed 100 characters").optional(),
   currentPosition: z
     .string()
     .trim()
     .min(2, "Please enter your current position or job title")
     .max(100, "Position cannot exceed 100 characters"),
-  preferredOpportunities: z.array(z.string()).optional(),
+  preferredOpportunities: z
+    .array(z.string().trim().max(100))
+    .max(20, "Please choose fewer opportunities")
+    .optional(),
   additionalInfo: z
     .string()
     .max(3000, "Additional information cannot exceed 3,000 characters")

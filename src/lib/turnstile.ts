@@ -48,6 +48,8 @@ export async function verifyTurnstileToken(
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+        // Fail closed instead of hanging the request if Cloudflare does not answer
+        signal: AbortSignal.timeout(8000),
       }
     );
 
